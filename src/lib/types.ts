@@ -37,7 +37,11 @@ export type Persona = {
   objections: string | null;
   conversionTriggers: string | null;
   messagingNotes: string | null;
+  complianceNote: string | null;
   sortOrder: number;
+  airtableRecordId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type AwarenessLevel = {
@@ -48,6 +52,12 @@ export type AwarenessLevel = {
   scriptObjective: string | null;
   hookStyle: string | null;
   creativeGuidelines: string | null;
+  examples: string | null;
+  tone: string | null;
+  warning: string | null;
+  airtableRecordId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type ContentBrief = {
