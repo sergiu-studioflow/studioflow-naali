@@ -2,11 +2,16 @@ import postgres from "postgres";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 
-// Supabase transaction pooler
-const sql = postgres(
-  "postgresql://postgres.caxsquldkzmcabjhjfqh:StudioFlow2026@aws-1-eu-west-1.pooler.supabase.com:6543/postgres",
-  { max: 1, idle_timeout: 20, connect_timeout: 10, prepare: false }
-);
+import "dotenv/config";
+
+if (!process.env.DATABASE_URL) {
+  console.error("DATABASE_URL not set. Copy .env.example to .env.local and fill in values.");
+  process.exit(1);
+}
+
+const sql = postgres(process.env.DATABASE_URL, {
+  max: 1, idle_timeout: 20, connect_timeout: 10, prepare: false,
+});
 
 async function main() {
   // Test connection first

@@ -1,9 +1,12 @@
 import postgres from "postgres";
+import "dotenv/config";
 
-const sql = postgres(
-  "postgresql://postgres.caxsquldkzmcabjhjfqh:StudioFlow2026@aws-1-eu-west-1.pooler.supabase.com:6543/postgres",
-  { max: 1, prepare: false }
-);
+if (!process.env.DATABASE_URL) {
+  console.error("DATABASE_URL not set. Copy .env.example to .env.local and fill in values.");
+  process.exit(1);
+}
+
+const sql = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
 
 async function main() {
   console.log("Seeding Naali data...\n");
