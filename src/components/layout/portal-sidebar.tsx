@@ -4,12 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  FileText,
-  Film,
-  ClipboardCheck,
-  Trophy,
   Brain,
-  History,
+  ClipboardCheck,
+  Film,
+  Video,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -19,12 +17,10 @@ import { useRouter } from "next/navigation";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Content Briefs", href: "/briefs", icon: FileText },
-  { name: "Scripts", href: "/scripts", icon: Film },
-  { name: "Script Review", href: "/review", icon: ClipboardCheck },
-  { name: "Brand Intelligence", href: "/brand-intel", icon: Brain },
-  { name: "Winners Library", href: "/winners", icon: Trophy },
-  { name: "Activity", href: "/history", icon: History },
+  { name: "Brand Intelligence Layer", href: "/brand-intelligence", icon: Brain },
+  { name: "Script Review & Correction", href: "/script-review", icon: ClipboardCheck },
+  { name: "Script Generation", href: "/script-generation", icon: Film },
+  { name: "Video Brief System", href: "/video-briefs", icon: Video },
 ];
 
 type PortalSidebarProps = {
@@ -38,14 +34,7 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
   const pathname = usePathname();
   const router = useRouter();
 
-  const filteredNav = navigation.filter((item) => {
-    if (!features) return true;
-    if (item.href === "/scripts" && !features.script_generation) return false;
-    if (item.href === "/review" && !features.script_review) return false;
-    if (item.href === "/brand-intel" && !features.brand_intel_editing) return false;
-    if (item.href === "/winners" && !features.winners_library) return false;
-    return true;
-  });
+  const filteredNav = navigation;
 
   async function handleSignOut() {
     const supabase = createClient();

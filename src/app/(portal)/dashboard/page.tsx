@@ -1,78 +1,64 @@
 import { db, schema } from "@/lib/db";
-import { desc, eq, sql, count } from "drizzle-orm";
-import { FileText, Film, ClipboardCheck, Loader2 } from "lucide-react";
-import { StatusBadge } from "@/components/shared/status-badge";
-import { formatDateTime } from "@/lib/utils";
+import { count } from "drizzle-orm";
+import { Brain, ClipboardCheck, Film, Video } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 async function getStats() {
-  const [briefStats] = await db
-    .select({
-      total: count(),
-      newCount: count(sql`CASE WHEN ${schema.contentBriefs.status} = 'new' THEN 1 END`),
-      processingCount: count(sql`CASE WHEN ${schema.contentBriefs.status} = 'processing' THEN 1 END`),
-      completeCount: count(sql`CASE WHEN ${schema.contentBriefs.status} = 'complete' THEN 1 END`),
-      errorCount: count(sql`CASE WHEN ${schema.contentBriefs.status} = 'error' THEN 1 END`),
-    })
-    .from(schema.contentBriefs);
-
-  const [scriptCount] = await db.select({ total: count() }).from(schema.generatedScripts);
-  const [reviewCount] = await db.select({ total: count() }).from(schema.scriptReviews);
+  const [[briefs], [scripts], [reviews], [videoBriefs]] = await Promise.all([
+    db.select({ total: count() }).from(schema.contentBriefs),
+    db.select({ total: count() }).from(schema.generatedScripts),
+    db.select({ total: count() }).from(schema.scriptReviews),
+    db.select({ total: count() }).from(schema.videoBriefRequests),
+  ]);
 
   return {
-    briefs: briefStats,
-    scripts: scriptCount.total,
-    reviews: reviewCount.total,
+    briefs: briefs.total,
+    scripts: scripts.total,
+    reviews: reviews.total,
+    videoBriefs: videoBriefs.total,
   };
 }
 
-async function getRecentBriefs() {
-  return db
-    .select()
-    .from(schema.contentBriefs)
-    .orderBy(desc(schema.contentBriefs.createdAt))
-    .limit(5);
-}
-
-async function getRecentScripts() {
-  return db
-    .select()
-    .from(schema.generatedScripts)
-    .orderBy(desc(schema.generatedScripts.createdAt))
-    .limit(5);
-}
-
 export default async function DashboardPage() {
-  const [stats, recentBriefs, recentScripts] = await Promise.all([
-    getStats(),
-    getRecentBriefs(),
-    getRecentScripts(),
-  ]);
+  const stats = await getStats();
 
-  const statCards = [
+  const systems = [
     {
-      label: "Content Briefs",
-      value: stats.briefs.total,
-      icon: FileText,
-      detail: `${stats.briefs.processingCount} processing`,
+      name: "Brand Intelligence Layer",
+      href: "/brand-intelligence",
+      icon: Brain,
+      description: "Brand knowledge base, personas, and awareness framework",
+      color: "text-emerald-600",
+      bgColor: "bg-emerald-50 dark:bg-emerald-950",
+    },
+    {
+      name: "Script Review & Correction",
+      href: "/script-review",
+      icon: ClipboardCheck,
+      description: "AI-powered compliance review and script correction",
+      stat: `${stats.reviews} reviews`,
+      color: "text-amber-600",
+      bgColor: "bg-amber-50 dark:bg-amber-950",
+    },
+    {
+      name: "Script Generation",
+      href: "/script-generation",
+      icon: Film,
+      description: "Content briefs, AI scripts, and hook variations",
+      stat: `${stats.briefs} briefs, ${stats.scripts} scripts`,
       color: "text-blue-600",
       bgColor: "bg-blue-50 dark:bg-blue-950",
     },
     {
-      label: "Generated Scripts",
-      value: stats.scripts,
-      icon: Film,
+      name: "Video Brief System",
+      href: "/video-briefs",
+      icon: Video,
+      description: "Production-ready video briefs with shot lists and talent notes",
+      stat: `${stats.videoBriefs} briefs`,
       color: "text-purple-600",
       bgColor: "bg-purple-50 dark:bg-purple-950",
-    },
-    {
-      label: "Script Reviews",
-      value: stats.reviews,
-      icon: ClipboardCheck,
-      color: "text-amber-600",
-      bgColor: "bg-amber-50 dark:bg-amber-950",
     },
   ];
 
@@ -81,109 +67,37 @@ export default async function DashboardPage() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Overview of your creative production pipeline
+          Naali Creative Studio — your AI-powered creative production systems
         </p>
       </div>
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {statCards.map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900"
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {systems.map((system) => (
+          <Link
+            key={system.href}
+            href={system.href}
+            className="group rounded-lg border border-gray-200 bg-white p-6 transition-all hover:border-gray-300 hover:shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-700"
           >
-            <div className="flex items-center gap-3">
-              <div className={`rounded-lg p-2 ${stat.bgColor}`}>
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
+            <div className="flex items-start gap-4">
+              <div className={`rounded-lg p-2.5 ${system.bgColor}`}>
+                <system.icon className={`h-5 w-5 ${system.color}`} />
               </div>
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
-                {stat.detail && (
-                  <p className="text-xs text-gray-500">{stat.detail}</p>
+              <div className="flex-1">
+                <h2 className="text-sm font-semibold text-gray-900 group-hover:text-gray-700 dark:text-white dark:group-hover:text-gray-200">
+                  {system.name}
+                </h2>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  {system.description}
+                </p>
+                {system.stat && (
+                  <p className="mt-2 text-xs font-medium text-gray-400 dark:text-gray-500">
+                    {system.stat}
+                  </p>
                 )}
               </div>
             </div>
-          </div>
+          </Link>
         ))}
-      </div>
-
-      {/* Processing Indicator */}
-      {stats.briefs.processingCount > 0 && (
-        <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-800 dark:bg-amber-950">
-          <Loader2 className="h-4 w-4 animate-spin text-amber-600" />
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {stats.briefs.processingCount} brief{stats.briefs.processingCount > 1 ? "s" : ""} currently being generated...
-          </p>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Recent Briefs */}
-        <div className="rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-          <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-800">
-            <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Recent Briefs</h2>
-            <Link href="/briefs" className="text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">
-              View all
-            </Link>
-          </div>
-          <div className="divide-y divide-gray-100 dark:divide-gray-800">
-            {recentBriefs.length === 0 ? (
-              <p className="px-5 py-8 text-center text-sm text-gray-500">No briefs yet</p>
-            ) : (
-              recentBriefs.map((brief) => (
-                <Link
-                  key={brief.id}
-                  href={`/briefs/${brief.id}`}
-                  className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
-                >
-                  <div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      {brief.briefName}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {brief.contentType} &middot; {formatDateTime(brief.createdAt)}
-                    </p>
-                  </div>
-                  <StatusBadge status={brief.status} />
-                </Link>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Recent Scripts */}
-        <div className="rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-          <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-800">
-            <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Recent Scripts</h2>
-            <Link href="/scripts" className="text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">
-              View all
-            </Link>
-          </div>
-          <div className="divide-y divide-gray-100 dark:divide-gray-800">
-            {recentScripts.length === 0 ? (
-              <p className="px-5 py-8 text-center text-sm text-gray-500">No scripts generated yet</p>
-            ) : (
-              recentScripts.map((script) => (
-                <Link
-                  key={script.id}
-                  href={`/scripts/${script.id}`}
-                  className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
-                >
-                  <div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      {script.scriptTitle || "Untitled Script"}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {script.platform} &middot; {formatDateTime(script.createdAt)}
-                    </p>
-                  </div>
-                  <StatusBadge status={script.reviewStatus || "draft"} />
-                </Link>
-              ))
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -51,6 +51,7 @@ export const brandIntelligence = pgTable("brand_intelligence", {
   title: text("title").notNull().default("Brand Intelligence"),
   rawContent: text("raw_content"), // Full markdown document
   sections: jsonb("sections"), // Parsed sections as JSON
+  airtableRecordId: text("airtable_record_id"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -71,7 +72,9 @@ export const personas = pgTable("personas", {
   objections: text("objections"),
   conversionTriggers: text("conversion_triggers"),
   messagingNotes: text("messaging_notes"),
+  complianceNote: text("compliance_note"),
   sortOrder: integer("sort_order").notNull().default(0),
+  airtableRecordId: text("airtable_record_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -88,6 +91,10 @@ export const awarenessLevels = pgTable("awareness_levels", {
   scriptObjective: text("script_objective"),
   hookStyle: text("hook_style"),
   creativeGuidelines: text("creative_guidelines"),
+  examples: text("examples"),
+  tone: text("tone"),
+  warning: text("warning"),
+  airtableRecordId: text("airtable_record_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -103,6 +110,9 @@ export const winners = pgTable("winners", {
   mediaUrl: text("media_url"),
   aiSummary: text("ai_summary"),
   notes: text("notes"),
+  status: text("status"),
+  angleDirection: text("angle_direction"),
+  airtableRecordId: text("airtable_record_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -130,6 +140,7 @@ export const contentBriefs = pgTable("content_briefs", {
   toneOverride: text("tone_override"),
   notes: text("notes"),
   winnerIds: jsonb("winner_ids"), // JSON array of winner UUIDs
+  requestedVariants: integer("requested_variants"),
 
   // Status lifecycle
   status: text("status").notNull().default("new"), // new, processing, complete, error
@@ -140,6 +151,7 @@ export const contentBriefs = pgTable("content_briefs", {
   triggeredAt: timestamp("triggered_at", { withTimezone: true }),
   completedAt: timestamp("completed_at", { withTimezone: true }),
 
+  airtableRecordId: text("airtable_record_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -176,6 +188,7 @@ export const generatedScripts = pgTable("generated_scripts", {
   reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
   reviewedBy: uuid("reviewed_by").references(() => users.id),
 
+  airtableRecordId: text("airtable_record_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -197,6 +210,7 @@ export const hookVariations = pgTable("hook_variations", {
   estimatedStopRate: text("estimated_stop_rate"), // High, Medium, Low
   sortOrder: integer("sort_order").default(0),
 
+  airtableRecordId: text("airtable_record_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -238,6 +252,67 @@ export const scriptReviews = pgTable("script_reviews", {
   // Workflow tracking
   n8nExecutionId: text("n8n_execution_id"),
 
+  airtableRecordId: text("airtable_record_id"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// =============================================
+// VIDEO BRIEF REQUESTS
+// =============================================
+
+export const videoBriefRequests = pgTable("video_brief_requests", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  briefName: text("brief_name").notNull(),
+  contentType: text("content_type"),
+  scenarioDescription: text("scenario_description"),
+  targetObjection: text("target_objection"),
+  angleDirection: text("angle_direction"),
+  persona: text("persona"),
+  awarenessLevel: text("awareness_level"),
+  platform: text("platform"),
+  duration: text("duration"),
+  language: text("language").default("FR"),
+  productionConstraints: text("production_constraints"),
+  proofAssets: jsonb("proof_assets"),
+  notes: text("notes"),
+  status: text("status").notNull().default("new"),
+  airtableRecordId: text("airtable_record_id"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// =============================================
+// GENERATED VIDEO BRIEFS
+// =============================================
+
+export const generatedVideoBriefs = pgTable("generated_video_briefs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  videoBriefRequestId: uuid("video_brief_request_id").references(() => videoBriefRequests.id),
+  briefTitle: text("brief_title"),
+  strategicHypothesis: text("strategic_hypothesis"),
+  psychologyAngle: text("psychology_angle"),
+  contentType: text("content_type"),
+  targetPersona: text("target_persona"),
+  awarenessLevel: text("awareness_level"),
+  platform: text("platform"),
+  duration: text("duration"),
+  primaryHook: text("primary_hook"),
+  hookVariationsText: text("hook_variations_text"),
+  shotList: text("shot_list"),
+  bRollRequirements: text("b_roll_requirements"),
+  talentNotes: text("talent_notes"),
+  locationRequirements: text("location_requirements"),
+  propsList: text("props_list"),
+  musicDirection: text("music_direction"),
+  soundDesign: text("sound_design"),
+  onScreenText: text("on_screen_text"),
+  visualDirection: text("visual_direction"),
+  complianceReview: text("compliance_review"),
+  brandVoiceLock: text("brand_voice_lock"),
+  productionNotes: text("production_notes"),
+  status: text("status").default("draft"),
+  airtableRecordId: text("airtable_record_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
