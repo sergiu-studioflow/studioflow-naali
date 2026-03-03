@@ -65,8 +65,8 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Naali Creative Studio — your AI-powered creative production systems
         </p>
       </div>
@@ -76,7 +76,7 @@ export default async function DashboardPage() {
           <Link
             key={system.href}
             href={system.href}
-            className="group rounded-lg border border-gray-200 bg-white p-6 transition-all hover:border-gray-300 hover:shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-700"
+            className="group rounded-lg border border-gray-200 bg-white p-6 transition-all hover:border-border hover:shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-700"
           >
             <div className="flex items-start gap-4">
               <div className={`rounded-lg p-2.5 ${system.bgColor}`}>
@@ -86,7 +86,7 @@ export default async function DashboardPage() {
                 <h2 className="text-sm font-semibold text-gray-900 group-hover:text-gray-700 dark:text-white dark:group-hover:text-gray-200">
                   {system.name}
                 </h2>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {system.description}
                 </p>
                 {system.stat && (

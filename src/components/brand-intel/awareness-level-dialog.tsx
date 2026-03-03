@@ -125,7 +125,7 @@ export function AwarenessLevelDialog({
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
                 Level # *
               </label>
               <Input
@@ -136,7 +136,7 @@ export function AwarenessLevelDialog({
               />
             </div>
             <div className="col-span-2">
-              <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
                 Name *
               </label>
               <Input
@@ -148,7 +148,7 @@ export function AwarenessLevelDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Tone
             </label>
             <Input
@@ -159,7 +159,7 @@ export function AwarenessLevelDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Description
             </label>
             <Textarea
@@ -171,7 +171,7 @@ export function AwarenessLevelDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Script Objective
             </label>
             <Textarea
@@ -183,7 +183,7 @@ export function AwarenessLevelDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Hook Style
             </label>
             <Textarea
@@ -195,7 +195,7 @@ export function AwarenessLevelDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Creative Guidelines
             </label>
             <Textarea
@@ -207,7 +207,7 @@ export function AwarenessLevelDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Examples
             </label>
             <Textarea
@@ -219,7 +219,7 @@ export function AwarenessLevelDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Warning / Pitfalls
             </label>
             <Textarea

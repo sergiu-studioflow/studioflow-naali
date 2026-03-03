@@ -84,38 +84,38 @@ export function HookVariationsTable() {
           {hooks.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
               <Zap className="h-10 w-10 text-gray-300 dark:text-gray-600" />
-              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-3 text-sm text-muted-foreground">
                 No hook variations yet. They are generated alongside scripts.
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="overflow-x-auto rounded-lg border border-border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Hook Title
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Type
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400 hidden md:table-cell">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
                       Script
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
                       Platform
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Stop Rate
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
                       Created
                     </th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 dark:text-gray-400 w-16">
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="divide-y divide-border">
                   {hooks.map((hook) => {
                     const rate = stopRateColor[hook.estimatedStopRate || ""] || {
                       bg: "bg-gray-50 dark:bg-gray-900",
@@ -124,19 +124,19 @@ export function HookVariationsTable() {
                     return (
                       <tr
                         key={hook.id}
-                        className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                        className="cursor-pointer transition-colors hover:bg-muted/50"
                         onClick={() => openDetail(hook)}
                       >
-                        <td className="px-4 py-3 font-medium text-gray-900 dark:text-white max-w-[200px] truncate">
+                        <td className="px-4 py-3 font-medium text-foreground max-w-[200px] truncate">
                           {hook.hookTitle || "Untitled"}
                         </td>
-                        <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                        <td className="px-4 py-3 text-muted-foreground">
                           {hook.hookType || "—"}
                         </td>
-                        <td className="px-4 py-3 text-gray-500 dark:text-gray-400 hidden md:table-cell max-w-[180px] truncate">
+                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell max-w-[180px] truncate">
                           {hook.scriptTitle || "—"}
                         </td>
-                        <td className="px-4 py-3 text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                        <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
                           {hook.platformBestFit || "—"}
                         </td>
                         <td className="px-4 py-3">
@@ -150,7 +150,7 @@ export function HookVariationsTable() {
                             <span className="text-gray-400">—</span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                        <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
                           {formatDate(hook.createdAt)}
                         </td>
                         <td className="px-4 py-3 text-right">
@@ -182,36 +182,36 @@ export function HookVariationsTable() {
             <div className="space-y-5">
               {selected.hookText && (
                 <div>
-                  <h4 className="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">
+                  <h4 className="mb-1.5 text-sm font-medium text-foreground">
                     Hook Text
                   </h4>
-                  <div className="whitespace-pre-wrap rounded-lg bg-gray-50 p-4 text-sm text-gray-700 dark:bg-gray-900 dark:text-gray-300">
+                  <div className="whitespace-pre-wrap rounded-lg bg-muted p-4 text-sm text-secondary-foreground">
                     {selected.hookText}
                   </div>
                 </div>
               )}
               {selected.visualDescription && (
                 <div>
-                  <h4 className="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">
+                  <h4 className="mb-1.5 text-sm font-medium text-foreground">
                     Visual Description
                   </h4>
-                  <div className="whitespace-pre-wrap rounded-lg bg-gray-50 p-4 text-sm text-gray-700 dark:bg-gray-900 dark:text-gray-300">
+                  <div className="whitespace-pre-wrap rounded-lg bg-muted p-4 text-sm text-secondary-foreground">
                     {selected.visualDescription}
                   </div>
                 </div>
               )}
               {selected.whyItWorks && (
                 <div>
-                  <h4 className="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">
+                  <h4 className="mb-1.5 text-sm font-medium text-foreground">
                     Why It Works
                   </h4>
-                  <div className="whitespace-pre-wrap rounded-lg bg-gray-50 p-4 text-sm text-gray-700 dark:bg-gray-900 dark:text-gray-300">
+                  <div className="whitespace-pre-wrap rounded-lg bg-muted p-4 text-sm text-secondary-foreground">
                     {selected.whyItWorks}
                   </div>
                 </div>
               )}
               {selected.scriptTitle && (
-                <div className="text-xs text-gray-500 dark:text-gray-400">
+                <div className="text-xs text-muted-foreground">
                   From script: {selected.scriptTitle}
                 </div>
               )}

@@ -110,7 +110,7 @@ export function AwarenessLevelsSection() {
           {levels.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
               <Layers className="h-10 w-10 text-gray-300 dark:text-gray-600" />
-              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-3 text-sm text-muted-foreground">
                 No awareness levels defined yet.
               </p>
               <Button variant="outline" size="sm" className="mt-4" onClick={openCreate}>
@@ -119,34 +119,34 @@ export function AwarenessLevelsSection() {
               </Button>
             </div>
           ) : (
-            <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="overflow-hidden rounded-lg border border-border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400 w-16">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground w-16">
                       Level
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Name
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400 hidden md:table-cell">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
                       Description
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
                       Hook Style
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
                       Tone
                     </th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 dark:text-gray-400 w-16">
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="divide-y divide-border">
                   {levels.map((level) => (
                     <tr
                       key={level.id}
-                      className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                      className="cursor-pointer transition-colors hover:bg-muted/50"
                       onClick={() => openEdit(level)}
                     >
                       <td className="px-4 py-3">
@@ -154,24 +154,24 @@ export function AwarenessLevelsSection() {
                           {level.level}
                         </span>
                       </td>
-                      <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                      <td className="px-4 py-3 font-medium text-foreground">
                         {level.name}
                       </td>
-                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400 hidden md:table-cell">
+                      <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
                         {level.description
                           ? level.description.length > 60
                             ? level.description.slice(0, 60) + "..."
                             : level.description
                           : "—"}
                       </td>
-                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                      <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
                         {level.hookStyle
                           ? level.hookStyle.length > 40
                             ? level.hookStyle.slice(0, 40) + "..."
                             : level.hookStyle
                           : "—"}
                       </td>
-                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                      <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
                         {level.tone || "—"}
                       </td>
                       <td className="px-4 py-3 text-right">

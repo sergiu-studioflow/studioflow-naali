@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -43,16 +44,16 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
   }
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
+    <aside className="flex h-screen w-64 flex-col border-r border-border bg-card">
       {/* Brand Header */}
-      <div className="flex h-16 items-center gap-3 border-b border-gray-200 px-6 dark:border-gray-800">
+      <div className="flex h-16 items-center gap-3 border-b border-border px-6">
         <div
           className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white"
           style={{ backgroundColor: brandColor || "#6366f1" }}
         >
           {brandName.charAt(0)}
         </div>
-        <span className="text-sm font-semibold text-gray-900 dark:text-white">
+        <span className="text-sm font-semibold text-foreground">
           {brandName}
         </span>
       </div>
@@ -68,8 +69,8 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-white"
+                  ? "bg-accent text-foreground"
+                  : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
               )}
             >
               <item.icon className="h-4 w-4 flex-shrink-0" />
@@ -79,24 +80,30 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
         })}
       </nav>
 
-      {/* User Section */}
-      <div className="border-t border-gray-200 p-4 dark:border-gray-800">
+      {/* Footer */}
+      <div className="space-y-3 border-t border-border p-4">
+        {/* Theme Toggle */}
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">Theme</span>
+          <ThemeToggle />
+        </div>
+
         {userEmail && (
-          <p className="mb-2 truncate text-xs text-gray-500 dark:text-gray-400">
+          <p className="truncate text-xs text-muted-foreground">
             {userEmail}
           </p>
         )}
         <div className="flex items-center gap-2">
           <Link
             href="/settings"
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-900"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-accent/50 hover:text-foreground"
           >
             <Settings className="h-4 w-4" />
             Settings
           </Link>
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-900"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-accent/50 hover:text-foreground"
           >
             <LogOut className="h-4 w-4" />
           </button>

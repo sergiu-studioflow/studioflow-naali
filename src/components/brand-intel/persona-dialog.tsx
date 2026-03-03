@@ -125,7 +125,7 @@ export function PersonaDialog({
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
                 Name *
               </label>
               <Input
@@ -135,7 +135,7 @@ export function PersonaDialog({
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
                 Label / Title
               </label>
               <Input
@@ -148,7 +148,7 @@ export function PersonaDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
                 Demographics
               </label>
               <Input
@@ -158,7 +158,7 @@ export function PersonaDialog({
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
                 Sort Order
               </label>
               <Input
@@ -170,7 +170,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Situation
             </label>
             <Textarea
@@ -182,7 +182,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Pain Points
             </label>
             <Textarea
@@ -194,7 +194,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               What They&apos;ve Tried
             </label>
             <Textarea
@@ -206,7 +206,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               What They Want
             </label>
             <Textarea
@@ -218,7 +218,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Objections
             </label>
             <Textarea
@@ -230,7 +230,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Conversion Triggers
             </label>
             <Textarea
@@ -242,7 +242,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Messaging Notes
             </label>
             <Textarea
@@ -254,7 +254,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
               Compliance Note
             </label>
             <Textarea

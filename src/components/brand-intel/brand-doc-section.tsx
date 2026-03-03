@@ -103,7 +103,7 @@ export function BrandDocSection() {
           <div>
             <CardTitle className="text-lg">Brand Intelligence Document</CardTitle>
             {intel?.updatedAt && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Last updated: {new Date(intel.updatedAt).toLocaleDateString()}
               </p>
             )}
@@ -157,7 +157,7 @@ export function BrandDocSection() {
         ) : (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <Brain className="h-10 w-10 text-gray-300 dark:text-gray-600" />
-            <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-3 text-sm text-muted-foreground">
               No brand intelligence document yet.
             </p>
             <Button variant="outline" size="sm" className="mt-4" onClick={handleEdit}>

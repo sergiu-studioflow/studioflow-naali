@@ -65,56 +65,56 @@ export function GeneratedScriptsTable() {
           {scripts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
               <FileText className="h-10 w-10 text-gray-300 dark:text-gray-600" />
-              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-3 text-sm text-muted-foreground">
                 No scripts generated yet. Submit a brief to get started.
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="overflow-x-auto rounded-lg border border-border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Title
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Content Type
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Platform
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Duration
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Review Status
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Created
                     </th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 dark:text-gray-400 w-16">
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="divide-y divide-border">
                   {scripts.map((script) => {
                     const status = getStatusColor(script.reviewStatus || "draft");
                     return (
                       <tr
                         key={script.id}
-                        className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                        className="cursor-pointer transition-colors hover:bg-muted/50"
                         onClick={() => openDetail(script)}
                       >
-                        <td className="px-4 py-3 font-medium text-gray-900 dark:text-white max-w-[250px] truncate">
+                        <td className="px-4 py-3 font-medium text-foreground max-w-[250px] truncate">
                           {script.scriptTitle || "Untitled"}
                         </td>
-                        <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                        <td className="px-4 py-3 text-muted-foreground">
                           {script.contentType || "—"}
                         </td>
-                        <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                        <td className="px-4 py-3 text-muted-foreground">
                           {script.platform || "—"}
                         </td>
-                        <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                        <td className="px-4 py-3 text-muted-foreground">
                           {script.duration || "—"}
                         </td>
                         <td className="px-4 py-3">
@@ -125,7 +125,7 @@ export function GeneratedScriptsTable() {
                             {(script.reviewStatus || "draft").replace(/_/g, " ")}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                        <td className="px-4 py-3 text-muted-foreground">
                           {formatDate(script.createdAt)}
                         </td>
                         <td className="px-4 py-3 text-right">
@@ -193,10 +193,10 @@ export function GeneratedScriptsTable() {
 function Section({ title, content }: { title: string; content: string }) {
   return (
     <div>
-      <h4 className="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">
+      <h4 className="mb-1.5 text-sm font-medium text-foreground">
         {title}
       </h4>
-      <div className="whitespace-pre-wrap rounded-lg bg-gray-50 p-4 text-sm text-gray-700 dark:bg-gray-900 dark:text-gray-300">
+      <div className="whitespace-pre-wrap rounded-lg bg-muted p-4 text-sm text-secondary-foreground">
         {content}
       </div>
     </div>

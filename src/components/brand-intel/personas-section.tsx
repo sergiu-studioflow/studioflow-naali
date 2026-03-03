@@ -108,7 +108,7 @@ export function PersonasSection() {
           {personas.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
               <Users className="h-10 w-10 text-gray-300 dark:text-gray-600" />
-              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-3 text-sm text-muted-foreground">
                 No personas defined yet.
               </p>
               <Button variant="outline" size="sm" className="mt-4" onClick={openCreate}>
@@ -117,53 +117,53 @@ export function PersonasSection() {
               </Button>
             </div>
           ) : (
-            <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="overflow-hidden rounded-lg border border-border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       #
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Name
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Label
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400 hidden md:table-cell">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
                       Demographics
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
                       Situation
                     </th>
-                    <th className="px-4 py-3 text-right font-medium text-gray-500 dark:text-gray-400 w-16">
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="divide-y divide-border">
                   {personas.map((persona) => (
                     <tr
                       key={persona.id}
-                      className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                      className="cursor-pointer transition-colors hover:bg-muted/50"
                       onClick={() => openEdit(persona)}
                     >
-                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400 tabular-nums">
+                      <td className="px-4 py-3 text-muted-foreground tabular-nums">
                         {persona.sortOrder}
                       </td>
-                      <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                      <td className="px-4 py-3 font-medium text-foreground">
                         {persona.name}
                       </td>
-                      <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
+                      <td className="px-4 py-3 text-muted-foreground">
                         {persona.label || "—"}
                       </td>
-                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400 hidden md:table-cell">
+                      <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
                         {persona.demographics
                           ? persona.demographics.length > 50
                             ? persona.demographics.slice(0, 50) + "..."
                             : persona.demographics
                           : "—"}
                       </td>
-                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400 hidden lg:table-cell">
+                      <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
                         {persona.situation
                           ? persona.situation.length > 60
                             ? persona.situation.slice(0, 60) + "..."
