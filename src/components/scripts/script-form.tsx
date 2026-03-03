@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Send, CheckSquare, Square, X, Plus } from "lucide-react";
+import { Loader2, Send, X, Plus } from "lucide-react";
 import type { Persona, AwarenessLevel, AppConfig } from "@/lib/types";
 
 export function ScriptForm() {
@@ -37,7 +37,6 @@ export function ScriptForm() {
     language: "",
     toneOverride: "",
     notes: "",
-    generateScript: false,
   });
 
   const [proofAssets, setProofAssets] = useState<string[]>([]);
@@ -112,15 +111,13 @@ export function ScriptForm() {
 
       const brief = await res.json();
 
-      // 2. Trigger generation if checkbox is checked
-      if (form.generateScript) {
-        const triggerRes = await fetch(`/api/briefs/${brief.id}/trigger`, {
-          method: "POST",
-        });
-        if (!triggerRes.ok) {
-          const data = await triggerRes.json().catch(() => ({}));
-          throw new Error(data.error || "Brief created but failed to trigger generation");
-        }
+      // 2. Trigger n8n script generation workflow
+      const triggerRes = await fetch(`/api/briefs/${brief.id}/trigger`, {
+        method: "POST",
+      });
+      if (!triggerRes.ok) {
+        const data = await triggerRes.json().catch(() => ({}));
+        throw new Error(data.error || "Brief created but failed to trigger generation");
       }
 
       setSuccess(true);
@@ -138,7 +135,6 @@ export function ScriptForm() {
         language: "",
         toneOverride: "",
         notes: "",
-        generateScript: false,
       });
       setProofAssets([]);
     } catch (err) {
@@ -162,7 +158,6 @@ export function ScriptForm() {
       language: "",
       toneOverride: "",
       notes: "",
-      generateScript: false,
     });
     setProofAssets([]);
     setError(null);
@@ -204,8 +199,7 @@ export function ScriptForm() {
         )}
         {success && (
           <div className="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-600 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400">
-            Brief submitted successfully!{" "}
-            {form.generateScript ? "Script generation has been triggered." : "You can trigger generation later."}
+            Brief submitted and script generation triggered successfully!
           </div>
         )}
 
@@ -431,23 +425,6 @@ export function ScriptForm() {
             />
           </div>
 
-          {/* Generate Script checkbox */}
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-red-600 dark:text-red-400">
-              Generate Script *
-            </label>
-            <button
-              type="button"
-              onClick={() => update("generateScript", !form.generateScript)}
-              className="flex items-center gap-2 text-sm text-foreground"
-            >
-              {form.generateScript ? (
-                <CheckSquare className="h-5 w-5 text-foreground" />
-              ) : (
-                <Square className="h-5 w-5 text-gray-400" />
-              )}
-            </button>
-          </div>
         </div>
 
         {/* Footer */}
