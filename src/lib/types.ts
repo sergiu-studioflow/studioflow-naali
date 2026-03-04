@@ -170,3 +170,55 @@ export type Winner = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type VideoBriefRequest = {
+  id: string;
+  briefName: string;
+  contentType: string | null;
+  scenarioDescription: string | null;
+  targetObjection: string | null;
+  angleDirection: string | null;
+  persona: string | null;
+  awarenessLevel: string | null;
+  platform: string | null;
+  duration: string | null;
+  language: string | null;
+  productionConstraints: string | null;
+  proofAssets: string[] | null;
+  notes: string | null;
+  status: string;
+  airtableRecordId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type GeneratedVideoBrief = {
+  id: string;
+  videoBriefRequestId: string | null;
+  briefTitle: string | null;
+  strategicHypothesis: string | null;
+  psychologyAngle: string | null;
+  contentType: string | null;
+  targetPersona: string | null;
+  awarenessLevel: string | null;
+  platform: string | null;
+  duration: string | null;
+  primaryHook: string | null;
+  hookVariationsText: string | null;
+  shotList: string | null;
+  bRollRequirements: string | null;
+  talentNotes: string | null;
+  locationRequirements: string | null;
+  propsList: string | null;
+  musicDirection: string | null;
+  soundDesign: string | null;
+  onScreenText: string | null;
+  visualDirection: string | null;
+  complianceReview: string | null;
+  brandVoiceLock: string | null;
+  productionNotes: string | null;
+  status: string | null;
+  airtableRecordId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
