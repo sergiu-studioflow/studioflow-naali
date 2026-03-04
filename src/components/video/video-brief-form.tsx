@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,11 +14,18 @@ import {
 } from "@/components/ui/select";
 import { Loader2, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { AppConfig } from "@/lib/types";
+
+// Exact values from Airtable "Video Brief Requests" table
+const CONTENT_TYPES = ["Product Demo", "Problem-Solution", "Discovery Dialogue", "Testimonial Retell", "Educational", "Hook Test"];
+const TARGET_OBJECTIONS = ["Price", "Skepticism", "Already Tried Supplements", "Dont Need Help", "Fear of Side Effects", "Not Natural Enough", "Wont Work For Me", "Doctor Hasnt Recommended", "Too Good To Be True", "Brand Trust"];
+const PERSONAS = ["Marie", "Sophie", "Nathalie", "Celine"];
+const AWARENESS_LEVELS = ["Unaware", "Problem Aware", "Solution Aware", "Product Aware", "Most Aware"];
+const PLATFORMS = ["Meta", "TikTok", "Instagram", "All Platforms"];
+const DURATIONS = ["15s", "30s", "45s", "60s"];
+const LANGUAGES = ["FR", "UK"];
+const PROOF_ASSETS = ["M6 Appearance", "Customer Reviews", "50K+ Customers", "Clinical Studies", "Founder Story"];
 
 export function VideoBriefForm() {
-  const [config, setConfig] = useState<AppConfig | null>(null);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,14 +46,6 @@ export function VideoBriefForm() {
   });
 
   const [proofAssets, setProofAssets] = useState<string[]>([]);
-
-  useEffect(() => {
-    fetch("/api/config")
-      .then((r) => r.json())
-      .then((cfg) => setConfig(cfg))
-      .catch(() => setError("Failed to load form options"))
-      .finally(() => setLoading(false));
-  }, []);
 
   const update = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -150,16 +149,6 @@ export function VideoBriefForm() {
     setSuccess(false);
   };
 
-  if (loading) {
-    return (
-      <Card>
-        <CardContent className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <Card>
       <CardContent className="p-6 sm:p-8">
@@ -204,7 +193,7 @@ export function VideoBriefForm() {
                   <SelectValue placeholder="" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(config?.contentTypes || []).map((t) => (
+                  {CONTENT_TYPES.map((t) => (
                     <SelectItem key={t} value={t}>
                       {t}
                     </SelectItem>
@@ -221,7 +210,7 @@ export function VideoBriefForm() {
                   <SelectValue placeholder="" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(config?.targetObjections || []).map((o) => (
+                  {TARGET_OBJECTIONS.map((o) => (
                     <SelectItem key={o} value={o}>
                       {o}
                     </SelectItem>
@@ -231,27 +220,41 @@ export function VideoBriefForm() {
             </div>
           </div>
 
-          {/* Persona + Awareness Level (text inputs) */}
+          {/* Persona + Awareness Level */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-foreground">
                 Persona
               </label>
-              <Input
-                value={form.persona}
-                onChange={(e) => update("persona", e.target.value)}
-                placeholder="e.g., Marie, Sophie"
-              />
+              <Select value={form.persona} onValueChange={(v) => update("persona", v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PERSONAS.map((p) => (
+                    <SelectItem key={p} value={p}>
+                      {p}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-foreground">
                 Awareness Level
               </label>
-              <Input
-                value={form.awarenessLevel}
-                onChange={(e) => update("awarenessLevel", e.target.value)}
-                placeholder="e.g., Problem Aware, Solution Aware"
-              />
+              <Select value={form.awarenessLevel} onValueChange={(v) => update("awarenessLevel", v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="" />
+                </SelectTrigger>
+                <SelectContent>
+                  {AWARENESS_LEVELS.map((a) => (
+                    <SelectItem key={a} value={a}>
+                      {a}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -261,7 +264,7 @@ export function VideoBriefForm() {
               Proof Assets
             </label>
             <div className="flex flex-wrap gap-1.5">
-              {(config?.proofAssetOptions || []).map((asset) => {
+              {PROOF_ASSETS.map((asset) => {
                 const isSelected = proofAssets.includes(asset);
                 return (
                   <button
@@ -324,7 +327,7 @@ export function VideoBriefForm() {
                   <SelectValue placeholder="" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(config?.platforms || []).map((p) => (
+                  {PLATFORMS.map((p) => (
                     <SelectItem key={p} value={p}>
                       {p}
                     </SelectItem>
@@ -341,7 +344,7 @@ export function VideoBriefForm() {
                   <SelectValue placeholder="" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(config?.durations || []).map((d) => (
+                  {DURATIONS.map((d) => (
                     <SelectItem key={d} value={d}>
                       {d}
                     </SelectItem>
@@ -358,7 +361,7 @@ export function VideoBriefForm() {
                   <SelectValue placeholder="" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(config?.languages || []).map((l) => (
+                  {LANGUAGES.map((l) => (
                     <SelectItem key={l} value={l}>
                       {l}
                     </SelectItem>
