@@ -44,7 +44,7 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
   }
 
   return (
-    <aside className="flex h-screen w-[260px] flex-col border-r border-border/60 bg-card/80 backdrop-blur-xl">
+    <aside className="flex h-screen w-[260px] flex-col border-r border-border bg-card/80 backdrop-blur-xl">
       {/* Brand Header */}
       <div className="flex h-[60px] items-center gap-3 px-6">
         <div
@@ -69,14 +69,14 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
               className={cn(
                 "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-all duration-150",
                 isActive
-                  ? "bg-foreground/[0.06] text-foreground"
-                  : "text-muted-foreground hover:bg-foreground/[0.04] hover:text-foreground"
+                  ? "bg-accent text-foreground"
+                  : "text-muted-foreground hover:bg-accent/60 hover:text-foreground"
               )}
             >
               {isActive && (
                 <div className="absolute left-0 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-full bg-foreground" />
               )}
-              <item.icon className={cn("h-4 w-4 flex-shrink-0", isActive ? "text-foreground" : "text-muted-foreground/70")} />
+              <item.icon className={cn("h-4 w-4 flex-shrink-0", isActive ? "text-foreground" : "text-muted-foreground")} />
               {item.name}
             </Link>
           );
@@ -84,28 +84,28 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
       </nav>
 
       {/* Footer */}
-      <div className="space-y-3 border-t border-border/60 p-4">
+      <div className="space-y-3 border-t border-border p-4">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/60">Theme</span>
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Theme</span>
           <ThemeToggle />
         </div>
 
         {userEmail && (
-          <p className="truncate text-[11px] text-muted-foreground/70">
+          <p className="truncate text-[11px] text-muted-foreground">
             {userEmail}
           </p>
         )}
         <div className="flex items-center gap-1">
           <Link
             href="/settings"
-            className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors hover:bg-foreground/[0.04] hover:text-foreground"
+            className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
           >
             <Settings className="h-3.5 w-3.5" />
             Settings
           </Link>
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors hover:bg-foreground/[0.04] hover:text-foreground"
+            className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
           >
             <LogOut className="h-3.5 w-3.5" />
           </button>

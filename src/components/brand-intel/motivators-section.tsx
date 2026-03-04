@@ -119,11 +119,11 @@ export function MotivatorsSection() {
 
             {loading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
               </div>
             ) : motivators.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 text-center">
-                <Zap className="h-10 w-10 text-gray-300 dark:text-gray-600" />
+                <Zap className="h-10 w-10 text-muted-foreground" />
                 <p className="mt-3 text-sm text-muted-foreground">
                   No motivators defined yet.
                 </p>
@@ -136,7 +136,7 @@ export function MotivatorsSection() {
               <div className="overflow-hidden rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+                    <tr className="border-b border-border bg-muted/50">
                       <th className="px-4 py-3 text-left font-medium text-muted-foreground w-20">
                         Code
                       </th>
@@ -184,7 +184,7 @@ export function MotivatorsSection() {
                               onClick={() => openEdit(motivator)}
                             >
                               <td className="px-4 py-3">
-                                <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                                <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground">
                                   {motivator.code}
                                 </span>
                               </td>
@@ -202,7 +202,7 @@ export function MotivatorsSection() {
                                   : "\u2014"}
                               </td>
                               <td className="px-4 py-3 text-right">
-                                <Pencil className="inline h-3.5 w-3.5 text-gray-400" />
+                                <Pencil className="inline h-3.5 w-3.5 text-muted-foreground" />
                               </td>
                             </tr>
                           ))}

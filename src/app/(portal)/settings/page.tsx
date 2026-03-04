@@ -39,8 +39,8 @@ export default async function SettingsPage() {
       </div>
 
       {/* User Profile */}
-      <div className="rounded-xl border border-border/60 bg-card shadow-card">
-        <div className="flex items-center gap-3 border-b border-border/60 px-5 py-4">
+      <div className="rounded-xl border border-border bg-card shadow-card">
+        <div className="flex items-center gap-3 border-b border-border px-5 py-4">
           <User className="h-4 w-4 text-muted-foreground" />
           <h2 className="text-sm font-semibold text-foreground">Profile</h2>
         </div>
@@ -88,7 +88,7 @@ export default async function SettingsPage() {
                   Active
                 </span>
               ) : (
-                <span className="text-gray-400">--</span>
+                <span className="text-muted-foreground">--</span>
               )}
             </p>
           </div>
@@ -96,8 +96,8 @@ export default async function SettingsPage() {
       </div>
 
       {/* Security */}
-      <div className="rounded-xl border border-border/60 bg-card shadow-card">
-        <div className="flex items-center gap-3 border-b border-border/60 px-5 py-4">
+      <div className="rounded-xl border border-border bg-card shadow-card">
+        <div className="flex items-center gap-3 border-b border-border px-5 py-4">
           <Shield className="h-4 w-4 text-muted-foreground" />
           <h2 className="text-sm font-semibold text-foreground">Security</h2>
         </div>
@@ -112,8 +112,8 @@ export default async function SettingsPage() {
       </div>
 
       {/* Notification Preferences Placeholder */}
-      <div className="rounded-xl border border-border/60 bg-card shadow-card">
-        <div className="flex items-center gap-3 border-b border-border/60 px-5 py-4">
+      <div className="rounded-xl border border-border bg-card shadow-card">
+        <div className="flex items-center gap-3 border-b border-border px-5 py-4">
           <Settings className="h-4 w-4 text-muted-foreground" />
           <h2 className="text-sm font-semibold text-foreground">Notifications</h2>
         </div>

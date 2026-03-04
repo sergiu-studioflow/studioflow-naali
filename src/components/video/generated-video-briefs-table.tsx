@@ -80,7 +80,7 @@ export function GeneratedVideoBriefsTable() {
     return (
       <Card>
         <CardContent className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
     );
@@ -119,7 +119,7 @@ export function GeneratedVideoBriefsTable() {
 
           {briefs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
-              <FileText className="h-10 w-10 text-gray-300 dark:text-gray-600" />
+              <FileText className="h-10 w-10 text-muted-foreground" />
               <p className="mt-3 text-sm text-muted-foreground">
                 No video briefs generated yet. Submit a brief to get started.
               </p>
@@ -128,7 +128,7 @@ export function GeneratedVideoBriefsTable() {
             <div className="overflow-x-auto rounded-lg border border-border">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+                  <tr className="border-b border-border bg-muted/50">
                     <th className="w-10 px-3 py-3">
                       <input
                         type="checkbox"
@@ -203,7 +203,7 @@ export function GeneratedVideoBriefsTable() {
                           {formatDate(brief.createdAt)}
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <Eye className="inline h-3.5 w-3.5 text-gray-400" />
+                          <Eye className="inline h-3.5 w-3.5 text-muted-foreground" />
                         </td>
                       </tr>
                     );

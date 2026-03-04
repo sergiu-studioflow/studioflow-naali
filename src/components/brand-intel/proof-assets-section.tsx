@@ -109,11 +109,11 @@ export function ProofAssetsSection() {
 
             {loading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
               </div>
             ) : assets.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 text-center">
-                <FileCheck className="h-10 w-10 text-gray-300 dark:text-gray-600" />
+                <FileCheck className="h-10 w-10 text-muted-foreground" />
                 <p className="mt-3 text-sm text-muted-foreground">
                   No proof assets defined yet.
                 </p>
@@ -126,7 +126,7 @@ export function ProofAssetsSection() {
               <div className="overflow-hidden rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+                    <tr className="border-b border-border bg-muted/50">
                       <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                         #
                       </th>
@@ -161,7 +161,7 @@ export function ProofAssetsSection() {
                             : "\u2014"}
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <Pencil className="inline h-3.5 w-3.5 text-gray-400" />
+                          <Pencil className="inline h-3.5 w-3.5 text-muted-foreground" />
                         </td>
                       </tr>
                     ))}

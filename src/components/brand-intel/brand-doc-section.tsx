@@ -142,7 +142,7 @@ export function BrandDocSection() {
           <CardContent>
             {loading ? (
               <div className="flex items-center justify-center py-16">
-                <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>
             ) : editing ? (
               <textarea
@@ -150,16 +150,16 @@ export function BrandDocSection() {
                 value={draft}
                 onChange={handleTextareaInput}
                 placeholder="Write your brand intelligence document here... (Markdown supported)"
-                className="w-full min-h-[500px] rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm font-mono leading-relaxed outline-none resize-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 dark:border-gray-700 dark:bg-gray-900 dark:focus:border-indigo-700 dark:focus:ring-indigo-900/30 placeholder:text-gray-400"
+                className="w-full min-h-[500px] rounded-lg border border-input bg-background p-4 text-sm font-mono leading-relaxed outline-none resize-none focus:border-foreground/20 focus:ring-2 focus:ring-foreground/5 placeholder:text-muted-foreground transition-all duration-150"
                 spellCheck
               />
             ) : intel?.rawContent ? (
-              <div className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed [&_strong]:text-gray-900 dark:[&_strong]:text-white [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-3 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_p]:text-gray-600 dark:[&_p]:text-gray-300 [&_p]:mb-3 [&_li]:text-gray-600 dark:[&_li]:text-gray-300 [&_code]:text-gray-800 dark:[&_code]:text-gray-200">
+              <div className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed [&_strong]:text-foreground [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-3 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_p]:text-secondary-foreground [&_p]:mb-3 [&_li]:text-secondary-foreground [&_code]:text-foreground">
                 <ReactMarkdown>{intel.rawContent}</ReactMarkdown>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <Brain className="h-10 w-10 text-gray-300 dark:text-gray-600" />
+                <Brain className="h-10 w-10 text-muted-foreground" />
                 <p className="mt-3 text-sm text-muted-foreground">
                   No brand intelligence document yet.
                 </p>

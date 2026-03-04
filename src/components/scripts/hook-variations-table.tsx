@@ -100,7 +100,7 @@ export function HookVariationsTable() {
     return (
       <Card>
         <CardContent className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
     );
@@ -139,7 +139,7 @@ export function HookVariationsTable() {
 
           {hooks.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
-              <Zap className="h-10 w-10 text-gray-300 dark:text-gray-600" />
+              <Zap className="h-10 w-10 text-muted-foreground" />
               <p className="mt-3 text-sm text-muted-foreground">
                 No hook variations yet. They are generated alongside scripts.
               </p>
@@ -148,7 +148,7 @@ export function HookVariationsTable() {
             <div className="overflow-x-auto rounded-lg border border-border">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+                  <tr className="border-b border-border bg-muted/50">
                     <th className="w-10 px-3 py-3">
                       <input
                         type="checkbox"
@@ -183,7 +183,7 @@ export function HookVariationsTable() {
                   {hooks.map((hook) => {
                     const rate = stopRateColor[hook.estimatedStopRate || ""] || {
                       bg: "bg-gray-50 dark:bg-gray-900",
-                      text: "text-gray-600 dark:text-gray-400",
+                      text: "text-muted-foreground",
                     };
                     return (
                       <tr
@@ -222,14 +222,14 @@ export function HookVariationsTable() {
                               {hook.estimatedStopRate}
                             </span>
                           ) : (
-                            <span className="text-gray-400">{"\u2014"}</span>
+                            <span className="text-muted-foreground">{"\u2014"}</span>
                           )}
                         </td>
                         <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
                           {formatDate(hook.createdAt)}
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <Eye className="inline h-3.5 w-3.5 text-gray-400" />
+                          <Eye className="inline h-3.5 w-3.5 text-muted-foreground" />
                         </td>
                       </tr>
                     );

@@ -73,13 +73,13 @@ export default async function DashboardPage() {
           <Link
             key={system.href}
             href={system.href}
-            className="animate-fade-up group relative rounded-xl border border-border/60 bg-card p-6 shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5"
+            className="animate-fade-up group relative rounded-xl border border-border bg-card p-6 shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5"
             style={{ animationDelay: `${(i + 1) * 80}ms` }}
           >
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-foreground/[0.05]">
-                  <system.icon className="h-5 w-5 text-foreground/70" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary">
+                  <system.icon className="h-5 w-5 text-foreground" />
                 </div>
                 <div className="flex-1">
                   <h2 className="text-[15px] font-semibold tracking-tight text-foreground">
@@ -90,10 +90,10 @@ export default async function DashboardPage() {
                   </p>
                 </div>
               </div>
-              <ArrowRight className="mt-0.5 h-4 w-4 text-muted-foreground/40 transition-all duration-200 group-hover:text-foreground group-hover:translate-x-0.5" />
+              <ArrowRight className="mt-0.5 h-4 w-4 text-muted-foreground transition-all duration-200 group-hover:text-foreground group-hover:translate-x-0.5" />
             </div>
             {system.stat != null && (
-              <div className="mt-5 flex items-baseline gap-2 border-t border-border/50 pt-4">
+              <div className="mt-5 flex items-baseline gap-2 border-t border-border pt-4">
                 <span className="text-2xl font-semibold tracking-tight text-foreground">
                   {system.stat}
                 </span>

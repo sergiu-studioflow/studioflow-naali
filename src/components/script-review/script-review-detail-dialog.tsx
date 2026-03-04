@@ -28,7 +28,7 @@ function getComplianceStyle(status: string): string {
   return complianceStyleMap[status.toLowerCase().replace(/ /g, "-")] ||
     complianceStyleMap[status.toLowerCase().replace(/ /g, "_")] ||
     complianceStyleMap[status.toLowerCase()] ||
-    "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+    "bg-secondary text-secondary-foreground";
 }
 
 export function ScriptReviewDetailDialog({
@@ -92,7 +92,7 @@ export function ScriptReviewDetailDialog({
                 "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
                 source === "auto"
                   ? "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-                  : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                  : "bg-secondary text-secondary-foreground"
               )}
             >
               {source}
