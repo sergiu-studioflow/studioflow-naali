@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw, Eye, Play } from "lucide-react";
+import { Loader2, RefreshCw, Eye, Play, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScriptReviewDetailDialog } from "./script-review-detail-dialog";
 import type { ScriptReview } from "@/lib/types";
@@ -18,6 +18,18 @@ const sourceStyles: Record<string, string> = {
   manual: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
   auto: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
 };
+
+const complianceStyles: Record<string, string> = {
+  compliant: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  non_compliant: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  needs_minor_fixes: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+};
+
+function getScoreColor(score: number): string {
+  if (score >= 80) return "text-emerald-600 dark:text-emerald-400";
+  if (score >= 60) return "text-amber-600 dark:text-amber-400";
+  return "text-red-600 dark:text-red-400";
+}
 
 export function ScriptReviewsTable() {
   const [reviews, setReviews] = useState<ScriptReview[]>([]);
@@ -125,7 +137,19 @@ export function ScriptReviewsTable() {
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Product
                     </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                      Persona
+                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                      Awareness
+                    </th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      Compliance
+                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      Score
+                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
                       Source
                     </th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
@@ -140,18 +164,69 @@ export function ScriptReviewsTable() {
                   {reviews.map((review) => {
                     const status = review.reviewStatus || "pending";
                     const source = review.sourceType || "manual";
+                    const isComplete = status === "review_complete";
                     return (
                       <tr
                         key={review.id}
-                        className="transition-colors hover:bg-muted/50"
+                        className="cursor-pointer transition-colors hover:bg-muted/50"
+                        onClick={() => openDetail(review)}
                       >
-                        <td className="px-4 py-3 font-medium text-foreground max-w-[250px] truncate">
+                        <td className="px-4 py-3 font-medium text-foreground max-w-[200px] truncate">
                           {review.scriptTitle}
                         </td>
                         <td className="px-4 py-3 text-muted-foreground">
                           {review.product || "\u2014"}
                         </td>
+                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell max-w-[120px] truncate">
+                          {review.targetPersona || "\u2014"}
+                        </td>
+                        <td className="px-4 py-3 hidden md:table-cell">
+                          {review.agencyAwarenessLevel != null || (isComplete && review.aiAwarenessLevel != null) ? (
+                            <div className="flex items-center gap-1">
+                              <span className="text-muted-foreground">
+                                {review.agencyAwarenessLevel ?? "\u2014"}
+                              </span>
+                              {isComplete && review.aiAwarenessLevel != null && (
+                                <>
+                                  <span className="text-muted-foreground">&rarr;</span>
+                                  <span className="font-medium text-foreground">
+                                    {review.aiAwarenessLevel}
+                                  </span>
+                                  {review.awarenessMismatch && (
+                                    <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground">{"\u2014"}</span>
+                          )}
+                        </td>
                         <td className="px-4 py-3">
+                          {isComplete && review.complianceStatus ? (
+                            <span
+                              className={cn(
+                                "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
+                                complianceStyles[review.complianceStatus] ||
+                                  "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                              )}
+                            >
+                              {review.complianceStatus.replace(/_/g, " ")}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">{"\u2014"}</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          {isComplete && review.overallScore != null ? (
+                            <span className={cn("font-semibold", getScoreColor(review.overallScore))}>
+                              {review.overallScore}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">{"\u2014"}</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 hidden md:table-cell">
                           <span
                             className={cn(
                               "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
@@ -172,7 +247,7 @@ export function ScriptReviewsTable() {
                           </span>
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <div className="flex items-center justify-end gap-2">
+                          <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                             {status === "pending" && (
                               <Button
                                 variant="outline"
