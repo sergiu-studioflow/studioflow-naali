@@ -7,7 +7,7 @@ import { z } from "zod/v4";
 export const dynamic = "force-dynamic";
 
 const reviewSchema = z.object({
-  reviewStatus: z.enum(["approved", "revision_needed", "in_production", "rejected"]),
+  reviewStatus: z.enum(["draft", "approved", "revision_needed", "in_production", "rejected"]),
   reviewNotes: z.string().optional(),
 });
 

@@ -42,6 +42,8 @@ export function getStatusColor(status: string): { bg: string; text: string; dot:
     case "error":
     case "rejected":
       return { bg: "bg-red-50 dark:bg-red-950", text: "text-red-700 dark:text-red-300", dot: "bg-red-500" };
+    case "in_production":
+      return { bg: "bg-purple-50 dark:bg-purple-950", text: "text-purple-700 dark:text-purple-300", dot: "bg-purple-500" };
     case "draft":
     case "pending":
       return { bg: "bg-gray-50 dark:bg-gray-900", text: "text-gray-700 dark:text-gray-300", dot: "bg-gray-400" };

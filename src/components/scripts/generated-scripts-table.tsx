@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,9 +10,16 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { FileText, Loader2, Eye, Zap } from "lucide-react";
+import { FileText, Loader2, Eye, Zap, ChevronDown } from "lucide-react";
 import { getStatusColor, formatDate } from "@/lib/utils";
 import type { ScriptWithHooks } from "@/lib/types";
+
+const reviewStatuses = [
+  { value: "draft", label: "Draft" },
+  { value: "approved", label: "Approved" },
+  { value: "in_production", label: "In Production" },
+  { value: "rejected", label: "Declined" },
+] as const;
 
 const stopRateColor: Record<string, { bg: string; text: string }> = {
   High: { bg: "bg-emerald-50 dark:bg-emerald-950", text: "text-emerald-700 dark:text-emerald-300" },
@@ -26,6 +33,8 @@ export function GeneratedScriptsTable() {
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<ScriptWithHooks | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [statusDropdown, setStatusDropdown] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/scripts")
@@ -35,9 +44,38 @@ export function GeneratedScriptsTable() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (!statusDropdown) return;
+    const handleClick = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setStatusDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [statusDropdown]);
+
   const openDetail = (script: ScriptWithHooks) => {
     setSelected(script);
     setDialogOpen(true);
+  };
+
+  const updateStatus = async (scriptId: string, newStatus: string) => {
+    setStatusDropdown(null);
+    const prev = scripts.map((s) => ({ ...s }));
+    setScripts((curr) =>
+      curr.map((s) => (s.id === scriptId ? { ...s, reviewStatus: newStatus } : s))
+    );
+    try {
+      const res = await fetch(`/api/scripts/${scriptId}/review`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviewStatus: newStatus }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setScripts(prev);
+    }
   };
 
   if (loading) {
@@ -127,12 +165,43 @@ export function GeneratedScriptsTable() {
                           {script.duration || "—"}
                         </td>
                         <td className="px-4 py-3">
-                          <span
-                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${status.bg} ${status.text}`}
-                          >
-                            <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
-                            {(script.reviewStatus || "draft").replace(/_/g, " ")}
-                          </span>
+                          <div className="relative" ref={statusDropdown === script.id ? dropdownRef : undefined}>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setStatusDropdown(statusDropdown === script.id ? null : script.id);
+                              }}
+                              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-opacity hover:opacity-80 ${status.bg} ${status.text}`}
+                            >
+                              <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
+                              {reviewStatuses.find((r) => r.value === (script.reviewStatus || "draft"))?.label || (script.reviewStatus || "draft").replace(/_/g, " ")}
+                              <ChevronDown className="h-3 w-3" />
+                            </button>
+                            {statusDropdown === script.id && (
+                              <div className="absolute left-0 top-full z-50 mt-1 w-40 rounded-lg border border-border bg-background py-1 shadow-lg">
+                                {reviewStatuses.map((rs) => {
+                                  const rsColor = getStatusColor(rs.value);
+                                  const isActive = (script.reviewStatus || "draft") === rs.value;
+                                  return (
+                                    <button
+                                      key={rs.value}
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (!isActive) updateStatus(script.id, rs.value);
+                                        else setStatusDropdown(null);
+                                      }}
+                                      className={`flex w-full items-center gap-2 px-3 py-1.5 text-xs transition-colors hover:bg-muted ${isActive ? "font-medium" : ""}`}
+                                    >
+                                      <span className={`h-1.5 w-1.5 rounded-full ${rsColor.dot}`} />
+                                      <span className={rsColor.text}>{rs.label}</span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
                         </td>
                         <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
                           {script.hookVariations.length > 0 ? (
