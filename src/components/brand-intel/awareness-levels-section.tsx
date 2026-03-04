@@ -156,7 +156,7 @@ export function AwarenessLevelsSection() {
                         onClick={() => openEdit(level)}
                       >
                         <td className="px-4 py-3">
-                          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/15 text-xs font-bold text-primary dark:bg-primary/10 dark:text-primary">
                             {level.level}
                           </span>
                         </td>

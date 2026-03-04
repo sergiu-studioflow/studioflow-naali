@@ -136,8 +136,8 @@ export function GeneratedScriptsTable() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
-                <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
+                <FileText className="h-4 w-4 text-primary" />
               </div>
               <CardTitle className="text-lg">Generated Scripts</CardTitle>
             </div>
@@ -214,7 +214,7 @@ export function GeneratedScriptsTable() {
                         key={script.id}
                         className={cn(
                           "cursor-pointer transition-colors hover:bg-muted/50",
-                          selectedIds.has(script.id) && "bg-emerald-50 dark:bg-emerald-900/10"
+                          selectedIds.has(script.id) && "bg-primary/5 dark:bg-primary/5"
                         )}
                         onClick={() => openDetail(script)}
                       >
@@ -279,7 +279,7 @@ export function GeneratedScriptsTable() {
                         </td>
                         <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
                           {script.hookVariations.length > 0 ? (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-orange-50 px-2 py-0.5 text-xs font-medium text-orange-700 dark:bg-orange-950 dark:text-orange-300">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary dark:bg-primary/10 dark:text-primary">
                               <Zap className="h-3 w-3" />
                               {script.hookVariations.length}
                             </span>
@@ -369,7 +369,7 @@ export function GeneratedScriptsTable() {
                               {hook.hookTitle || "Untitled Hook"}
                             </span>
                             {hook.hookType && (
-                              <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary dark:bg-primary/10 dark:text-primary">
                                 {hook.hookType}
                               </span>
                             )}

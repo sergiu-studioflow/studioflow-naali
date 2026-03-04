@@ -112,8 +112,8 @@ export function HookVariationsTable() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900/30">
-                <Zap className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
+                <Zap className="h-4 w-4 text-primary" />
               </div>
               <CardTitle className="text-lg">Hook Variations</CardTitle>
             </div>
@@ -190,7 +190,7 @@ export function HookVariationsTable() {
                         key={hook.id}
                         className={cn(
                           "cursor-pointer transition-colors hover:bg-muted/50",
-                          selectedIds.has(hook.id) && "bg-orange-50 dark:bg-orange-900/10"
+                          selectedIds.has(hook.id) && "bg-primary/5 dark:bg-primary/5"
                         )}
                         onClick={() => openDetail(hook)}
                       >

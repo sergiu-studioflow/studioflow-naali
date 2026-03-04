@@ -92,8 +92,8 @@ export function GeneratedVideoBriefsTable() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-100 dark:bg-cyan-900/30">
-                <FileText className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
+                <FileText className="h-4 w-4 text-primary" />
               </div>
               <CardTitle className="text-lg">Generated Video Briefs</CardTitle>
             </div>
@@ -167,7 +167,7 @@ export function GeneratedVideoBriefsTable() {
                         key={brief.id}
                         className={cn(
                           "cursor-pointer transition-colors hover:bg-muted/50",
-                          selectedIds.has(brief.id) && "bg-cyan-50 dark:bg-cyan-900/10"
+                          selectedIds.has(brief.id) && "bg-primary/5 dark:bg-primary/5"
                         )}
                         onClick={() => openDetail(brief)}
                       >

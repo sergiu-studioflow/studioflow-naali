@@ -153,8 +153,8 @@ export function ScriptReviewsTable() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30">
-                <Play className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
+                <Play className="h-4 w-4 text-primary" />
               </div>
               <CardTitle className="text-lg">All Script Reviews</CardTitle>
             </div>
@@ -248,7 +248,7 @@ export function ScriptReviewsTable() {
                         key={review.id}
                         className={cn(
                           "cursor-pointer transition-colors hover:bg-muted/50",
-                          selectedIds.has(review.id) && "bg-violet-50 dark:bg-violet-900/10"
+                          selectedIds.has(review.id) && "bg-primary/5 dark:bg-primary/5"
                         )}
                         onClick={() => openDetail(review)}
                       >
