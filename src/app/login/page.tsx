@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { Loader2, ArrowRight, Mail } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -32,30 +33,35 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
-      <div className="w-full max-w-sm space-y-6 rounded-xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="animate-fade-up w-full max-w-[380px] space-y-8 px-4">
+        {/* Logo / Brand */}
         <div className="text-center">
-          <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+          <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-foreground text-primary-foreground">
+            <span className="text-base font-bold">N</span>
+          </div>
+          <h1 className="mt-5 text-xl font-semibold tracking-tight text-foreground">
             Welcome back
           </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1.5 text-[13px] text-muted-foreground">
             Sign in to your creative studio
           </p>
         </div>
 
         {sent ? (
-          <div className="rounded-lg bg-emerald-50 p-4 text-center dark:bg-emerald-950">
-            <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+          <div className="animate-fade-in rounded-xl border border-emerald-200 bg-emerald-50 p-5 text-center dark:border-emerald-800 dark:bg-emerald-950">
+            <Mail className="mx-auto h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            <p className="mt-3 text-sm font-medium text-emerald-800 dark:text-emerald-200">
               Check your email
             </p>
-            <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400">
+            <p className="mt-1 text-[13px] text-emerald-600 dark:text-emerald-400">
               We sent a magic link to <strong>{email}</strong>
             </p>
           </div>
         ) : (
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label htmlFor="email" className="block text-[13px] font-medium text-foreground">
                 Email address
               </label>
               <input
@@ -65,20 +71,27 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
                 required
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                className="mt-1.5 block w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm text-foreground shadow-xs placeholder:text-muted-foreground/60 transition-all duration-150 focus:border-foreground/20 focus:outline-none focus:ring-2 focus:ring-foreground/5"
               />
             </div>
 
             {error && (
-              <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+              <p className="text-[13px] text-destructive">{error}</p>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background shadow-xs transition-all duration-150 hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
             >
-              {loading ? "Sending..." : "Send magic link"}
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  Send magic link
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </>
+              )}
             </button>
           </form>
         )}

@@ -4,13 +4,13 @@ export const dynamic = "force-dynamic";
 
 export default function VideoBriefsPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">
-          Video Brief System
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+          Video Briefs
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Create video brief requests and generate production-ready briefs with shot lists, talent notes, and compliance.
+        <p className="mt-2 text-[15px] text-muted-foreground">
+          Create video brief requests and generate production-ready briefs with shot lists and talent notes.
         </p>
       </div>
 

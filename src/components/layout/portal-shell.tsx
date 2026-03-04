@@ -19,7 +19,7 @@ export function PortalShell({ children, config, userEmail }: PortalShellProps) {
         userEmail={userEmail}
       />
       <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-7xl px-6 py-8">
+        <div className="mx-auto max-w-6xl px-8 py-10">
           {children}
         </div>
       </main>

@@ -1,6 +1,6 @@
 import { db, schema } from "@/lib/db";
 import { count } from "drizzle-orm";
-import { Brain, ClipboardCheck, Film, Video } from "lucide-react";
+import { Brain, ClipboardCheck, Film, Video, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -26,76 +26,82 @@ export default async function DashboardPage() {
 
   const systems = [
     {
-      name: "Brand Intelligence Layer",
+      name: "Brand Intelligence",
       href: "/brand-intelligence",
       icon: Brain,
       description: "Brand knowledge base, personas, and awareness framework",
-      color: "text-emerald-600",
-      bgColor: "bg-emerald-50 dark:bg-emerald-950",
     },
     {
-      name: "Script Review & Correction",
+      name: "Script Review",
       href: "/script-review",
       icon: ClipboardCheck,
       description: "AI-powered compliance review and script correction",
-      stat: `${stats.reviews} reviews`,
-      color: "text-amber-600",
-      bgColor: "bg-amber-50 dark:bg-amber-950",
+      stat: stats.reviews,
+      statLabel: "reviews",
     },
     {
       name: "Script Generation",
       href: "/script-generation",
       icon: Film,
       description: "Content briefs, AI scripts, and hook variations",
-      stat: `${stats.briefs} briefs, ${stats.scripts} scripts`,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50 dark:bg-blue-950",
+      stat: stats.scripts,
+      statLabel: "scripts",
     },
     {
-      name: "Video Brief System",
+      name: "Video Briefs",
       href: "/video-briefs",
       icon: Video,
       description: "Production-ready video briefs with shot lists and talent notes",
-      stat: `${stats.videoBriefs} briefs`,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50 dark:bg-purple-950",
+      stat: stats.videoBriefs,
+      statLabel: "briefs",
     },
   ];
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Naali Creative Studio — your AI-powered creative production systems
+    <div className="space-y-10">
+      <div className="animate-fade-up">
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+          Dashboard
+        </h1>
+        <p className="mt-2 text-[15px] text-muted-foreground">
+          Your AI-powered creative production systems
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {systems.map((system) => (
+        {systems.map((system, i) => (
           <Link
             key={system.href}
             href={system.href}
-            className="group rounded-lg border border-gray-200 bg-white p-6 transition-all hover:border-border hover:shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-700"
+            className="animate-fade-up group relative rounded-xl border border-border/60 bg-card p-6 shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5"
+            style={{ animationDelay: `${(i + 1) * 80}ms` }}
           >
-            <div className="flex items-start gap-4">
-              <div className={`rounded-lg p-2.5 ${system.bgColor}`}>
-                <system.icon className={`h-5 w-5 ${system.color}`} />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-sm font-semibold text-gray-900 group-hover:text-gray-700 dark:text-white dark:group-hover:text-gray-200">
-                  {system.name}
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {system.description}
-                </p>
-                {system.stat && (
-                  <p className="mt-2 text-xs font-medium text-gray-400 dark:text-gray-500">
-                    {system.stat}
+            <div className="flex items-start justify-between">
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-foreground/[0.05]">
+                  <system.icon className="h-5 w-5 text-foreground/70" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-[15px] font-semibold tracking-tight text-foreground">
+                    {system.name}
+                  </h2>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
+                    {system.description}
                   </p>
-                )}
+                </div>
               </div>
+              <ArrowRight className="mt-0.5 h-4 w-4 text-muted-foreground/40 transition-all duration-200 group-hover:text-foreground group-hover:translate-x-0.5" />
             </div>
+            {system.stat != null && (
+              <div className="mt-5 flex items-baseline gap-2 border-t border-border/50 pt-4">
+                <span className="text-2xl font-semibold tracking-tight text-foreground">
+                  {system.stat}
+                </span>
+                <span className="text-[13px] text-muted-foreground">
+                  {system.statLabel}
+                </span>
+              </div>
+            )}
           </Link>
         ))}
       </div>
