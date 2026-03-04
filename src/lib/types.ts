@@ -113,6 +113,10 @@ export type GeneratedScript = {
   updatedAt: Date;
 };
 
+export type ScriptWithHooks = GeneratedScript & {
+  hookVariations: HookVariation[];
+};
+
 export type HookVariation = {
   id: string;
   scriptId: string;

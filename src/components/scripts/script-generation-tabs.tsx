@@ -3,8 +3,7 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ScriptForm } from "./script-form";
 import { GeneratedScriptsTable } from "./generated-scripts-table";
-import { HookVariationsTable } from "./hook-variations-table";
-import { Film, FileText, Zap } from "lucide-react";
+import { Film, FileText } from "lucide-react";
 
 export function ScriptGenerationTabs() {
   return (
@@ -18,10 +17,6 @@ export function ScriptGenerationTabs() {
           <FileText className="h-4 w-4" />
           Generated Scripts
         </TabsTrigger>
-        <TabsTrigger value="hooks" className="gap-2">
-          <Zap className="h-4 w-4" />
-          Hook Variations
-        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="form">
@@ -30,10 +25,6 @@ export function ScriptGenerationTabs() {
 
       <TabsContent value="scripts">
         <GeneratedScriptsTable />
-      </TabsContent>
-
-      <TabsContent value="hooks">
-        <HookVariationsTable />
       </TabsContent>
     </Tabs>
   );

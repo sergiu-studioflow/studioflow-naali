@@ -10,15 +10,21 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { FileText, Loader2, Eye } from "lucide-react";
+import { FileText, Loader2, Eye, Zap } from "lucide-react";
 import { getStatusColor, formatDate } from "@/lib/utils";
-import type { GeneratedScript } from "@/lib/types";
+import type { ScriptWithHooks } from "@/lib/types";
+
+const stopRateColor: Record<string, { bg: string; text: string }> = {
+  High: { bg: "bg-emerald-50 dark:bg-emerald-950", text: "text-emerald-700 dark:text-emerald-300" },
+  Medium: { bg: "bg-amber-50 dark:bg-amber-950", text: "text-amber-700 dark:text-amber-300" },
+  Low: { bg: "bg-red-50 dark:bg-red-950", text: "text-red-700 dark:text-red-300" },
+};
 
 export function GeneratedScriptsTable() {
-  const [scripts, setScripts] = useState<GeneratedScript[]>([]);
+  const [scripts, setScripts] = useState<ScriptWithHooks[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selected, setSelected] = useState<GeneratedScript | null>(null);
+  const [selected, setSelected] = useState<ScriptWithHooks | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -29,7 +35,7 @@ export function GeneratedScriptsTable() {
       .finally(() => setLoading(false));
   }, []);
 
-  const openDetail = (script: GeneratedScript) => {
+  const openDetail = (script: ScriptWithHooks) => {
     setSelected(script);
     setDialogOpen(true);
   };
@@ -89,6 +95,9 @@ export function GeneratedScriptsTable() {
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Review Status
                     </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                      Hooks
+                    </th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Created
                     </th>
@@ -124,6 +133,16 @@ export function GeneratedScriptsTable() {
                             <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
                             {(script.reviewStatus || "draft").replace(/_/g, " ")}
                           </span>
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
+                          {script.hookVariations.length > 0 ? (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-orange-50 px-2 py-0.5 text-xs font-medium text-orange-700 dark:bg-orange-950 dark:text-orange-300">
+                              <Zap className="h-3 w-3" />
+                              {script.hookVariations.length}
+                            </span>
+                          ) : (
+                            <span className="text-gray-400">—</span>
+                          )}
                         </td>
                         <td className="px-4 py-3 text-muted-foreground">
                           {formatDate(script.createdAt)}
@@ -181,6 +200,69 @@ export function GeneratedScriptsTable() {
               )}
               {selected.reviewNotes && (
                 <Section title="Review Notes" content={selected.reviewNotes} />
+              )}
+
+              {selected.hookVariations.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Zap className="h-4 w-4 text-orange-500" />
+                    <h4 className="text-sm font-medium text-foreground">
+                      Hook Variations ({selected.hookVariations.length})
+                    </h4>
+                  </div>
+                  <div className="space-y-3">
+                    {selected.hookVariations.map((hook) => {
+                      const rate = stopRateColor[hook.estimatedStopRate || ""] || {
+                        bg: "bg-gray-50 dark:bg-gray-900",
+                        text: "text-gray-600 dark:text-gray-400",
+                      };
+                      return (
+                        <div
+                          key={hook.id}
+                          className="rounded-lg border border-border p-4 space-y-2"
+                        >
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-medium text-foreground">
+                              {hook.hookTitle || "Untitled Hook"}
+                            </span>
+                            {hook.hookType && (
+                              <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                                {hook.hookType}
+                              </span>
+                            )}
+                            {hook.estimatedStopRate && (
+                              <span
+                                className={`rounded-full px-2 py-0.5 text-xs font-medium ${rate.bg} ${rate.text}`}
+                              >
+                                {hook.estimatedStopRate}
+                              </span>
+                            )}
+                            {hook.platformBestFit && (
+                              <span className="text-xs text-muted-foreground">
+                                {hook.platformBestFit}
+                              </span>
+                            )}
+                          </div>
+                          {hook.hookText && (
+                            <div className="whitespace-pre-wrap rounded-md bg-muted p-3 text-sm text-secondary-foreground">
+                              {hook.hookText}
+                            </div>
+                          )}
+                          {hook.visualDescription && (
+                            <div className="text-xs text-muted-foreground">
+                              <span className="font-medium">Visual:</span> {hook.visualDescription}
+                            </div>
+                          )}
+                          {hook.whyItWorks && (
+                            <div className="text-xs text-muted-foreground">
+                              <span className="font-medium">Why it works:</span> {hook.whyItWorks}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               )}
             </div>
           )}
