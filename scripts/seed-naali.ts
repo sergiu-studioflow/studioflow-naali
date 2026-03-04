@@ -20,7 +20,7 @@ async function main() {
       '#2D5A3D',
       'Naali Creative Studio',
       '{"script_generation": true, "script_review": true, "brand_intel_editing": true, "winners_library": true, "hook_variations": true}'::jsonb,
-      '{"script_generation": {"webhook_path": "generate-naali-script", "n8n_base_url": "https://studio-flow.app.n8n.cloud"}}'::jsonb,
+      '{"script_generation": {"webhook_path": "generate-naali-script-v2", "n8n_base_url": "https://studio-flow.app.n8n.cloud"}}'::jsonb,
       '["UGC", "Founder-led", "Testimonial", "Podcast/Interview", "Native", "VSL"]'::jsonb,
       '["Meta", "TikTok", "Instagram", "All Platforms"]'::jsonb,
       '["15s", "30s", "45s", "60s"]'::jsonb,
