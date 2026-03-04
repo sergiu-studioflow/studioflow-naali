@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 @layer base {
-  /* ─── Light Theme — BDPay-inspired with blue accents ─── */
+  /* ─── Light Theme — StudioFlow palette (dark/neon-green/white) ─── */
   :root {
-    --background: 220 20% 96%;
-    --foreground: 222 20% 12%;
+    --background: 0 0% 96%;
+    --foreground: 0 0% 5%;
     --card: 0 0% 100%;
-    --card-foreground: 222 20% 12%;
+    --card-foreground: 0 0% 5%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 20% 12%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 15% 93%;
-    --secondary-foreground: 222 20% 12%;
-    --muted: 220 15% 93%;
-    --muted-foreground: 220 10% 40%;
-    --accent: 220 15% 93%;
-    --accent-foreground: 222 20% 12%;
+    --popover-foreground: 0 0% 5%;
+    --primary: 79 100% 38%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 93%;
+    --secondary-foreground: 0 0% 5%;
+    --muted: 0 0% 93%;
+    --muted-foreground: 0 0% 35%;
+    --accent: 0 0% 93%;
+    --accent-foreground: 0 0% 5%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 15% 90%;
-    --input: 220 15% 90%;
-    --ring: 221 83% 53%;
+    --border: 0 0% 89%;
+    --input: 0 0% 89%;
+    --ring: 79 100% 38%;
     --radius: 0.75rem;
 
     /* Layered shadows */
@@ -31,54 +31,54 @@
     --shadow-elevated: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 8px 16px rgba(0, 0, 0, 0.07), 0 32px 64px rgba(0, 0, 0, 0.09);
     --shadow-dialog: 0 24px 80px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.05);
 
-    /* Brand accent */
-    --brand: 221 83% 53%;
-    --brand-foreground: 0 0% 100%;
+    /* Brand accent — neon green #b2ff00 */
+    --brand: 79 100% 50%;
+    --brand-foreground: 0 0% 0%;
 
-    /* Sidebar — solid deep blue */
-    --sidebar: 225 70% 15%;
+    /* Sidebar — StudioFlow dark (always dark, both modes) */
+    --sidebar: 0 0% 5%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-muted: 220 40% 72%;
-    --sidebar-active: 221 83% 53%;
+    --sidebar-muted: 0 0% 45%;
+    --sidebar-active: 79 100% 50%;
   }
 
-  /* ─── Dark Theme — deep blue-black ─── */
+  /* ─── Dark Theme — StudioFlow exact (#0d0d0d, #121212, #242424, #b2ff00) ─── */
   .dark {
-    --background: 225 30% 7%;
-    --foreground: 220 15% 93%;
-    --card: 225 20% 11%;
-    --card-foreground: 220 15% 93%;
-    --popover: 225 20% 11%;
-    --popover-foreground: 220 15% 93%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 225 20% 15%;
-    --secondary-foreground: 220 15% 93%;
-    --muted: 225 20% 15%;
-    --muted-foreground: 220 15% 55%;
-    --accent: 225 20% 17%;
-    --accent-foreground: 220 15% 93%;
+    --background: 0 0% 5%;
+    --foreground: 0 0% 90%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 90%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 90%;
+    --primary: 79 100% 50%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 9%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 0 0% 9%;
+    --muted-foreground: 0 0% 35%;
+    --accent: 0 0% 11%;
+    --accent-foreground: 0 0% 90%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 225 20% 18%;
-    --input: 225 20% 18%;
-    --ring: 217 91% 60%;
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 79 100% 50%;
     --radius: 0.75rem;
 
-    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
-    --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 2px 4px rgba(0, 0, 0, 0.2), 0 12px 24px rgba(0, 0, 0, 0.2);
-    --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 4px 8px rgba(0, 0, 0, 0.3), 0 24px 48px rgba(0, 0, 0, 0.3);
-    --shadow-elevated: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 16px rgba(0, 0, 0, 0.3), 0 32px 64px rgba(0, 0, 0, 0.4);
-    --shadow-dialog: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 24px rgba(0, 0, 0, 0.25);
+    --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 4px 8px rgba(0, 0, 0, 0.35), 0 24px 48px rgba(0, 0, 0, 0.3);
+    --shadow-elevated: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 16px rgba(0, 0, 0, 0.35), 0 32px 64px rgba(0, 0, 0, 0.4);
+    --shadow-dialog: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
 
-    --brand: 217 91% 60%;
-    --brand-foreground: 0 0% 100%;
+    --brand: 79 100% 50%;
+    --brand-foreground: 0 0% 0%;
 
-    /* Sidebar — darker blue-black */
-    --sidebar: 225 50% 10%;
+    /* Sidebar — matches dark bg */
+    --sidebar: 0 0% 4%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-muted: 220 30% 60%;
-    --sidebar-active: 217 91% 60%;
+    --sidebar-muted: 0 0% 45%;
+    --sidebar-active: 79 100% 50%;
   }
 }
 

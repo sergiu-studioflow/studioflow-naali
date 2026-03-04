@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { Loader2, ArrowRight, Mail } from "lucide-react";
 
@@ -37,10 +38,10 @@ export default function LoginPage() {
       <div className="animate-fade-up w-full max-w-[380px] space-y-8 px-4">
         {/* Logo / Brand */}
         <div className="text-center">
-          <div className="mx-auto flex items-center justify-center gap-2">
-            <span className="text-lg font-bold tracking-tight text-foreground">StudioFlow</span>
+          <div className="mx-auto flex items-center justify-center gap-3">
+            <Image src="/studioflow-logo.png" alt="StudioFlow" width={40} height={40} className="rounded-xl" />
             <span className="text-sm font-light text-muted-foreground">×</span>
-            <span className="text-lg font-bold tracking-tight text-foreground">Naali</span>
+            <Image src="/naali-logo.png" alt="Naali" width={40} height={40} className="rounded-xl" />
           </div>
           <h1 className="mt-5 text-xl font-semibold tracking-tight text-foreground">
             Welcome back

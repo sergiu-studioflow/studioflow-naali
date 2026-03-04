@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -46,15 +47,23 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
   return (
     <aside className="flex h-screen w-[260px] flex-col bg-sidebar">
       {/* Logo Section — StudioFlow × Naali */}
-      <div className="flex h-[72px] items-center px-6">
-        <div className="flex items-center gap-2">
-          <span className="text-[15px] font-bold tracking-tight text-sidebar-foreground">
-            StudioFlow
-          </span>
+      <div className="flex h-[72px] items-center px-5">
+        <div className="flex items-center gap-2.5">
+          <Image
+            src="/studioflow-logo.png"
+            alt="StudioFlow"
+            width={32}
+            height={32}
+            className="rounded-lg"
+          />
           <span className="text-[13px] font-light text-sidebar-muted">×</span>
-          <span className="text-[15px] font-bold tracking-tight text-sidebar-foreground">
-            {brandName}
-          </span>
+          <Image
+            src="/naali-logo.png"
+            alt="Naali"
+            width={32}
+            height={32}
+            className="rounded-lg"
+          />
         </div>
       </div>
 
@@ -71,7 +80,7 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
                 isActive
-                  ? "bg-sidebar-active text-white shadow-xs"
+                  ? "bg-sidebar-active text-black shadow-xs"
                   : "text-sidebar-muted hover:text-sidebar-foreground hover:bg-white/10"
               )}
             >
