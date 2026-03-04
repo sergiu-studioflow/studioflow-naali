@@ -5,7 +5,11 @@ import { useEffect, useState } from "react";
 import { Sun, Moon, Monitor } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function ThemeToggle() {
+type ThemeToggleProps = {
+  variant?: "default" | "sidebar";
+};
+
+export function ThemeToggle({ variant = "default" }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -13,7 +17,10 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <div className="flex items-center gap-0.5 rounded-lg bg-secondary p-0.5">
+      <div className={cn(
+        "flex items-center gap-0.5 rounded-lg p-0.5",
+        variant === "sidebar" ? "bg-white/10" : "bg-secondary"
+      )}>
         <div className="h-6 w-6" />
         <div className="h-6 w-6" />
         <div className="h-6 w-6" />
@@ -28,16 +35,23 @@ export function ThemeToggle() {
   ];
 
   return (
-    <div className="flex items-center gap-0.5 rounded-lg bg-secondary p-0.5">
+    <div className={cn(
+      "flex items-center gap-0.5 rounded-lg p-0.5",
+      variant === "sidebar" ? "bg-white/10" : "bg-secondary"
+    )}>
       {options.map(({ value, icon: Icon, label }) => (
         <button
           key={value}
           onClick={() => setTheme(value)}
           className={cn(
             "flex h-6 w-6 items-center justify-center rounded-md transition-all duration-150",
-            theme === value
-              ? "bg-background text-foreground shadow-xs"
-              : "text-muted-foreground hover:text-foreground"
+            variant === "sidebar"
+              ? theme === value
+                ? "bg-white/20 text-sidebar-foreground shadow-xs"
+                : "text-sidebar-muted hover:text-sidebar-foreground"
+              : theme === value
+                ? "bg-background text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
           )}
           title={label}
         >

@@ -1,62 +1,68 @@
 @import "tailwindcss";
 
 @layer base {
-  /* ─── Light Theme — Apple/Stripe refined ─── */
+  /* ─── Light Theme — BDPay-inspired with blue accents ─── */
   :root {
-    --background: 0 0% 98.5%;
-    --foreground: 0 0% 9%;
+    --background: 220 20% 96%;
+    --foreground: 222 20% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
+    --card-foreground: 222 20% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
-    --primary: 0 0% 9%;
+    --popover-foreground: 222 20% 12%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 9%;
+    --secondary: 220 15% 93%;
+    --secondary-foreground: 222 20% 12%;
+    --muted: 220 15% 93%;
+    --muted-foreground: 220 10% 40%;
+    --accent: 220 15% 93%;
+    --accent-foreground: 222 20% 12%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 92%;
-    --input: 0 0% 92%;
-    --ring: 0 0% 9%;
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 221 83% 53%;
     --radius: 0.75rem;
 
-    /* Stripe-style layered shadows */
-    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-    --shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.04), 0 12px 24px rgba(0, 0, 0, 0.04);
-    --shadow-card-hover: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 4px 8px rgba(0, 0, 0, 0.06), 0 24px 48px rgba(0, 0, 0, 0.06);
-    --shadow-elevated: 0 0 0 1px rgba(0, 0, 0, 0.03), 0 8px 16px rgba(0, 0, 0, 0.06), 0 32px 64px rgba(0, 0, 0, 0.08);
-    --shadow-dialog: 0 24px 80px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    /* Layered shadows */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.05), 0 12px 24px rgba(0, 0, 0, 0.05);
+    --shadow-card-hover: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.07), 0 24px 48px rgba(0, 0, 0, 0.07);
+    --shadow-elevated: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 8px 16px rgba(0, 0, 0, 0.07), 0 32px 64px rgba(0, 0, 0, 0.09);
+    --shadow-dialog: 0 24px 80px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.05);
 
-    /* Brand accent — a refined blue */
+    /* Brand accent */
     --brand: 221 83% 53%;
     --brand-foreground: 0 0% 100%;
+
+    /* Sidebar — solid deep blue */
+    --sidebar: 225 70% 15%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-muted: 220 40% 72%;
+    --sidebar-active: 221 83% 53%;
   }
 
-  /* ─── Dark Theme — deep, rich, Apple-dark ─── */
+  /* ─── Dark Theme — deep blue-black ─── */
   .dark {
-    --background: 0 0% 5.5%;
-    --foreground: 0 0% 93%;
-    --card: 0 0% 8.5%;
-    --card-foreground: 0 0% 93%;
-    --popover: 0 0% 8.5%;
-    --popover-foreground: 0 0% 93%;
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 93%;
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 55%;
-    --accent: 0 0% 14%;
-    --accent-foreground: 0 0% 93%;
+    --background: 225 30% 7%;
+    --foreground: 220 15% 93%;
+    --card: 225 20% 11%;
+    --card-foreground: 220 15% 93%;
+    --popover: 225 20% 11%;
+    --popover-foreground: 220 15% 93%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 225 20% 15%;
+    --secondary-foreground: 220 15% 93%;
+    --muted: 225 20% 15%;
+    --muted-foreground: 220 15% 55%;
+    --accent: 225 20% 17%;
+    --accent-foreground: 220 15% 93%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 100%;
+    --border: 225 20% 18%;
+    --input: 225 20% 18%;
+    --ring: 217 91% 60%;
     --radius: 0.75rem;
 
     --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
@@ -67,6 +73,12 @@
 
     --brand: 217 91% 60%;
     --brand-foreground: 0 0% 100%;
+
+    /* Sidebar — darker blue-black */
+    --sidebar: 225 50% 10%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-muted: 220 30% 60%;
+    --sidebar-active: 217 91% 60%;
   }
 }
 
@@ -92,6 +104,10 @@
   --color-ring: hsl(var(--ring));
   --color-brand: hsl(var(--brand));
   --color-brand-foreground: hsl(var(--brand-foreground));
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-muted: hsl(var(--sidebar-muted));
+  --color-sidebar-active: hsl(var(--sidebar-active));
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

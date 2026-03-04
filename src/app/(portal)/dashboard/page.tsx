@@ -60,10 +60,10 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-10">
       <div className="animate-fade-up">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">
           Dashboard
         </h1>
-        <p className="mt-2 text-[15px] text-muted-foreground">
+        <p className="mt-2 text-base text-muted-foreground">
           Your AI-powered creative production systems
         </p>
       </div>
@@ -78,14 +78,14 @@ export default async function DashboardPage() {
           >
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary">
-                  <system.icon className="h-5 w-5 text-foreground" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                  <system.icon className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-[15px] font-semibold tracking-tight text-foreground">
+                  <h2 className="text-base font-semibold tracking-tight text-foreground">
                     {system.name}
                   </h2>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                     {system.description}
                   </p>
                 </div>
@@ -94,10 +94,10 @@ export default async function DashboardPage() {
             </div>
             {system.stat != null && (
               <div className="mt-5 flex items-baseline gap-2 border-t border-border pt-4">
-                <span className="text-2xl font-semibold tracking-tight text-foreground">
+                <span className="text-3xl font-bold tracking-tight text-primary">
                   {system.stat}
                 </span>
-                <span className="text-[13px] text-muted-foreground">
+                <span className="text-sm text-muted-foreground">
                   {system.statLabel}
                 </span>
               </div>
