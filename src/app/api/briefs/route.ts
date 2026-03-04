@@ -43,6 +43,7 @@ const createBriefSchema = z.object({
   language: z.string().optional(),
   toneOverride: z.string().optional(),
   notes: z.string().optional(),
+  motivator: z.string().optional(),
   winnerIds: z.array(z.string().uuid()).optional(),
 });
 

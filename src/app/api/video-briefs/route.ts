@@ -44,6 +44,7 @@ const createVideoBriefSchema = z.object({
   productionConstraints: z.string().optional(),
   proofAssets: z.array(z.string()).optional(),
   notes: z.string().optional(),
+  motivator: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {

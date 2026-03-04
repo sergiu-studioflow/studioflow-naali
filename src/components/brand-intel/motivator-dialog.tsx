@@ -13,38 +13,35 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Trash2 } from "lucide-react";
-import type { Persona } from "@/lib/types";
+import type { Motivator } from "@/lib/types";
 
-interface PersonaDialogProps {
-  persona: Persona | null;
+interface MotivatorDialogProps {
+  motivator: Motivator | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (data: Partial<Persona>) => Promise<void>;
+  onSave: (data: Partial<Motivator>) => Promise<void>;
   onDelete?: (id: string) => Promise<void>;
 }
 
-export function PersonaDialog({
-  persona,
+export function MotivatorDialog({
+  motivator,
   open,
   onOpenChange,
   onSave,
   onDelete,
-}: PersonaDialogProps) {
+}: MotivatorDialogProps) {
   const [form, setForm] = useState({
-    name: "",
-    label: "",
-    demographics: "",
-    situation: "",
-    painPoints: "",
-    whatTheyTried: "",
-    whatTheyWant: "",
-    objections: "",
-    conversionTriggers: "",
-    messagingNotes: "",
-    complianceNote: "",
-    estimatedShare: "",
-    dominantAngles: "",
+    code: "",
     sortOrder: 0,
+    mainAngle: "",
+    mainAngleEstimatedShare: "",
+    mainAngleDescription: "",
+    subAngle: "",
+    painPointRelief: "",
+    coreMotivation: "",
+    typicalTriggers: "",
+    representativeQuotes: "",
+    emotionalTone: "",
   });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -54,29 +51,34 @@ export function PersonaDialog({
   useEffect(() => {
     if (open) {
       setForm({
-        name: persona?.name || "",
-        label: persona?.label || "",
-        demographics: persona?.demographics || "",
-        situation: persona?.situation || "",
-        painPoints: persona?.painPoints || "",
-        whatTheyTried: persona?.whatTheyTried || "",
-        whatTheyWant: persona?.whatTheyWant || "",
-        objections: persona?.objections || "",
-        conversionTriggers: persona?.conversionTriggers || "",
-        messagingNotes: persona?.messagingNotes || "",
-        complianceNote: persona?.complianceNote || "",
-        estimatedShare: persona?.estimatedShare || "",
-        dominantAngles: persona?.dominantAngles || "",
-        sortOrder: persona?.sortOrder || 0,
+        code: motivator?.code || "",
+        sortOrder: motivator?.sortOrder || 0,
+        mainAngle: motivator?.mainAngle || "",
+        mainAngleEstimatedShare: motivator?.mainAngleEstimatedShare || "",
+        mainAngleDescription: motivator?.mainAngleDescription || "",
+        subAngle: motivator?.subAngle || "",
+        painPointRelief: motivator?.painPointRelief || "",
+        coreMotivation: motivator?.coreMotivation || "",
+        typicalTriggers: motivator?.typicalTriggers || "",
+        representativeQuotes: motivator?.representativeQuotes || "",
+        emotionalTone: motivator?.emotionalTone || "",
       });
       setError(null);
       setConfirmDelete(false);
     }
-  }, [open, persona]);
+  }, [open, motivator]);
 
   const handleSave = async () => {
-    if (!form.name.trim()) {
-      setError("Name is required");
+    if (!form.code.trim()) {
+      setError("Code is required");
+      return;
+    }
+    if (!form.mainAngle.trim()) {
+      setError("Main Angle is required");
+      return;
+    }
+    if (!form.subAngle.trim()) {
+      setError("Sub-Angle Name is required");
       return;
     }
     setSaving(true);
@@ -92,11 +94,11 @@ export function PersonaDialog({
   };
 
   const handleDelete = async () => {
-    if (!persona?.id || !onDelete) return;
+    if (!motivator?.id || !onDelete) return;
     setDeleting(true);
     setError(null);
     try {
-      await onDelete(persona.id);
+      await onDelete(motivator.id);
       onOpenChange(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete");
@@ -112,11 +114,11 @@ export function PersonaDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{persona ? "Edit Persona" : "New Persona"}</DialogTitle>
+          <DialogTitle>{motivator ? "Edit Motivator" : "New Motivator"}</DialogTitle>
           <DialogDescription>
-            {persona
-              ? "Update the persona details below."
-              : "Fill in the details to create a new persona."}
+            {motivator
+              ? "Update the motivator details below."
+              : "Fill in the details to create a new motivator."}
           </DialogDescription>
         </DialogHeader>
 
@@ -130,35 +132,12 @@ export function PersonaDialog({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-foreground">
-                Name *
+                Code *
               </label>
               <Input
-                value={form.name}
-                onChange={(e) => update("name", e.target.value)}
-                placeholder="e.g. Marie"
-              />
-            </div>
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
-                Label / Title
-              </label>
-              <Input
-                value={form.label}
-                onChange={(e) => update("label", e.target.value)}
-                placeholder="e.g. The Overwhelmed Mother"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
-                Demographics
-              </label>
-              <Input
-                value={form.demographics}
-                onChange={(e) => update("demographics", e.target.value)}
-                placeholder="e.g. 38, part-time HR, suburban Lyon"
+                value={form.code}
+                onChange={(e) => update("code", e.target.value)}
+                placeholder="e.g. 1A"
               />
             </div>
             <div>
@@ -173,129 +152,112 @@ export function PersonaDialog({
             </div>
           </div>
 
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
-              Situation
-            </label>
-            <Textarea
-              value={form.situation}
-              onChange={(e) => update("situation", e.target.value)}
-              placeholder="Describe this persona's life situation..."
-              rows={3}
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
-              Pain Points
-            </label>
-            <Textarea
-              value={form.painPoints}
-              onChange={(e) => update("painPoints", e.target.value)}
-              placeholder="What problems does this persona face?"
-              rows={3}
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
-              What They&apos;ve Tried
-            </label>
-            <Textarea
-              value={form.whatTheyTried}
-              onChange={(e) => update("whatTheyTried", e.target.value)}
-              placeholder="What solutions have they attempted?"
-              rows={2}
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
-              What They Want
-            </label>
-            <Textarea
-              value={form.whatTheyWant}
-              onChange={(e) => update("whatTheyWant", e.target.value)}
-              placeholder="What outcome are they seeking?"
-              rows={2}
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
-              Objections
-            </label>
-            <Textarea
-              value={form.objections}
-              onChange={(e) => update("objections", e.target.value)}
-              placeholder="Common objections or hesitations..."
-              rows={2}
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
-              Conversion Triggers
-            </label>
-            <Textarea
-              value={form.conversionTriggers}
-              onChange={(e) => update("conversionTriggers", e.target.value)}
-              placeholder="What makes them convert?"
-              rows={2}
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
-              Messaging Notes
-            </label>
-            <Textarea
-              value={form.messagingNotes}
-              onChange={(e) => update("messagingNotes", e.target.value)}
-              placeholder="Key messaging guidelines for this persona..."
-              rows={2}
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
-              Compliance Note
-            </label>
-            <Textarea
-              value={form.complianceNote}
-              onChange={(e) => update("complianceNote", e.target.value)}
-              placeholder="Any regulatory or compliance considerations..."
-              rows={2}
-            />
-          </div>
-
           <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Main Angle *
+              </label>
+              <Input
+                value={form.mainAngle}
+                onChange={(e) => update("mainAngle", e.target.value)}
+                placeholder="e.g. fast sleep start"
+              />
+            </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-foreground">
                 Estimated Share
               </label>
               <Input
-                value={form.estimatedShare}
-                onChange={(e) => update("estimatedShare", e.target.value)}
-                placeholder="e.g. 25%"
+                value={form.mainAngleEstimatedShare}
+                onChange={(e) => update("mainAngleEstimatedShare", e.target.value)}
+                placeholder="e.g. ~40-45%"
               />
             </div>
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
-                Dominant Angles
-              </label>
-              <Input
-                value={form.dominantAngles}
-                onChange={(e) => update("dominantAngles", e.target.value)}
-                placeholder="e.g. Natural Solution, Sleep Quality"
-              />
-            </div>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
+              Main Angle Description
+            </label>
+            <Textarea
+              value={form.mainAngleDescription}
+              onChange={(e) => update("mainAngleDescription", e.target.value)}
+              placeholder="Describe the main angle..."
+              rows={2}
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
+              Sub-Angle Name *
+            </label>
+            <Input
+              value={form.subAngle}
+              onChange={(e) => update("subAngle", e.target.value)}
+              placeholder="e.g. the racing-mind parent"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
+              Pain Point → Relief
+            </label>
+            <Textarea
+              value={form.painPointRelief}
+              onChange={(e) => update("painPointRelief", e.target.value)}
+              placeholder="Describe the pain point and how it is relieved..."
+              rows={2}
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
+              Core Motivation
+            </label>
+            <Input
+              value={form.coreMotivation}
+              onChange={(e) => update("coreMotivation", e.target.value)}
+              placeholder="What drives this motivator?"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
+              Typical Triggers
+            </label>
+            <Input
+              value={form.typicalTriggers}
+              onChange={(e) => update("typicalTriggers", e.target.value)}
+              placeholder="What triggers this motivation?"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
+              Representative Quotes
+            </label>
+            <Input
+              value={form.representativeQuotes}
+              onChange={(e) => update("representativeQuotes", e.target.value)}
+              placeholder="Quotes that represent this motivator..."
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
+              Emotional Tone
+            </label>
+            <Input
+              value={form.emotionalTone}
+              onChange={(e) => update("emotionalTone", e.target.value)}
+              placeholder="e.g. hopeful, frustrated, anxious"
+            />
           </div>
         </div>
 
         <DialogFooter className="flex items-center justify-between sm:justify-between">
           <div>
-            {persona && onDelete && (
+            {motivator && onDelete && (
               confirmDelete ? (
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-red-600 dark:text-red-400">Delete?</span>
@@ -336,7 +298,7 @@ export function PersonaDialog({
               {saving ? (
                 <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
               ) : null}
-              {saving ? "Saving..." : persona ? "Update" : "Create"}
+              {saving ? "Saving..." : motivator ? "Update" : "Create"}
             </Button>
           </div>
         </DialogFooter>

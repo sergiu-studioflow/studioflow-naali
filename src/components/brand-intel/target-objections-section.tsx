@@ -3,75 +3,75 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Plus, Loader2, Pencil, ChevronRight } from "lucide-react";
-import { PersonaDialog } from "./persona-dialog";
-import type { Persona } from "@/lib/types";
+import { ShieldAlert, Plus, Loader2, Pencil, ChevronRight } from "lucide-react";
+import { TargetObjectionDialog } from "./target-objection-dialog";
+import type { TargetObjection } from "@/lib/types";
 
-export function PersonasSection() {
-  const [personas, setPersonas] = useState<Persona[]>([]);
+export function TargetObjectionsSection() {
+  const [objections, setObjections] = useState<TargetObjection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState<Persona | null>(null);
+  const [selectedObjection, setSelectedObjection] = useState<TargetObjection | null>(null);
   const [collapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
-    fetch("/api/personas")
+    fetch("/api/target-objections")
       .then((res) => res.json())
-      .then((data) => setPersonas(data))
-      .catch(() => setError("Failed to load personas"))
+      .then((data) => setObjections(data))
+      .catch(() => setError("Failed to load target objections"))
       .finally(() => setLoading(false));
   }, []);
 
   const openCreate = () => {
-    setSelectedPersona(null);
+    setSelectedObjection(null);
     setDialogOpen(true);
   };
 
-  const openEdit = (persona: Persona) => {
-    setSelectedPersona(persona);
+  const openEdit = (objection: TargetObjection) => {
+    setSelectedObjection(objection);
     setDialogOpen(true);
   };
 
-  const handleSave = async (data: Partial<Persona>) => {
-    if (selectedPersona) {
+  const handleSave = async (data: Partial<TargetObjection>) => {
+    if (selectedObjection) {
       // Update
-      const res = await fetch(`/api/personas/${selectedPersona.id}`, {
+      const res = await fetch(`/api/target-objections/${selectedObjection.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to update persona");
+        throw new Error(err.error || "Failed to update objection");
       }
       const updated = await res.json();
-      setPersonas((prev) =>
-        prev.map((p) => (p.id === updated.id ? updated : p))
+      setObjections((prev) =>
+        prev.map((o) => (o.id === updated.id ? updated : o))
       );
     } else {
       // Create
-      const res = await fetch("/api/personas", {
+      const res = await fetch("/api/target-objections", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to create persona");
+        throw new Error(err.error || "Failed to create objection");
       }
       const created = await res.json();
-      setPersonas((prev) => [...prev, created]);
+      setObjections((prev) => [...prev, created]);
     }
   };
 
   const handleDelete = async (id: string) => {
-    const res = await fetch(`/api/personas/${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/target-objections/${id}`, { method: "DELETE" });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || "Failed to delete persona");
+      throw new Error(err.error || "Failed to delete objection");
     }
-    setPersonas((prev) => prev.filter((p) => p.id !== id));
+    setObjections((prev) => prev.filter((o) => o.id !== id));
   };
 
   return (
@@ -83,18 +83,18 @@ export function PersonasSection() {
         >
           <div className="flex items-center gap-3">
             <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${collapsed ? "" : "rotate-90"}`} />
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30">
-              <Users className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/30">
+              <ShieldAlert className="h-4 w-4 text-amber-600 dark:text-amber-400" />
             </div>
-            <CardTitle className="text-lg">Target Personas</CardTitle>
-            {collapsed && personas.length > 0 && (
-              <span className="text-xs text-muted-foreground">{personas.length} personas</span>
+            <CardTitle className="text-lg">Target Objections</CardTitle>
+            {collapsed && objections.length > 0 && (
+              <span className="text-xs text-muted-foreground">{objections.length} objections</span>
             )}
           </div>
           {!collapsed && (
             <Button size="sm" onClick={(e) => { e.stopPropagation(); openCreate(); }}>
               <Plus className="mr-1 h-3.5 w-3.5" />
-              Add Persona
+              Add Objection
             </Button>
           )}
         </CardHeader>
@@ -111,15 +111,15 @@ export function PersonasSection() {
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
               </div>
-            ) : personas.length === 0 ? (
+            ) : objections.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 text-center">
-                <Users className="h-10 w-10 text-gray-300 dark:text-gray-600" />
+                <ShieldAlert className="h-10 w-10 text-gray-300 dark:text-gray-600" />
                 <p className="mt-3 text-sm text-muted-foreground">
-                  No personas defined yet.
+                  No target objections defined yet.
                 </p>
                 <Button variant="outline" size="sm" className="mt-4" onClick={openCreate}>
                   <Plus className="mr-1 h-3.5 w-3.5" />
-                  Create First Persona
+                  Create First Objection
                 </Button>
               </div>
             ) : (
@@ -133,54 +133,32 @@ export function PersonasSection() {
                       <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                         Name
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                        Label
-                      </th>
                       <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
-                        Demographics
-                      </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
-                        Est. Share
-                      </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
-                        Situation
+                        Description
                       </th>
                       <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
                       </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    {personas.map((persona) => (
+                    {objections.map((objection) => (
                       <tr
-                        key={persona.id}
+                        key={objection.id}
                         className="cursor-pointer transition-colors hover:bg-muted/50"
-                        onClick={() => openEdit(persona)}
+                        onClick={() => openEdit(objection)}
                       >
                         <td className="px-4 py-3 text-muted-foreground tabular-nums">
-                          {persona.sortOrder}
+                          {objection.sortOrder}
                         </td>
                         <td className="px-4 py-3 font-medium text-foreground">
-                          {persona.name}
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground">
-                          {persona.label || "—"}
+                          {objection.name}
                         </td>
                         <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
-                          {persona.demographics
-                            ? persona.demographics.length > 50
-                              ? persona.demographics.slice(0, 50) + "..."
-                              : persona.demographics
-                            : "—"}
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
-                          {persona.estimatedShare || "—"}
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
-                          {persona.situation
-                            ? persona.situation.length > 60
-                              ? persona.situation.slice(0, 60) + "..."
-                              : persona.situation
-                            : "—"}
+                          {objection.description
+                            ? objection.description.length > 60
+                              ? objection.description.slice(0, 60) + "..."
+                              : objection.description
+                            : "\u2014"}
                         </td>
                         <td className="px-4 py-3 text-right">
                           <Pencil className="inline h-3.5 w-3.5 text-gray-400" />
@@ -195,8 +173,8 @@ export function PersonasSection() {
         )}
       </Card>
 
-      <PersonaDialog
-        persona={selectedPersona}
+      <TargetObjectionDialog
+        objection={selectedObjection}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSave={handleSave}

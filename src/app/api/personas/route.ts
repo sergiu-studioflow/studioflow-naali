@@ -30,6 +30,8 @@ const createPersonaSchema = z.object({
   conversionTriggers: z.string().optional(),
   messagingNotes: z.string().optional(),
   complianceNote: z.string().optional(),
+  estimatedShare: z.string().optional(),
+  dominantAngles: z.string().optional(),
   sortOrder: z.number().int().optional(),
 });
 

@@ -40,6 +40,8 @@ export type Persona = {
   conversionTriggers: string | null;
   messagingNotes: string | null;
   complianceNote: string | null;
+  estimatedShare: string | null;
+  dominantAngles: string | null;
   sortOrder: number;
   airtableRecordId: string | null;
   createdAt: Date;
@@ -78,6 +80,7 @@ export type ContentBrief = {
   language: string | null;
   toneOverride: string | null;
   notes: string | null;
+  motivator: string | null;
   winnerIds: string[] | null;
   status: string;
   errorMessage: string | null;
@@ -186,6 +189,7 @@ export type VideoBriefRequest = {
   productionConstraints: string | null;
   proofAssets: string[] | null;
   notes: string | null;
+  motivator: string | null;
   status: string;
   airtableRecordId: string | null;
   createdAt: Date;
@@ -219,6 +223,41 @@ export type GeneratedVideoBrief = {
   productionNotes: string | null;
   status: string | null;
   airtableRecordId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type TargetObjection = {
+  id: string;
+  name: string;
+  description: string | null;
+  sortOrder: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type ProofAsset = {
+  id: string;
+  name: string;
+  description: string | null;
+  sortOrder: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type Motivator = {
+  id: string;
+  code: string;
+  mainAngle: string;
+  mainAngleEstimatedShare: string | null;
+  mainAngleDescription: string | null;
+  subAngle: string;
+  painPointRelief: string | null;
+  coreMotivation: string | null;
+  typicalTriggers: string | null;
+  representativeQuotes: string | null;
+  emotionalTone: string | null;
+  sortOrder: number;
   createdAt: Date;
   updatedAt: Date;
 };

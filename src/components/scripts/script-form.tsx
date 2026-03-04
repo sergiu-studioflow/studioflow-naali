@@ -14,12 +14,15 @@ import {
 } from "@/components/ui/select";
 import { Loader2, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Persona, AwarenessLevel, AppConfig } from "@/lib/types";
+import type { Persona, AwarenessLevel, AppConfig, TargetObjection, ProofAsset, Motivator } from "@/lib/types";
 
 export function ScriptForm() {
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [personas, setPersonas] = useState<Persona[]>([]);
   const [levels, setLevels] = useState<AwarenessLevel[]>([]);
+  const [targetObjections, setTargetObjections] = useState<TargetObjection[]>([]);
+  const [proofAssetOptions, setProofAssetOptions] = useState<ProofAsset[]>([]);
+  const [motivators, setMotivators] = useState<Motivator[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -38,6 +41,7 @@ export function ScriptForm() {
     language: "",
     toneOverride: "",
     notes: "",
+    motivator: "",
   });
 
   const [proofAssets, setProofAssets] = useState<string[]>([]);
@@ -47,11 +51,17 @@ export function ScriptForm() {
       fetch("/api/config").then((r) => r.json()),
       fetch("/api/personas").then((r) => r.json()),
       fetch("/api/awareness-levels").then((r) => r.json()),
+      fetch("/api/target-objections").then((r) => r.json()),
+      fetch("/api/proof-assets").then((r) => r.json()),
+      fetch("/api/motivators").then((r) => r.json()),
     ])
-      .then(([cfg, p, l]) => {
+      .then(([cfg, p, l, to, pa, m]) => {
         setConfig(cfg);
         setPersonas(p);
         setLevels(l);
+        setTargetObjections(to);
+        setProofAssetOptions(pa);
+        setMotivators(m);
       })
       .catch(() => setError("Failed to load form options"))
       .finally(() => setLoading(false));
@@ -91,6 +101,7 @@ export function ScriptForm() {
       if (form.language) briefPayload.language = form.language;
       if (form.toneOverride) briefPayload.toneOverride = form.toneOverride;
       if (form.notes) briefPayload.notes = form.notes;
+      if (form.motivator) briefPayload.motivator = form.motivator;
       if (proofAssets.length > 0) briefPayload.proofAssets = proofAssets;
 
       const res = await fetch("/api/briefs", {
@@ -130,6 +141,7 @@ export function ScriptForm() {
         language: "",
         toneOverride: "",
         notes: "",
+        motivator: "",
       });
       setProofAssets([]);
     } catch (err) {
@@ -153,6 +165,7 @@ export function ScriptForm() {
       language: "",
       toneOverride: "",
       notes: "",
+      motivator: "",
     });
     setProofAssets([]);
     setError(null);
@@ -230,9 +243,9 @@ export function ScriptForm() {
                   <SelectValue placeholder="" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(config?.targetObjections || []).map((o) => (
-                    <SelectItem key={o} value={o}>
-                      {o}
+                  {targetObjections.map((o) => (
+                    <SelectItem key={o.id} value={o.name}>
+                      {o.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -284,13 +297,13 @@ export function ScriptForm() {
               Proof Assets
             </label>
             <div className="flex flex-wrap gap-1.5">
-              {(config?.proofAssetOptions || []).map((asset) => {
-                const isSelected = proofAssets.includes(asset);
+              {proofAssetOptions.map((asset) => {
+                const isSelected = proofAssets.includes(asset.name);
                 return (
                   <button
-                    key={asset}
+                    key={asset.id}
                     type="button"
-                    onClick={() => toggleAsset(asset)}
+                    onClick={() => toggleAsset(asset.name)}
                     className={cn(
                       "inline-flex items-center rounded-md border px-2.5 py-1 text-xs font-medium transition-colors",
                       isSelected
@@ -298,7 +311,7 @@ export function ScriptForm() {
                         : "border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                     )}
                   >
-                    {asset}
+                    {asset.name}
                   </button>
                 );
               })}
@@ -308,6 +321,25 @@ export function ScriptForm() {
                 {proofAssets.length} selected
               </p>
             )}
+          </div>
+
+          {/* Motivator */}
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
+              Motivator
+            </label>
+            <Select value={form.motivator} onValueChange={(v) => update("motivator", v)}>
+              <SelectTrigger>
+                <SelectValue placeholder="" />
+              </SelectTrigger>
+              <SelectContent>
+                {motivators.map((m) => (
+                  <SelectItem key={m.id} value={m.code}>
+                    {m.code} — {m.subAngle}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Scenario Description */}

@@ -3,75 +3,75 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Plus, Loader2, Pencil, ChevronRight } from "lucide-react";
-import { PersonaDialog } from "./persona-dialog";
-import type { Persona } from "@/lib/types";
+import { FileCheck, Plus, Loader2, Pencil, ChevronRight } from "lucide-react";
+import { ProofAssetDialog } from "./proof-asset-dialog";
+import type { ProofAsset } from "@/lib/types";
 
-export function PersonasSection() {
-  const [personas, setPersonas] = useState<Persona[]>([]);
+export function ProofAssetsSection() {
+  const [assets, setAssets] = useState<ProofAsset[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState<Persona | null>(null);
+  const [selectedAsset, setSelectedAsset] = useState<ProofAsset | null>(null);
   const [collapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
-    fetch("/api/personas")
+    fetch("/api/proof-assets")
       .then((res) => res.json())
-      .then((data) => setPersonas(data))
-      .catch(() => setError("Failed to load personas"))
+      .then((data) => setAssets(data))
+      .catch(() => setError("Failed to load proof assets"))
       .finally(() => setLoading(false));
   }, []);
 
   const openCreate = () => {
-    setSelectedPersona(null);
+    setSelectedAsset(null);
     setDialogOpen(true);
   };
 
-  const openEdit = (persona: Persona) => {
-    setSelectedPersona(persona);
+  const openEdit = (asset: ProofAsset) => {
+    setSelectedAsset(asset);
     setDialogOpen(true);
   };
 
-  const handleSave = async (data: Partial<Persona>) => {
-    if (selectedPersona) {
+  const handleSave = async (data: Partial<ProofAsset>) => {
+    if (selectedAsset) {
       // Update
-      const res = await fetch(`/api/personas/${selectedPersona.id}`, {
+      const res = await fetch(`/api/proof-assets/${selectedAsset.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to update persona");
+        throw new Error(err.error || "Failed to update asset");
       }
       const updated = await res.json();
-      setPersonas((prev) =>
-        prev.map((p) => (p.id === updated.id ? updated : p))
+      setAssets((prev) =>
+        prev.map((a) => (a.id === updated.id ? updated : a))
       );
     } else {
       // Create
-      const res = await fetch("/api/personas", {
+      const res = await fetch("/api/proof-assets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to create persona");
+        throw new Error(err.error || "Failed to create asset");
       }
       const created = await res.json();
-      setPersonas((prev) => [...prev, created]);
+      setAssets((prev) => [...prev, created]);
     }
   };
 
   const handleDelete = async (id: string) => {
-    const res = await fetch(`/api/personas/${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/proof-assets/${id}`, { method: "DELETE" });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || "Failed to delete persona");
+      throw new Error(err.error || "Failed to delete asset");
     }
-    setPersonas((prev) => prev.filter((p) => p.id !== id));
+    setAssets((prev) => prev.filter((a) => a.id !== id));
   };
 
   return (
@@ -83,18 +83,18 @@ export function PersonasSection() {
         >
           <div className="flex items-center gap-3">
             <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${collapsed ? "" : "rotate-90"}`} />
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-900/30">
-              <Users className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
+              <FileCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <CardTitle className="text-lg">Target Personas</CardTitle>
-            {collapsed && personas.length > 0 && (
-              <span className="text-xs text-muted-foreground">{personas.length} personas</span>
+            <CardTitle className="text-lg">Proof Assets</CardTitle>
+            {collapsed && assets.length > 0 && (
+              <span className="text-xs text-muted-foreground">{assets.length} assets</span>
             )}
           </div>
           {!collapsed && (
             <Button size="sm" onClick={(e) => { e.stopPropagation(); openCreate(); }}>
               <Plus className="mr-1 h-3.5 w-3.5" />
-              Add Persona
+              Add Asset
             </Button>
           )}
         </CardHeader>
@@ -111,15 +111,15 @@ export function PersonasSection() {
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
               </div>
-            ) : personas.length === 0 ? (
+            ) : assets.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 text-center">
-                <Users className="h-10 w-10 text-gray-300 dark:text-gray-600" />
+                <FileCheck className="h-10 w-10 text-gray-300 dark:text-gray-600" />
                 <p className="mt-3 text-sm text-muted-foreground">
-                  No personas defined yet.
+                  No proof assets defined yet.
                 </p>
                 <Button variant="outline" size="sm" className="mt-4" onClick={openCreate}>
                   <Plus className="mr-1 h-3.5 w-3.5" />
-                  Create First Persona
+                  Create First Asset
                 </Button>
               </div>
             ) : (
@@ -133,54 +133,32 @@ export function PersonasSection() {
                       <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                         Name
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                        Label
-                      </th>
                       <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
-                        Demographics
-                      </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
-                        Est. Share
-                      </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
-                        Situation
+                        Description
                       </th>
                       <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
                       </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    {personas.map((persona) => (
+                    {assets.map((asset) => (
                       <tr
-                        key={persona.id}
+                        key={asset.id}
                         className="cursor-pointer transition-colors hover:bg-muted/50"
-                        onClick={() => openEdit(persona)}
+                        onClick={() => openEdit(asset)}
                       >
                         <td className="px-4 py-3 text-muted-foreground tabular-nums">
-                          {persona.sortOrder}
+                          {asset.sortOrder}
                         </td>
                         <td className="px-4 py-3 font-medium text-foreground">
-                          {persona.name}
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground">
-                          {persona.label || "—"}
+                          {asset.name}
                         </td>
                         <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
-                          {persona.demographics
-                            ? persona.demographics.length > 50
-                              ? persona.demographics.slice(0, 50) + "..."
-                              : persona.demographics
-                            : "—"}
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
-                          {persona.estimatedShare || "—"}
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
-                          {persona.situation
-                            ? persona.situation.length > 60
-                              ? persona.situation.slice(0, 60) + "..."
-                              : persona.situation
-                            : "—"}
+                          {asset.description
+                            ? asset.description.length > 60
+                              ? asset.description.slice(0, 60) + "..."
+                              : asset.description
+                            : "\u2014"}
                         </td>
                         <td className="px-4 py-3 text-right">
                           <Pencil className="inline h-3.5 w-3.5 text-gray-400" />
@@ -195,8 +173,8 @@ export function PersonasSection() {
         )}
       </Card>
 
-      <PersonaDialog
-        persona={selectedPersona}
+      <ProofAssetDialog
+        asset={selectedAsset}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSave={handleSave}

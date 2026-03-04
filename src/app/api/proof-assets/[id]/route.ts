@@ -15,33 +15,22 @@ export async function GET(
 
   const { id } = await params;
 
-  const [persona] = await db
+  const [proofAsset] = await db
     .select()
-    .from(schema.personas)
-    .where(eq(schema.personas.id, id))
+    .from(schema.proofAssets)
+    .where(eq(schema.proofAssets.id, id))
     .limit(1);
 
-  if (!persona) {
-    return NextResponse.json({ error: "Persona not found" }, { status: 404 });
+  if (!proofAsset) {
+    return NextResponse.json({ error: "Proof asset not found" }, { status: 404 });
   }
 
-  return NextResponse.json(persona);
+  return NextResponse.json(proofAsset);
 }
 
-const updatePersonaSchema = z.object({
+const updateProofAssetSchema = z.object({
   name: z.string().min(1).optional(),
-  label: z.string().nullable().optional(),
-  demographics: z.string().nullable().optional(),
-  situation: z.string().nullable().optional(),
-  painPoints: z.string().nullable().optional(),
-  whatTheyTried: z.string().nullable().optional(),
-  whatTheyWant: z.string().nullable().optional(),
-  objections: z.string().nullable().optional(),
-  conversionTriggers: z.string().nullable().optional(),
-  messagingNotes: z.string().nullable().optional(),
-  complianceNote: z.string().nullable().optional(),
-  estimatedShare: z.string().nullable().optional(),
-  dominantAngles: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
   sortOrder: z.number().int().optional(),
 });
 
@@ -53,30 +42,30 @@ export async function PUT(
   if (isAuthError(auth)) return auth;
 
   if (auth.portalUser.role === "viewer") {
-    return NextResponse.json({ error: "Viewers cannot edit personas" }, { status: 403 });
+    return NextResponse.json({ error: "Viewers cannot edit proof assets" }, { status: 403 });
   }
 
   const { id } = await params;
   const body = await request.json();
-  const parsed = updatePersonaSchema.safeParse(body);
+  const parsed = updateProofAssetSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid input", details: parsed.error.format() }, { status: 400 });
   }
 
   const [updated] = await db
-    .update(schema.personas)
+    .update(schema.proofAssets)
     .set({ ...parsed.data, updatedAt: new Date() })
-    .where(eq(schema.personas.id, id))
+    .where(eq(schema.proofAssets.id, id))
     .returning();
 
   if (!updated) {
-    return NextResponse.json({ error: "Persona not found" }, { status: 404 });
+    return NextResponse.json({ error: "Proof asset not found" }, { status: 404 });
   }
 
   await db.insert(schema.activityLog).values({
     userId: auth.portalUser.id,
-    action: "persona_updated",
-    resourceType: "persona",
+    action: "proof_asset_updated",
+    resourceType: "proof_asset",
     resourceId: updated.id,
   });
 
@@ -91,25 +80,25 @@ export async function DELETE(
   if (isAuthError(auth)) return auth;
 
   if (auth.portalUser.role === "viewer") {
-    return NextResponse.json({ error: "Viewers cannot delete personas" }, { status: 403 });
+    return NextResponse.json({ error: "Viewers cannot delete proof assets" }, { status: 403 });
   }
 
   const { id } = await params;
 
   try {
     const [deleted] = await db
-      .delete(schema.personas)
-      .where(eq(schema.personas.id, id))
+      .delete(schema.proofAssets)
+      .where(eq(schema.proofAssets.id, id))
       .returning();
 
     if (!deleted) {
-      return NextResponse.json({ error: "Persona not found" }, { status: 404 });
+      return NextResponse.json({ error: "Proof asset not found" }, { status: 404 });
     }
 
     await db.insert(schema.activityLog).values({
       userId: auth.portalUser.id,
-      action: "persona_deleted",
-      resourceType: "persona",
+      action: "proof_asset_deleted",
+      resourceType: "proof_asset",
       resourceId: id,
     });
 
@@ -118,7 +107,7 @@ export async function DELETE(
     const message = error instanceof Error ? error.message : "";
     if (message.includes("foreign key") || message.includes("violates")) {
       return NextResponse.json(
-        { error: "Cannot delete this persona because it is referenced by existing content briefs." },
+        { error: "Cannot delete this proof asset because it is referenced by existing content." },
         { status: 409 }
       );
     }

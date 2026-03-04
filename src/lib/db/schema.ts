@@ -84,6 +84,8 @@ export const personas = pgTable("personas", {
   conversionTriggers: text("conversion_triggers"),
   messagingNotes: text("messaging_notes"),
   complianceNote: text("compliance_note"),
+  estimatedShare: text("estimated_share"),
+  dominantAngles: text("dominant_angles"),
   sortOrder: integer("sort_order").notNull().default(0),
   airtableRecordId: text("airtable_record_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -106,6 +108,53 @@ export const awarenessLevels = pgTable("awareness_levels", {
   tone: text("tone"),
   warning: text("warning"),
   airtableRecordId: text("airtable_record_id"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// =============================================
+// TARGET OBJECTIONS
+// =============================================
+
+export const targetObjections = pgTable("target_objections", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  description: text("description"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// =============================================
+// PROOF ASSETS
+// =============================================
+
+export const proofAssets = pgTable("proof_assets", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  description: text("description"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// =============================================
+// MOTIVATORS
+// =============================================
+
+export const motivators = pgTable("motivators", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  code: text("code").notNull(),
+  mainAngle: text("main_angle").notNull(),
+  mainAngleEstimatedShare: text("main_angle_estimated_share"),
+  mainAngleDescription: text("main_angle_description"),
+  subAngle: text("sub_angle").notNull(),
+  painPointRelief: text("pain_point_relief"),
+  coreMotivation: text("core_motivation"),
+  typicalTriggers: text("typical_triggers"),
+  representativeQuotes: text("representative_quotes"),
+  emotionalTone: text("emotional_tone"),
+  sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -150,6 +199,7 @@ export const contentBriefs = pgTable("content_briefs", {
   language: text("language").default("FR"),
   toneOverride: text("tone_override"),
   notes: text("notes"),
+  motivator: text("motivator"),
   winnerIds: jsonb("winner_ids"), // JSON array of winner UUIDs
   requestedVariants: integer("requested_variants"),
 
@@ -287,6 +337,7 @@ export const videoBriefRequests = pgTable("video_brief_requests", {
   productionConstraints: text("production_constraints"),
   proofAssets: jsonb("proof_assets"),
   notes: text("notes"),
+  motivator: text("motivator"),
   status: text("status").notNull().default("new"),
   airtableRecordId: text("airtable_record_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

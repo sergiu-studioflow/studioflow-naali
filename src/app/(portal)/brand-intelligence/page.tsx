@@ -1,6 +1,9 @@
 import { BrandDocSection } from "@/components/brand-intel/brand-doc-section";
 import { PersonasSection } from "@/components/brand-intel/personas-section";
 import { AwarenessLevelsSection } from "@/components/brand-intel/awareness-levels-section";
+import { TargetObjectionsSection } from "@/components/brand-intel/target-objections-section";
+import { ProofAssetsSection } from "@/components/brand-intel/proof-assets-section";
+import { MotivatorsSection } from "@/components/brand-intel/motivators-section";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +22,9 @@ export default function BrandIntelligencePage() {
       <BrandDocSection />
       <PersonasSection />
       <AwarenessLevelsSection />
+      <TargetObjectionsSection />
+      <ProofAssetsSection />
+      <MotivatorsSection />
     </div>
   );
 }
