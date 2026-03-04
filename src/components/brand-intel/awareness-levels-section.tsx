@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Layers, Plus, Loader2, Pencil } from "lucide-react";
+import { Layers, Plus, Loader2, Pencil, ChevronRight } from "lucide-react";
 import { AwarenessLevelDialog } from "./awareness-level-dialog";
 import type { AwarenessLevel } from "@/lib/types";
 
@@ -13,6 +13,7 @@ export function AwarenessLevelsSection() {
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState<AwarenessLevel | null>(null);
+  const [collapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
     fetch("/api/awareness-levels")
@@ -75,115 +76,121 @@ export function AwarenessLevelsSection() {
     setLevels((prev) => prev.filter((l) => l.id !== id));
   };
 
-  if (loading) {
-    return (
-      <Card>
-        <CardContent className="flex items-center justify-center py-12">
-          <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <>
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+        <CardHeader
+          className="flex flex-row items-center justify-between space-y-0 cursor-pointer select-none"
+          onClick={() => setCollapsed(!collapsed)}
+        >
           <div className="flex items-center gap-3">
+            <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${collapsed ? "" : "rotate-90"}`} />
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/30">
               <Layers className="h-4 w-4 text-amber-600 dark:text-amber-400" />
             </div>
             <CardTitle className="text-lg">Awareness Levels</CardTitle>
+            {collapsed && levels.length > 0 && (
+              <span className="text-xs text-muted-foreground">{levels.length} levels</span>
+            )}
           </div>
-          <Button size="sm" onClick={openCreate}>
-            <Plus className="mr-1 h-3.5 w-3.5" />
-            Add Level
-          </Button>
+          {!collapsed && (
+            <Button size="sm" onClick={(e) => { e.stopPropagation(); openCreate(); }}>
+              <Plus className="mr-1 h-3.5 w-3.5" />
+              Add Level
+            </Button>
+          )}
         </CardHeader>
-        <CardContent>
-          {error && (
-            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-600 dark:border-red-900 dark:bg-red-950 dark:text-red-400">
-              {error}
-            </div>
-          )}
 
-          {levels.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-center">
-              <Layers className="h-10 w-10 text-gray-300 dark:text-gray-600" />
-              <p className="mt-3 text-sm text-muted-foreground">
-                No awareness levels defined yet.
-              </p>
-              <Button variant="outline" size="sm" className="mt-4" onClick={openCreate}>
-                <Plus className="mr-1 h-3.5 w-3.5" />
-                Create First Level
-              </Button>
-            </div>
-          ) : (
-            <div className="overflow-hidden rounded-lg border border-border">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground w-16">
-                      Level
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Name
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
-                      Description
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
-                      Hook Style
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
-                      Tone
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {levels.map((level) => (
-                    <tr
-                      key={level.id}
-                      className="cursor-pointer transition-colors hover:bg-muted/50"
-                      onClick={() => openEdit(level)}
-                    >
-                      <td className="px-4 py-3">
-                        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                          {level.level}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 font-medium text-foreground">
-                        {level.name}
-                      </td>
-                      <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
-                        {level.description
-                          ? level.description.length > 60
-                            ? level.description.slice(0, 60) + "..."
-                            : level.description
-                          : "—"}
-                      </td>
-                      <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
-                        {level.hookStyle
-                          ? level.hookStyle.length > 40
-                            ? level.hookStyle.slice(0, 40) + "..."
-                            : level.hookStyle
-                          : "—"}
-                      </td>
-                      <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
-                        {level.tone || "—"}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <Pencil className="inline h-3.5 w-3.5 text-gray-400" />
-                      </td>
+        {!collapsed && (
+          <CardContent>
+            {error && (
+              <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-600 dark:border-red-900 dark:bg-red-950 dark:text-red-400">
+                {error}
+              </div>
+            )}
+
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+              </div>
+            ) : levels.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-10 text-center">
+                <Layers className="h-10 w-10 text-gray-300 dark:text-gray-600" />
+                <p className="mt-3 text-sm text-muted-foreground">
+                  No awareness levels defined yet.
+                </p>
+                <Button variant="outline" size="sm" className="mt-4" onClick={openCreate}>
+                  <Plus className="mr-1 h-3.5 w-3.5" />
+                  Create First Level
+                </Button>
+              </div>
+            ) : (
+              <div className="overflow-hidden rounded-lg border border-border">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground w-16">
+                        Level
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                        Name
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                        Description
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
+                        Hook Style
+                      </th>
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
+                        Tone
+                      </th>
+                      <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </CardContent>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {levels.map((level) => (
+                      <tr
+                        key={level.id}
+                        className="cursor-pointer transition-colors hover:bg-muted/50"
+                        onClick={() => openEdit(level)}
+                      >
+                        <td className="px-4 py-3">
+                          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                            {level.level}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 font-medium text-foreground">
+                          {level.name}
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
+                          {level.description
+                            ? level.description.length > 60
+                              ? level.description.slice(0, 60) + "..."
+                              : level.description
+                            : "—"}
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
+                          {level.hookStyle
+                            ? level.hookStyle.length > 40
+                              ? level.hookStyle.slice(0, 40) + "..."
+                              : level.hookStyle
+                            : "—"}
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
+                          {level.tone || "—"}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <Pencil className="inline h-3.5 w-3.5 text-gray-400" />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        )}
       </Card>
 
       <AwarenessLevelDialog
