@@ -16,11 +16,20 @@ interface ScriptReviewDetailDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const complianceStyles: Record<string, string> = {
+const complianceStyleMap: Record<string, string> = {
   compliant: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  "non-compliant": "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   non_compliant: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   needs_minor_fixes: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  "needs minor fixes": "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
 };
+
+function getComplianceStyle(status: string): string {
+  return complianceStyleMap[status.toLowerCase().replace(/ /g, "-")] ||
+    complianceStyleMap[status.toLowerCase().replace(/ /g, "_")] ||
+    complianceStyleMap[status.toLowerCase()] ||
+    "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+}
 
 export function ScriptReviewDetailDialog({
   review,
@@ -90,8 +99,8 @@ export function ScriptReviewDetailDialog({
             </span>
           </Section>
 
-          {/* AI Review Results (only when review_complete) */}
-          {status === "review_complete" && (
+          {/* AI Review Results (only when review is complete) */}
+          {(status === "review_complete" || status === "completed") && (
             <>
               <div className="border-t border-border pt-5">
                 <h3 className="mb-4 text-base font-semibold text-foreground">
@@ -131,11 +140,10 @@ export function ScriptReviewDetailDialog({
                   <span
                     className={cn(
                       "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
-                      complianceStyles[review.complianceStatus] ||
-                        "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                      getComplianceStyle(review.complianceStatus)
                     )}
                   >
-                    {review.complianceStatus.replace(/_/g, " ")}
+                    {review.complianceStatus}
                   </span>
                 </Section>
               )}
@@ -184,7 +192,7 @@ export function ScriptReviewDetailDialog({
                   <p className="text-2xl font-bold text-foreground">
                     {review.overallScore}
                     <span className="text-base font-normal text-muted-foreground">
-                      /100
+                      /5
                     </span>
                   </p>
                 </Section>

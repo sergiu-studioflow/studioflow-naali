@@ -12,6 +12,7 @@ const statusStyles: Record<string, string> = {
   pending: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
   under_review: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
   review_complete: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  completed: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
 };
 
 const sourceStyles: Record<string, string> = {
@@ -19,15 +20,24 @@ const sourceStyles: Record<string, string> = {
   auto: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
 };
 
-const complianceStyles: Record<string, string> = {
+const complianceStyleMap: Record<string, string> = {
   compliant: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  "non-compliant": "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   non_compliant: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   needs_minor_fixes: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  "needs minor fixes": "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
 };
 
+function getComplianceStyle(status: string): string {
+  return complianceStyleMap[status.toLowerCase().replace(/ /g, "-")] ||
+    complianceStyleMap[status.toLowerCase().replace(/ /g, "_")] ||
+    complianceStyleMap[status.toLowerCase()] ||
+    "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+}
+
 function getScoreColor(score: number): string {
-  if (score >= 80) return "text-emerald-600 dark:text-emerald-400";
-  if (score >= 60) return "text-amber-600 dark:text-amber-400";
+  if (score >= 4) return "text-emerald-600 dark:text-emerald-400";
+  if (score >= 3) return "text-amber-600 dark:text-amber-400";
   return "text-red-600 dark:text-red-400";
 }
 
@@ -164,7 +174,7 @@ export function ScriptReviewsTable() {
                   {reviews.map((review) => {
                     const status = review.reviewStatus || "pending";
                     const source = review.sourceType || "manual";
-                    const isComplete = status === "review_complete";
+                    const isComplete = status === "review_complete" || status === "completed";
                     return (
                       <tr
                         key={review.id}
@@ -207,11 +217,10 @@ export function ScriptReviewsTable() {
                             <span
                               className={cn(
                                 "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
-                                complianceStyles[review.complianceStatus] ||
-                                  "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                                getComplianceStyle(review.complianceStatus)
                               )}
                             >
-                              {review.complianceStatus.replace(/_/g, " ")}
+                              {review.complianceStatus}
                             </span>
                           ) : (
                             <span className="text-muted-foreground">{"\u2014"}</span>
