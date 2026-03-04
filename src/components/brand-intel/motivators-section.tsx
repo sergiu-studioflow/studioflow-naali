@@ -93,8 +93,8 @@ export function MotivatorsSection() {
         >
           <div className="flex items-center gap-3">
             <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${collapsed ? "" : "rotate-90"}`} />
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
-              <Zap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
+              <Zap className="h-4 w-4 text-primary" />
             </div>
             <CardTitle className="text-lg">Motivators</CardTitle>
             {collapsed && motivators.length > 0 && (

@@ -85,8 +85,8 @@ export function AwarenessLevelsSection() {
         >
           <div className="flex items-center gap-3">
             <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${collapsed ? "" : "rotate-90"}`} />
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/30">
-              <Layers className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
+              <Layers className="h-4 w-4 text-primary" />
             </div>
             <CardTitle className="text-lg">Awareness Levels</CardTitle>
             {collapsed && levels.length > 0 && (

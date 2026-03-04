@@ -92,8 +92,8 @@ export function BrandDocSection() {
       >
         <div className="flex items-center gap-3">
           <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${collapsed ? "" : "rotate-90"}`} />
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
-            <Brain className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
+            <Brain className="h-4 w-4 text-primary" />
           </div>
           <div>
             <CardTitle className="text-lg">Brand Intelligence Document</CardTitle>
