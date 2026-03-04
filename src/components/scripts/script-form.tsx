@@ -12,7 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Send, X, Plus } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
+import { cn } from "@/lib/utils";
 import type { Persona, AwarenessLevel, AppConfig } from "@/lib/types";
 
 export function ScriptForm() {
@@ -40,7 +41,6 @@ export function ScriptForm() {
   });
 
   const [proofAssets, setProofAssets] = useState<string[]>([]);
-  const [newAsset, setNewAsset] = useState("");
 
   useEffect(() => {
     Promise.all([
@@ -60,15 +60,10 @@ export function ScriptForm() {
   const update = (field: string, value: string | boolean) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
-  const addAsset = () => {
-    if (newAsset.trim()) {
-      setProofAssets((prev) => [...prev, newAsset.trim()]);
-      setNewAsset("");
-    }
-  };
-
-  const removeAsset = (index: number) => {
-    setProofAssets((prev) => prev.filter((_, i) => i !== index));
+  const toggleAsset = (asset: string) => {
+    setProofAssets((prev) =>
+      prev.includes(asset) ? prev.filter((a) => a !== asset) : [...prev, asset]
+    );
   };
 
   const handleSubmit = async () => {
@@ -174,15 +169,6 @@ export function ScriptForm() {
     );
   }
 
-  const objections = [
-    "Price / value concern",
-    "Skepticism (does it work?)",
-    "Already tried supplements",
-    "Don't trust online brands",
-    "Prefer natural remedies",
-    "Fear of side effects",
-  ];
-
   return (
     <Card>
       <CardContent className="p-6 sm:p-8">
@@ -244,7 +230,7 @@ export function ScriptForm() {
                   <SelectValue placeholder="" />
                 </SelectTrigger>
                 <SelectContent>
-                  {objections.map((o) => (
+                  {(config?.targetObjections || []).map((o) => (
                     <SelectItem key={o} value={o}>
                       {o}
                     </SelectItem>
@@ -254,8 +240,8 @@ export function ScriptForm() {
             </div>
           </div>
 
-          {/* Persona + Awareness Level + Proof Assets */}
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+          {/* Persona + Awareness Level */}
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-foreground">
                 Persona
@@ -290,37 +276,38 @@ export function ScriptForm() {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
-                Proof Assets
-              </label>
-              <div className="flex gap-2">
-                <Input
-                  value={newAsset}
-                  onChange={(e) => setNewAsset(e.target.value)}
-                  placeholder=""
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addAsset())}
-                />
-                <Button variant="outline" size="icon" onClick={addAsset} className="shrink-0">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              {proofAssets.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {proofAssets.map((asset, i) => (
-                    <span
-                      key={i}
-                      className="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                    >
-                      {asset}
-                      <button onClick={() => removeAsset(i)} className="hover:text-red-500">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
+          </div>
+
+          {/* Proof Assets */}
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
+              Proof Assets
+            </label>
+            <div className="flex flex-wrap gap-1.5">
+              {(config?.proofAssetOptions || []).map((asset) => {
+                const isSelected = proofAssets.includes(asset);
+                return (
+                  <button
+                    key={asset}
+                    type="button"
+                    onClick={() => toggleAsset(asset)}
+                    className={cn(
+                      "inline-flex items-center rounded-md border px-2.5 py-1 text-xs font-medium transition-colors",
+                      isSelected
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    )}
+                  >
+                    {asset}
+                  </button>
+                );
+              })}
             </div>
+            {proofAssets.length > 0 && (
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                {proofAssets.length} selected
+              </p>
+            )}
           </div>
 
           {/* Scenario Description */}

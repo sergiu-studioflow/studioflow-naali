@@ -23,6 +23,8 @@ export type AppConfig = {
   platforms: string[];
   durations: string[];
   languages: string[];
+  targetObjections: string[];
+  proofAssetOptions: string[];
 };
 
 export type Persona = {

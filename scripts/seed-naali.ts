@@ -14,7 +14,7 @@ async function main() {
   // 1. App Config
   console.log("  Seeding app_config...");
   await sql`
-    INSERT INTO app_config (brand_name, brand_color, portal_title, features, workflows, content_types, platforms, durations, languages)
+    INSERT INTO app_config (brand_name, brand_color, portal_title, features, workflows, content_types, platforms, durations, languages, target_objections, proof_asset_options)
     VALUES (
       'Naali',
       '#2D5A3D',
@@ -24,7 +24,9 @@ async function main() {
       '["UGC", "Founder-led", "Testimonial", "Podcast/Interview", "Native", "VSL"]'::jsonb,
       '["Meta", "TikTok", "Instagram", "All Platforms"]'::jsonb,
       '["15s", "30s", "45s", "60s"]'::jsonb,
-      '["FR", "UK"]'::jsonb
+      '["FR", "UK", "US"]'::jsonb,
+      '["Another supplement won''t work", "Too expensive", "Not legit", "I don''t want medication", "I tried magnesium", "Tisanes didn''t work", "I don''t have energy/time", "Is it safe?", "I need something stronger", "Why Naali vs pharmacy brands?"]'::jsonb,
+      '["Reviews wall", "Comment screenshots", "Thousands of women messaging", "M6 appearance", "Founder story", "Founder education", "Warehouse footage", "Routine footage", "Raw UGC testimonial"]'::jsonb
     )
     ON CONFLICT DO NOTHING
   `;

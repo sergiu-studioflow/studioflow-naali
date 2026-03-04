@@ -26,6 +26,8 @@ export async function getAppConfig(): Promise<AppConfig | null> {
     platforms: (row.platforms as string[]) || [],
     durations: (row.durations as string[]) || [],
     languages: (row.languages as string[]) || [],
+    targetObjections: (row.targetObjections as string[]) || [],
+    proofAssetOptions: (row.proofAssetOptions as string[]) || [],
   };
   lastFetched = now;
 

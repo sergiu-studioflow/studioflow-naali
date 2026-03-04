@@ -38,6 +38,17 @@ export const appConfig = pgTable("app_config", {
   platforms: jsonb("platforms").default(["Meta", "TikTok", "Instagram", "All Platforms"]),
   durations: jsonb("durations").default(["15s", "30s", "45s", "60s"]),
   languages: jsonb("languages").default(["FR"]),
+  targetObjections: jsonb("target_objections").default([
+    "Another supplement won't work", "Too expensive", "Not legit",
+    "I don't want medication", "I tried magnesium", "Tisanes didn't work",
+    "I don't have energy/time", "Is it safe?", "I need something stronger",
+    "Why Naali vs pharmacy brands?",
+  ]),
+  proofAssetOptions: jsonb("proof_asset_options").default([
+    "Reviews wall", "Comment screenshots", "Thousands of women messaging",
+    "M6 appearance", "Founder story", "Founder education",
+    "Warehouse footage", "Routine footage", "Raw UGC testimonial",
+  ]),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
