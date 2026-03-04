@@ -74,7 +74,16 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // 3. Update brief status to "complete"
+  // 3. Auto-import into script reviews pipeline
+  await db.insert(schema.scriptReviews).values({
+    scriptTitle: scriptTitle || "Untitled Script",
+    scriptText: fullScript || "",
+    sourceType: "auto",
+    generatedScriptId: script.id,
+    reviewStatus: "pending",
+  });
+
+  // 4. Update brief status to "complete"
   await db
     .update(schema.contentBriefs)
     .set({
@@ -84,7 +93,7 @@ export async function POST(request: NextRequest) {
     })
     .where(eq(schema.contentBriefs.id, briefId));
 
-  // 4. Log activity
+  // 5. Log activity
   await db.insert(schema.activityLog).values({
     action: "script_generated",
     resourceType: "script",

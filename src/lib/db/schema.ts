@@ -160,6 +160,19 @@ export const motivators = pgTable("motivators", {
 });
 
 // =============================================
+// PRODUCTS
+// =============================================
+
+export const products = pgTable("products", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  description: text("description"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// =============================================
 // WINNERS LIBRARY
 // =============================================
 
@@ -312,6 +325,10 @@ export const scriptReviews = pgTable("script_reviews", {
 
   // Workflow tracking
   n8nExecutionId: text("n8n_execution_id"),
+
+  // Source tracking
+  sourceType: text("source_type").default("manual"), // manual, auto
+  generatedScriptId: uuid("generated_script_id").references(() => generatedScripts.id),
 
   airtableRecordId: text("airtable_record_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

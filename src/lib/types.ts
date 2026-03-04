@@ -159,6 +159,17 @@ export type ScriptReview = {
   decidedAt: Date | null;
   decidedBy: string | null;
   n8nExecutionId: string | null;
+  sourceType: string | null;
+  generatedScriptId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type Product = {
+  id: string;
+  name: string;
+  description: string | null;
+  sortOrder: number;
   createdAt: Date;
   updatedAt: Date;
 };
