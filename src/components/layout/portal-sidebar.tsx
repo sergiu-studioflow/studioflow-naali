@@ -47,23 +47,27 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
   return (
     <aside className="flex h-screen w-[260px] flex-col bg-sidebar">
       {/* Logo Section — StudioFlow × Naali */}
-      <div className="flex h-[72px] items-center px-5">
-        <div className="flex items-center gap-2.5">
-          <Image
-            src="/studioflow-logo.png"
-            alt="StudioFlow"
-            width={32}
-            height={32}
-            className="rounded-lg"
-          />
-          <span className="text-[13px] font-light text-sidebar-muted">×</span>
-          <Image
-            src="/naali-logo.png"
-            alt="Naali"
-            width={32}
-            height={32}
-            className="rounded-lg"
-          />
+      <div className="flex h-[80px] items-center justify-center">
+        <div className="flex items-center gap-3">
+          <div className="group/sf rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-[0_0_16px_rgba(178,255,0,0.25)]">
+            <Image
+              src="/studioflow-logo.png"
+              alt="StudioFlow"
+              width={40}
+              height={40}
+              className="rounded-xl transition-all duration-200 group-hover/sf:brightness-110"
+            />
+          </div>
+          <span className="text-sm font-light text-sidebar-muted">×</span>
+          <div className="group/na rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-[0_0_16px_rgba(255,200,50,0.25)]">
+            <Image
+              src="/naali-logo.png"
+              alt="Naali"
+              width={40}
+              height={40}
+              className="rounded-xl transition-all duration-200 group-hover/na:brightness-110"
+            />
+          </div>
         </div>
       </div>
 
