@@ -10,8 +10,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { FileText, Loader2, Eye, Zap, ChevronDown } from "lucide-react";
-import { getStatusColor, formatDate } from "@/lib/utils";
+import { FileText, Loader2, Eye, Zap, ChevronDown, Trash2 } from "lucide-react";
+import { getStatusColor, formatDate, cn } from "@/lib/utils";
+import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog";
 import type { ScriptWithHooks } from "@/lib/types";
 
 const reviewStatuses = [
@@ -34,12 +35,15 @@ export function GeneratedScriptsTable() {
   const [selected, setSelected] = useState<ScriptWithHooks | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [statusDropdown, setStatusDropdown] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/scripts")
       .then((r) => r.json())
-      .then((data) => setScripts(data))
+      .then((data) => { setScripts(data); setSelectedIds(new Set()); })
       .catch(() => setError("Failed to load scripts"))
       .finally(() => setLoading(false));
   }, []);
@@ -58,6 +62,44 @@ export function GeneratedScriptsTable() {
   const openDetail = (script: ScriptWithHooks) => {
     setSelected(script);
     setDialogOpen(true);
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === scripts.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(scripts.map((s) => s.id)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    setDeleting(true);
+    setError(null);
+    const ids = Array.from(selectedIds);
+    const failed: string[] = [];
+    for (const id of ids) {
+      try {
+        const res = await fetch(`/api/scripts/${id}`, { method: "DELETE" });
+        if (!res.ok) failed.push(id);
+      } catch {
+        failed.push(id);
+      }
+    }
+    const deletedIds = ids.filter((id) => !failed.includes(id));
+    setScripts((prev) => prev.filter((s) => !deletedIds.includes(s.id)));
+    setSelectedIds(new Set(failed));
+    if (failed.length > 0) setError(`Failed to delete ${failed.length} item(s)`);
+    setDeleting(false);
+    setConfirmOpen(false);
   };
 
   const updateStatus = async (scriptId: string, newStatus: string) => {
@@ -92,11 +134,24 @@ export function GeneratedScriptsTable() {
     <>
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
-              <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
+                <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <CardTitle className="text-lg">Generated Scripts</CardTitle>
             </div>
-            <CardTitle className="text-lg">Generated Scripts</CardTitle>
+            {selectedIds.size > 0 && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setConfirmOpen(true)}
+                className="gap-1.5"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Delete ({selectedIds.size})
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -118,6 +173,14 @@ export function GeneratedScriptsTable() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+                    <th className="w-10 px-3 py-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.size === scripts.length && scripts.length > 0}
+                        onChange={toggleAll}
+                        className="h-4 w-4 rounded border-gray-300 accent-emerald-600"
+                      />
+                    </th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Title
                     </th>
@@ -149,9 +212,20 @@ export function GeneratedScriptsTable() {
                     return (
                       <tr
                         key={script.id}
-                        className="cursor-pointer transition-colors hover:bg-muted/50"
+                        className={cn(
+                          "cursor-pointer transition-colors hover:bg-muted/50",
+                          selectedIds.has(script.id) && "bg-emerald-50 dark:bg-emerald-900/10"
+                        )}
                         onClick={() => openDetail(script)}
                       >
+                        <td className="w-10 px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(script.id)}
+                            onChange={() => toggleSelect(script.id)}
+                            className="h-4 w-4 rounded border-gray-300 accent-emerald-600"
+                          />
+                        </td>
                         <td className="px-4 py-3 font-medium text-foreground max-w-[250px] truncate">
                           {script.scriptTitle || "Untitled"}
                         </td>
@@ -337,6 +411,15 @@ export function GeneratedScriptsTable() {
           )}
         </DialogContent>
       </Dialog>
+
+      <ConfirmDeleteDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        onConfirm={handleBulkDelete}
+        count={selectedIds.size}
+        resourceName="script"
+        loading={deleting}
+      />
     </>
   );
 }

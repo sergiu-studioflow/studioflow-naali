@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw, Eye, Play, AlertTriangle } from "lucide-react";
+import { Loader2, RefreshCw, Eye, Play, AlertTriangle, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScriptReviewDetailDialog } from "./script-review-detail-dialog";
+import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog";
 import type { ScriptReview } from "@/lib/types";
 
 const statusStyles: Record<string, string> = {
@@ -48,13 +49,16 @@ export function ScriptReviewsTable() {
   const [triggeringId, setTriggeringId] = useState<string | null>(null);
   const [selected, setSelected] = useState<ScriptReview | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const fetchReviews = () => {
     setLoading(true);
     setError(null);
     fetch("/api/script-reviews")
       .then((r) => r.json())
-      .then((data) => setReviews(data))
+      .then((data) => { setReviews(data); setSelectedIds(new Set()); })
       .catch(() => setError("Failed to load script reviews"))
       .finally(() => setLoading(false));
   };
@@ -85,6 +89,49 @@ export function ScriptReviewsTable() {
     }
   };
 
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === reviews.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(reviews.map((r) => r.id)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    setDeleting(true);
+    setError(null);
+    const ids = Array.from(selectedIds);
+    const failed: string[] = [];
+    for (const id of ids) {
+      try {
+        const res = await fetch(`/api/script-reviews/${id}`, { method: "DELETE" });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          failed.push(data.error || id);
+        }
+      } catch {
+        failed.push(id);
+      }
+    }
+    const deletedIds = ids.filter((id) => !failed.includes(id));
+    setReviews((prev) => prev.filter((r) => !deletedIds.includes(r.id)));
+    setSelectedIds(new Set(failed.filter((f) => ids.includes(f))));
+    if (failed.length > 0) {
+      setError(`Failed to delete ${failed.length} item(s)`);
+    }
+    setDeleting(false);
+    setConfirmOpen(false);
+  };
+
   const openDetail = (review: ScriptReview) => {
     setSelected(review);
     setDialogOpen(true);
@@ -111,15 +158,28 @@ export function ScriptReviewsTable() {
               </div>
               <CardTitle className="text-lg">All Script Reviews</CardTitle>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={fetchReviews}
-              className="gap-2"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Refresh
-            </Button>
+            <div className="flex items-center gap-2">
+              {selectedIds.size > 0 && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setConfirmOpen(true)}
+                  className="gap-1.5"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Delete ({selectedIds.size})
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={fetchReviews}
+                className="gap-2"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Refresh
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -141,6 +201,14 @@ export function ScriptReviewsTable() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+                    <th className="w-10 px-3 py-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.size === reviews.length && reviews.length > 0}
+                        onChange={toggleAll}
+                        className="h-4 w-4 rounded border-gray-300 accent-violet-600"
+                      />
+                    </th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Script Title
                     </th>
@@ -178,9 +246,20 @@ export function ScriptReviewsTable() {
                     return (
                       <tr
                         key={review.id}
-                        className="cursor-pointer transition-colors hover:bg-muted/50"
+                        className={cn(
+                          "cursor-pointer transition-colors hover:bg-muted/50",
+                          selectedIds.has(review.id) && "bg-violet-50 dark:bg-violet-900/10"
+                        )}
                         onClick={() => openDetail(review)}
                       >
+                        <td className="w-10 px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(review.id)}
+                            onChange={() => toggleSelect(review.id)}
+                            className="h-4 w-4 rounded border-gray-300 accent-violet-600"
+                          />
+                        </td>
                         <td className="px-4 py-3 font-medium text-foreground max-w-[200px] truncate">
                           {review.scriptTitle}
                         </td>
@@ -298,6 +377,15 @@ export function ScriptReviewsTable() {
         review={selected}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
+      />
+
+      <ConfirmDeleteDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        onConfirm={handleBulkDelete}
+        count={selectedIds.size}
+        resourceName="script review"
+        loading={deleting}
       />
     </>
   );

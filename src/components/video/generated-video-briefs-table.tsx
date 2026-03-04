@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +10,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { FileText, Loader2, Eye } from "lucide-react";
-import { getStatusColor, formatDate } from "@/lib/utils";
+import { FileText, Loader2, Eye, Trash2 } from "lucide-react";
+import { getStatusColor, formatDate, cn } from "@/lib/utils";
+import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog";
 import type { GeneratedVideoBrief } from "@/lib/types";
 
 export function GeneratedVideoBriefsTable() {
@@ -19,11 +21,14 @@ export function GeneratedVideoBriefsTable() {
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<GeneratedVideoBrief | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/video-briefs/generated")
       .then((r) => r.json())
-      .then((data) => setBriefs(data))
+      .then((data) => { setBriefs(data); setSelectedIds(new Set()); })
       .catch(() => setError("Failed to load generated briefs"))
       .finally(() => setLoading(false));
   }, []);
@@ -31,6 +36,44 @@ export function GeneratedVideoBriefsTable() {
   const openDetail = (brief: GeneratedVideoBrief) => {
     setSelected(brief);
     setDialogOpen(true);
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === briefs.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(briefs.map((b) => b.id)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    setDeleting(true);
+    setError(null);
+    const ids = Array.from(selectedIds);
+    const failed: string[] = [];
+    for (const id of ids) {
+      try {
+        const res = await fetch(`/api/video-briefs/generated/${id}`, { method: "DELETE" });
+        if (!res.ok) failed.push(id);
+      } catch {
+        failed.push(id);
+      }
+    }
+    const deletedIds = ids.filter((id) => !failed.includes(id));
+    setBriefs((prev) => prev.filter((b) => !deletedIds.includes(b.id)));
+    setSelectedIds(new Set(failed));
+    if (failed.length > 0) setError(`Failed to delete ${failed.length} item(s)`);
+    setDeleting(false);
+    setConfirmOpen(false);
   };
 
   if (loading) {
@@ -47,11 +90,24 @@ export function GeneratedVideoBriefsTable() {
     <>
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-100 dark:bg-cyan-900/30">
-              <FileText className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-100 dark:bg-cyan-900/30">
+                <FileText className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+              </div>
+              <CardTitle className="text-lg">Generated Video Briefs</CardTitle>
             </div>
-            <CardTitle className="text-lg">Generated Video Briefs</CardTitle>
+            {selectedIds.size > 0 && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setConfirmOpen(true)}
+                className="gap-1.5"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Delete ({selectedIds.size})
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -73,6 +129,14 @@ export function GeneratedVideoBriefsTable() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+                    <th className="w-10 px-3 py-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.size === briefs.length && briefs.length > 0}
+                        onChange={toggleAll}
+                        className="h-4 w-4 rounded border-gray-300 accent-cyan-600"
+                      />
+                    </th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Title
                     </th>
@@ -101,9 +165,20 @@ export function GeneratedVideoBriefsTable() {
                     return (
                       <tr
                         key={brief.id}
-                        className="cursor-pointer transition-colors hover:bg-muted/50"
+                        className={cn(
+                          "cursor-pointer transition-colors hover:bg-muted/50",
+                          selectedIds.has(brief.id) && "bg-cyan-50 dark:bg-cyan-900/10"
+                        )}
                         onClick={() => openDetail(brief)}
                       >
+                        <td className="w-10 px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(brief.id)}
+                            onChange={() => toggleSelect(brief.id)}
+                            className="h-4 w-4 rounded border-gray-300 accent-cyan-600"
+                          />
+                        </td>
                         <td className="px-4 py-3 font-medium text-foreground max-w-[250px] truncate">
                           {brief.briefTitle || "Untitled"}
                         </td>
@@ -206,6 +281,15 @@ export function GeneratedVideoBriefsTable() {
           )}
         </DialogContent>
       </Dialog>
+
+      <ConfirmDeleteDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        onConfirm={handleBulkDelete}
+        count={selectedIds.size}
+        resourceName="video brief"
+        loading={deleting}
+      />
     </>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +10,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Zap, Loader2, Eye } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { Zap, Loader2, Eye, Trash2 } from "lucide-react";
+import { formatDate, cn } from "@/lib/utils";
+import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog";
 
 interface HookWithScript {
   id: string;
@@ -39,11 +41,14 @@ export function HookVariationsTable() {
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<HookWithScript | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/hooks")
       .then((r) => r.json())
-      .then((data) => setHooks(data))
+      .then((data) => { setHooks(data); setSelectedIds(new Set()); })
       .catch(() => setError("Failed to load hook variations"))
       .finally(() => setLoading(false));
   }, []);
@@ -51,6 +56,44 @@ export function HookVariationsTable() {
   const openDetail = (hook: HookWithScript) => {
     setSelected(hook);
     setDialogOpen(true);
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === hooks.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(hooks.map((h) => h.id)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    setDeleting(true);
+    setError(null);
+    const ids = Array.from(selectedIds);
+    const failed: string[] = [];
+    for (const id of ids) {
+      try {
+        const res = await fetch(`/api/hooks/${id}`, { method: "DELETE" });
+        if (!res.ok) failed.push(id);
+      } catch {
+        failed.push(id);
+      }
+    }
+    const deletedIds = ids.filter((id) => !failed.includes(id));
+    setHooks((prev) => prev.filter((h) => !deletedIds.includes(h.id)));
+    setSelectedIds(new Set(failed));
+    if (failed.length > 0) setError(`Failed to delete ${failed.length} item(s)`);
+    setDeleting(false);
+    setConfirmOpen(false);
   };
 
   if (loading) {
@@ -67,11 +110,24 @@ export function HookVariationsTable() {
     <>
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900/30">
-              <Zap className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900/30">
+                <Zap className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+              </div>
+              <CardTitle className="text-lg">Hook Variations</CardTitle>
             </div>
-            <CardTitle className="text-lg">Hook Variations</CardTitle>
+            {selectedIds.size > 0 && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setConfirmOpen(true)}
+                className="gap-1.5"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Delete ({selectedIds.size})
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -93,6 +149,14 @@ export function HookVariationsTable() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+                    <th className="w-10 px-3 py-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.size === hooks.length && hooks.length > 0}
+                        onChange={toggleAll}
+                        className="h-4 w-4 rounded border-gray-300 accent-orange-600"
+                      />
+                    </th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Hook Title
                     </th>
@@ -124,20 +188,31 @@ export function HookVariationsTable() {
                     return (
                       <tr
                         key={hook.id}
-                        className="cursor-pointer transition-colors hover:bg-muted/50"
+                        className={cn(
+                          "cursor-pointer transition-colors hover:bg-muted/50",
+                          selectedIds.has(hook.id) && "bg-orange-50 dark:bg-orange-900/10"
+                        )}
                         onClick={() => openDetail(hook)}
                       >
+                        <td className="w-10 px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(hook.id)}
+                            onChange={() => toggleSelect(hook.id)}
+                            className="h-4 w-4 rounded border-gray-300 accent-orange-600"
+                          />
+                        </td>
                         <td className="px-4 py-3 font-medium text-foreground max-w-[200px] truncate">
                           {hook.hookTitle || "Untitled"}
                         </td>
                         <td className="px-4 py-3 text-muted-foreground">
-                          {hook.hookType || "—"}
+                          {hook.hookType || "\u2014"}
                         </td>
                         <td className="px-4 py-3 text-muted-foreground hidden md:table-cell max-w-[180px] truncate">
-                          {hook.scriptTitle || "—"}
+                          {hook.scriptTitle || "\u2014"}
                         </td>
                         <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
-                          {hook.platformBestFit || "—"}
+                          {hook.platformBestFit || "\u2014"}
                         </td>
                         <td className="px-4 py-3">
                           {hook.estimatedStopRate ? (
@@ -147,7 +222,7 @@ export function HookVariationsTable() {
                               {hook.estimatedStopRate}
                             </span>
                           ) : (
-                            <span className="text-gray-400">—</span>
+                            <span className="text-gray-400">{"\u2014"}</span>
                           )}
                         </td>
                         <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
@@ -173,8 +248,8 @@ export function HookVariationsTable() {
             <DialogTitle>{selected?.hookTitle || "Hook Detail"}</DialogTitle>
             <DialogDescription>
               {selected?.hookType && `${selected.hookType}`}
-              {selected?.platformBestFit && ` · Best for ${selected.platformBestFit}`}
-              {selected?.estimatedStopRate && ` · ${selected.estimatedStopRate} stop rate`}
+              {selected?.platformBestFit && ` \u00b7 Best for ${selected.platformBestFit}`}
+              {selected?.estimatedStopRate && ` \u00b7 ${selected.estimatedStopRate} stop rate`}
             </DialogDescription>
           </DialogHeader>
 
@@ -219,6 +294,15 @@ export function HookVariationsTable() {
           )}
         </DialogContent>
       </Dialog>
+
+      <ConfirmDeleteDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        onConfirm={handleBulkDelete}
+        count={selectedIds.size}
+        resourceName="hook"
+        loading={deleting}
+      />
     </>
   );
 }
