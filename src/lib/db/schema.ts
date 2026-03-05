@@ -314,7 +314,7 @@ export const generatedScripts = pgTable("generated_scripts", {
 
 export const hookVariations = pgTable("hook_variations", {
   id: uuid("id").primaryKey().defaultRandom(),
-  scriptId: uuid("script_id").notNull().references(() => generatedScripts.id, { onDelete: "cascade" }),
+  scriptId: uuid("script_id").references(() => generatedScripts.id, { onDelete: "cascade" }),
 
   hookTitle: text("hook_title"),
   hookType: text("hook_type"), // Question, Fact, Pattern Interrupt, Emotional, Curiosity Gap
