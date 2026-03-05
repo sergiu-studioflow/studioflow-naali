@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { createClient } from "@/lib/supabase/client";
+import { authClient } from "@/lib/auth-client";
 import { Loader2, ArrowRight, Mail } from "lucide-react";
 
 export default function LoginPage() {
@@ -16,16 +16,13 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await authClient.signIn.magicLink({
       email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
+      callbackURL: "/dashboard",
     });
 
     if (error) {
-      setError(error.message);
+      setError(error.message ?? "Failed to send magic link. Please try again.");
       setLoading(false);
     } else {
       setSent(true);

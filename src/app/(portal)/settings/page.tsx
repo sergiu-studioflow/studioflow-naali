@@ -1,27 +1,27 @@
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@/lib/auth";
 import { db, schema } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { Settings, User, Shield } from "lucide-react";
 import { formatDateTime } from "@/lib/utils";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
 async function getCurrentUser() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (!user) return null;
+  if (!session?.user) return null;
 
   const [portalUser] = await db
     .select()
     .from(schema.users)
-    .where(eq(schema.users.authUserId, user.id))
+    .where(eq(schema.users.userId, session.user.id))
     .limit(1);
 
   return {
-    authUser: user,
+    authUser: session.user,
     portalUser: portalUser || null,
   };
 }
@@ -106,7 +106,7 @@ export default async function SettingsPage() {
             Authentication is managed via magic link. No password is required.
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Auth provider: <span className="font-medium text-foreground">Supabase Auth</span>
+            Auth provider: <span className="font-medium text-foreground">Better Auth</span>
           </p>
         </div>
       </div>

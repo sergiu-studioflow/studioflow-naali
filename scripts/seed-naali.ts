@@ -124,6 +124,15 @@ async function main() {
   console.log("  ✓ brand_intelligence");
 
   console.log("\n✅ Naali seed complete!");
+  console.log("\n📋 Next steps:");
+  console.log("   1. Sign in via the portal login page using your email");
+  console.log("   2. Better Auth will auto-create the user in the 'user' table");
+  console.log("   3. Then run this SQL to create your portal profile:");
+  console.log(`      INSERT INTO users (user_id, display_name, email, role)
+      SELECT id, name, email, 'admin'
+      FROM "user"
+      WHERE email = 'sergiu@studio-flow.co'
+      ON CONFLICT DO NOTHING;`);
   await sql.end();
 }
 

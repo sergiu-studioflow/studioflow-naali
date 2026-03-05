@@ -1,11 +1,63 @@
-import { createClient } from "@/lib/supabase/server";
-import { db, schema } from "@/lib/db";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "@better-auth/drizzle-adapter";
+import { magicLink } from "better-auth/plugins";
+import { Resend } from "resend";
+import { db } from "@/lib/db";
+import * as schema from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL,
+  secret: process.env.BETTER_AUTH_SECRET,
+
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema: {
+      user: schema.authUser,
+      session: schema.authSession,
+      account: schema.authAccount,
+      verification: schema.authVerification,
+    },
+  }),
+
+  plugins: [
+    magicLink({
+      sendMagicLink: async ({ email, url }) => {
+        await resend.emails.send({
+          from: "StudioFlow <noreply@studio-flow.co>",
+          to: email,
+          subject: "Your magic link to sign in",
+          html: `
+            <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
+              <p style="font-size: 15px; color: #111; margin-bottom: 24px;">
+                Click the button below to sign in to your Naali Creative Studio portal.
+                This link expires in 24 hours.
+              </p>
+              <a href="${url}" style="display: inline-block; background: #2D5A3D; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 500;">
+                Sign in to Naali Portal
+              </a>
+              <p style="margin-top: 24px; font-size: 13px; color: #666;">
+                If you didn't request this link, you can safely ignore this email.
+              </p>
+            </div>
+          `,
+        });
+      },
+    }),
+  ],
+});
+
+// =============================================
+// requireAuth — use in all protected API routes
+// =============================================
 
 export type PortalUser = {
   id: string;
-  authUserId: string;
+  userId: string;
   displayName: string;
   email: string;
   role: string;
@@ -18,26 +70,28 @@ export type AuthResult = {
 };
 
 export async function requireAuth(): Promise<AuthResult | NextResponse> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (!user) {
+  if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const [portalUser] = await db
     .select()
     .from(schema.users)
-    .where(eq(schema.users.authUserId, user.id))
+    .where(eq(schema.users.userId, session.user.id))
     .limit(1);
 
   if (!portalUser || !portalUser.isActive) {
     return NextResponse.json({ error: "Access denied" }, { status: 403 });
   }
 
-  return { user, portalUser };
+  return {
+    user: { id: session.user.id, email: session.user.email },
+    portalUser,
+  };
 }
 
 export function isAuthError(result: AuthResult | NextResponse): result is NextResponse {

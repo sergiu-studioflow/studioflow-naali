@@ -13,7 +13,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
+import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -39,8 +39,7 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
   const filteredNav = navigation;
 
   async function handleSignOut() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await authClient.signOut();
     router.push("/login");
   }
 
