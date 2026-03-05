@@ -92,8 +92,8 @@ export function GeneratedVideoBriefsTable() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
-                <FileText className="h-4 w-4 text-primary" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
+                <FileText className="h-5 w-5 text-primary" />
               </div>
               <CardTitle className="text-lg">Generated Video Briefs</CardTitle>
             </div>
@@ -128,7 +128,7 @@ export function GeneratedVideoBriefsTable() {
             <div className="overflow-x-auto rounded-lg border border-border">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border bg-muted/50">
+                  <tr className="border-b border-border bg-muted/70">
                     <th className="w-10 px-3 py-3">
                       <input
                         type="checkbox"
@@ -137,25 +137,25 @@ export function GeneratedVideoBriefsTable() {
                         className="h-4 w-4 rounded border-gray-300 accent-cyan-600"
                       />
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground">
                       Title
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground">
                       Content Type
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground">
                       Platform
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground">
                       Duration
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground">
                       Created
                     </th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
+                    <th className="px-4 py-3.5 text-right text-muted-foreground w-16">
                     </th>
                   </tr>
                 </thead>
@@ -166,12 +166,12 @@ export function GeneratedVideoBriefsTable() {
                       <tr
                         key={brief.id}
                         className={cn(
-                          "cursor-pointer transition-colors hover:bg-muted/50",
+                          "cursor-pointer transition-colors duration-150 hover:bg-accent/60 dark:hover:bg-white/[0.03]",
                           selectedIds.has(brief.id) && "bg-primary/5 dark:bg-primary/5"
                         )}
                         onClick={() => openDetail(brief)}
                       >
-                        <td className="w-10 px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                        <td className="w-10 px-3 py-4" onClick={(e) => e.stopPropagation()}>
                           <input
                             type="checkbox"
                             checked={selectedIds.has(brief.id)}
@@ -179,19 +179,19 @@ export function GeneratedVideoBriefsTable() {
                             className="h-4 w-4 rounded border-gray-300 accent-cyan-600"
                           />
                         </td>
-                        <td className="px-4 py-3 font-medium text-foreground max-w-[250px] truncate">
+                        <td className="px-4 py-4 font-semibold text-foreground max-w-[250px] truncate">
                           {brief.briefTitle || "Untitled"}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {brief.contentType || "\u2014"}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {brief.platform || "\u2014"}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {brief.duration || "\u2014"}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-4">
                           <span
                             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${status.bg} ${status.text}`}
                           >
@@ -199,10 +199,10 @@ export function GeneratedVideoBriefsTable() {
                             {(brief.status || "draft").replace(/_/g, " ")}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {formatDate(brief.createdAt)}
                         </td>
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-4 py-4 text-right">
                           <Eye className="inline h-3.5 w-3.5 text-muted-foreground" />
                         </td>
                       </tr>

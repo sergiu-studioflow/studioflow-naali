@@ -47,8 +47,9 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
   return (
     <aside className="flex h-screen w-[260px] flex-col bg-sidebar">
       {/* Logo Section — StudioFlow × Naali */}
-      <div className="flex h-[80px] items-center justify-center">
-        <div className="flex items-center gap-3">
+      <div className="flex h-[80px] items-center justify-center relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,hsla(79,100%,50%,0.08)_0%,transparent_70%)] pointer-events-none" />
+        <div className="flex items-center gap-3 relative z-10">
           <div className="group/sf rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-[0_0_16px_rgba(178,255,0,0.25)]">
             <Image
               src="/studioflow-logo.png"
@@ -82,10 +83,11 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
+                "flex items-center gap-3 rounded-lg text-sm font-medium transition-all duration-150 border-l-[3px]",
+                "py-3",
                 isActive
-                  ? "bg-sidebar-active text-black shadow-xs"
-                  : "text-sidebar-muted hover:text-sidebar-foreground hover:bg-white/10"
+                  ? "bg-sidebar-active text-black shadow-xs border-l-black/20 pl-[calc(0.75rem-3px)] pr-3"
+                  : "text-white/55 hover:text-white hover:bg-white/10 border-l-transparent pl-[calc(0.75rem-3px)] pr-3"
               )}
             >
               <item.icon className="h-5 w-5 flex-shrink-0" />
@@ -103,7 +105,7 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
         </div>
 
         {userEmail && (
-          <p className="truncate text-[11px] text-sidebar-muted">
+          <p className="truncate text-[12px] font-medium text-white/45">
             {userEmail}
           </p>
         )}

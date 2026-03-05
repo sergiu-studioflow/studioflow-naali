@@ -131,7 +131,7 @@ export function MotivatorDialog({
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Code *
               </label>
               <Input
@@ -141,7 +141,7 @@ export function MotivatorDialog({
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Sort Order
               </label>
               <Input
@@ -154,7 +154,7 @@ export function MotivatorDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Main Angle *
               </label>
               <Input
@@ -164,7 +164,7 @@ export function MotivatorDialog({
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Estimated Share
               </label>
               <Input
@@ -176,7 +176,7 @@ export function MotivatorDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Main Angle Description
             </label>
             <Textarea
@@ -188,7 +188,7 @@ export function MotivatorDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Sub-Angle Name *
             </label>
             <Input
@@ -199,7 +199,7 @@ export function MotivatorDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Pain Point → Relief
             </label>
             <Textarea
@@ -211,7 +211,7 @@ export function MotivatorDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Core Motivation
             </label>
             <Input
@@ -222,7 +222,7 @@ export function MotivatorDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Typical Triggers
             </label>
             <Input
@@ -233,7 +233,7 @@ export function MotivatorDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Representative Quotes
             </label>
             <Input
@@ -244,7 +244,7 @@ export function MotivatorDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Emotional Tone
             </label>
             <Input

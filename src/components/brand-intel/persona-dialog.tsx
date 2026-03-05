@@ -129,7 +129,7 @@ export function PersonaDialog({
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Name *
               </label>
               <Input
@@ -139,7 +139,7 @@ export function PersonaDialog({
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Label / Title
               </label>
               <Input
@@ -152,7 +152,7 @@ export function PersonaDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Demographics
               </label>
               <Input
@@ -162,7 +162,7 @@ export function PersonaDialog({
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Sort Order
               </label>
               <Input
@@ -174,7 +174,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Situation
             </label>
             <Textarea
@@ -186,7 +186,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Pain Points
             </label>
             <Textarea
@@ -198,7 +198,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               What They&apos;ve Tried
             </label>
             <Textarea
@@ -210,7 +210,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               What They Want
             </label>
             <Textarea
@@ -222,7 +222,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Objections
             </label>
             <Textarea
@@ -234,7 +234,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Conversion Triggers
             </label>
             <Textarea
@@ -246,7 +246,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Messaging Notes
             </label>
             <Textarea
@@ -258,7 +258,7 @@ export function PersonaDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Compliance Note
             </label>
             <Textarea
@@ -271,7 +271,7 @@ export function PersonaDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Estimated Share
               </label>
               <Input
@@ -281,7 +281,7 @@ export function PersonaDialog({
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Dominant Angles
               </label>
               <Input

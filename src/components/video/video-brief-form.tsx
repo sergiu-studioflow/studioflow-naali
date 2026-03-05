@@ -202,10 +202,10 @@ export function VideoBriefForm() {
           </div>
         )}
 
-        <div className="space-y-5">
+        <div className="space-y-6">
           {/* Brief Name */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Brief Name <span className="text-red-500">*</span>
             </label>
             <Input
@@ -218,7 +218,7 @@ export function VideoBriefForm() {
           {/* Content Type + Target Objection */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Content Type
               </label>
               <Select value={form.contentType} onValueChange={(v) => update("contentType", v)}>
@@ -235,7 +235,7 @@ export function VideoBriefForm() {
               </Select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Target Objection
               </label>
               <Select value={form.targetObjection} onValueChange={(v) => update("targetObjection", v)}>
@@ -256,7 +256,7 @@ export function VideoBriefForm() {
           {/* Persona + Awareness Level */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Persona
               </label>
               <Select value={form.persona} onValueChange={(v) => update("persona", v)}>
@@ -273,7 +273,7 @@ export function VideoBriefForm() {
               </Select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Awareness Level
               </label>
               <Select value={form.awarenessLevel} onValueChange={(v) => update("awarenessLevel", v)}>
@@ -293,7 +293,7 @@ export function VideoBriefForm() {
 
           {/* Proof Assets */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Proof Assets
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -325,7 +325,7 @@ export function VideoBriefForm() {
 
           {/* Motivator */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Motivator
             </label>
             <Select value={form.motivator} onValueChange={(v) => update("motivator", v)}>
@@ -344,7 +344,7 @@ export function VideoBriefForm() {
 
           {/* Scenario Description */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Scenario Description
             </label>
             <Textarea
@@ -357,7 +357,7 @@ export function VideoBriefForm() {
 
           {/* Angle Direction */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Angle Direction
             </label>
             <Textarea
@@ -371,7 +371,7 @@ export function VideoBriefForm() {
           {/* Platform + Duration + Language */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Platform
               </label>
               <Select value={form.platform} onValueChange={(v) => update("platform", v)}>
@@ -388,7 +388,7 @@ export function VideoBriefForm() {
               </Select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Duration
               </label>
               <Select value={form.duration} onValueChange={(v) => update("duration", v)}>
@@ -405,7 +405,7 @@ export function VideoBriefForm() {
               </Select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Language
               </label>
               <Select value={form.language} onValueChange={(v) => update("language", v)}>
@@ -425,7 +425,7 @@ export function VideoBriefForm() {
 
           {/* Production Constraints */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Production Constraints
             </label>
             <Textarea
@@ -438,7 +438,7 @@ export function VideoBriefForm() {
 
           {/* Notes */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Notes
             </label>
             <Textarea

@@ -202,10 +202,10 @@ export function ScriptForm() {
           </div>
         )}
 
-        <div className="space-y-5">
+        <div className="space-y-6">
           {/* Brief Name */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Brief Name
             </label>
             <Input
@@ -218,7 +218,7 @@ export function ScriptForm() {
           {/* Content Type + Target Objection */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Content Type
               </label>
               <Select value={form.contentType} onValueChange={(v) => update("contentType", v)}>
@@ -235,7 +235,7 @@ export function ScriptForm() {
               </Select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Target Objection
               </label>
               <Select value={form.targetObjection} onValueChange={(v) => update("targetObjection", v)}>
@@ -256,7 +256,7 @@ export function ScriptForm() {
           {/* Persona + Awareness Level */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Persona
               </label>
               <Select value={form.personaId} onValueChange={(v) => update("personaId", v)}>
@@ -273,7 +273,7 @@ export function ScriptForm() {
               </Select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Awareness Level
               </label>
               <Select value={form.awarenessLevelId} onValueChange={(v) => update("awarenessLevelId", v)}>
@@ -293,7 +293,7 @@ export function ScriptForm() {
 
           {/* Proof Assets */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Proof Assets
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -325,7 +325,7 @@ export function ScriptForm() {
 
           {/* Motivator */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Motivator
             </label>
             <Select value={form.motivator} onValueChange={(v) => update("motivator", v)}>
@@ -344,7 +344,7 @@ export function ScriptForm() {
 
           {/* Scenario Description */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Scenario Description
             </label>
             <Textarea
@@ -356,7 +356,7 @@ export function ScriptForm() {
 
           {/* Angle Direction */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Angle Direction
             </label>
             <Textarea
@@ -369,7 +369,7 @@ export function ScriptForm() {
           {/* Platform + Duration + Language */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Platform
               </label>
               <Select value={form.platform} onValueChange={(v) => update("platform", v)}>
@@ -386,7 +386,7 @@ export function ScriptForm() {
               </Select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Duration
               </label>
               <Select value={form.duration} onValueChange={(v) => update("duration", v)}>
@@ -403,7 +403,7 @@ export function ScriptForm() {
               </Select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Language
               </label>
               <Select value={form.language} onValueChange={(v) => update("language", v)}>
@@ -423,7 +423,7 @@ export function ScriptForm() {
 
           {/* Tone Override */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Tone Override
             </label>
             <Input
@@ -434,7 +434,7 @@ export function ScriptForm() {
 
           {/* Notes */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Notes
             </label>
             <Textarea

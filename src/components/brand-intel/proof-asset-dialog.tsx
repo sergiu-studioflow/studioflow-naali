@@ -106,7 +106,7 @@ export function ProofAssetDialog({
 
         <div className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Name *
             </label>
             <Input
@@ -117,7 +117,7 @@ export function ProofAssetDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Description
             </label>
             <Textarea
@@ -129,7 +129,7 @@ export function ProofAssetDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Sort Order
             </label>
             <Input

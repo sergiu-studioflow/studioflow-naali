@@ -3,7 +3,7 @@
 @layer base {
   /* ─── Light Theme — StudioFlow palette (dark/neon-green/white) ─── */
   :root {
-    --background: 0 0% 96%;
+    --background: 0 0% 97%;
     --foreground: 0 0% 5%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 5%;
@@ -14,12 +14,12 @@
     --secondary: 0 0% 93%;
     --secondary-foreground: 0 0% 5%;
     --muted: 0 0% 93%;
-    --muted-foreground: 0 0% 35%;
+    --muted-foreground: 0 0% 42%;
     --accent: 0 0% 93%;
     --accent-foreground: 0 0% 5%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 89%;
+    --border: 0 0% 87%;
     --input: 0 0% 89%;
     --ring: 79 100% 38%;
     --radius: 0.75rem;
@@ -55,7 +55,7 @@
     --secondary: 0 0% 9%;
     --secondary-foreground: 0 0% 90%;
     --muted: 0 0% 9%;
-    --muted-foreground: 0 0% 35%;
+    --muted-foreground: 0 0% 55%;
     --accent: 0 0% 11%;
     --accent-foreground: 0 0% 90%;
     --destructive: 0 72% 51%;
@@ -130,6 +130,18 @@
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-image: radial-gradient(ellipse 80% 50% at 50% -10%, hsla(79, 100%, 38%, 0.04) 0%, transparent 55%);
+  }
+  .dark body {
+    background-image: radial-gradient(ellipse 80% 50% at 50% -20%, hsla(79, 100%, 50%, 0.07) 0%, transparent 60%);
+  }
+
+  /* Global table header typography */
+  thead th {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
   }
 }
 
@@ -195,4 +207,41 @@ html {
 
 .animate-fade-in {
   animation: fade-in 0.3s ease-out both;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.35s ease-out both;
+}
+
+/* Stagger delay helpers */
+.delay-50  { animation-delay: 50ms; }
+.delay-100 { animation-delay: 100ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-250 { animation-delay: 250ms; }
+
+/* Dashboard card top accent bar */
+.card-accent {
+  position: relative;
+  overflow: hidden;
+}
+.dark .card-accent::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, hsla(79, 100%, 50%, 0.04) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
 }

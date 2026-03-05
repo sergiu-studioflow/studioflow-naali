@@ -153,8 +153,8 @@ export function ScriptReviewsTable() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
-                <Play className="h-4 w-4 text-primary" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
+                <Play className="h-5 w-5 text-primary" />
               </div>
               <CardTitle className="text-lg">All Script Reviews</CardTitle>
             </div>
@@ -200,7 +200,7 @@ export function ScriptReviewsTable() {
             <div className="overflow-x-auto rounded-lg border border-border">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border bg-muted/50">
+                  <tr className="border-b border-border bg-muted/70">
                     <th className="w-10 px-3 py-3">
                       <input
                         type="checkbox"
@@ -209,31 +209,31 @@ export function ScriptReviewsTable() {
                         className="h-4 w-4 rounded border-gray-300 accent-violet-600"
                       />
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground">
                       Script Title
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground">
                       Product
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground hidden md:table-cell">
                       Persona
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground hidden md:table-cell">
                       Awareness
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground">
                       Compliance
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground">
                       Score
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground hidden md:table-cell">
                       Source
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-left text-muted-foreground">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">
+                    <th className="px-4 py-3.5 text-right text-muted-foreground">
                       Actions
                     </th>
                   </tr>
@@ -247,12 +247,12 @@ export function ScriptReviewsTable() {
                       <tr
                         key={review.id}
                         className={cn(
-                          "cursor-pointer transition-colors hover:bg-muted/50",
+                          "cursor-pointer transition-colors duration-150 hover:bg-accent/60 dark:hover:bg-white/[0.03]",
                           selectedIds.has(review.id) && "bg-primary/5 dark:bg-primary/5"
                         )}
                         onClick={() => openDetail(review)}
                       >
-                        <td className="w-10 px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                        <td className="w-10 px-3 py-4" onClick={(e) => e.stopPropagation()}>
                           <input
                             type="checkbox"
                             checked={selectedIds.has(review.id)}
@@ -260,16 +260,16 @@ export function ScriptReviewsTable() {
                             className="h-4 w-4 rounded border-gray-300 accent-violet-600"
                           />
                         </td>
-                        <td className="px-4 py-3 font-medium text-foreground max-w-[200px] truncate">
+                        <td className="px-4 py-4 font-semibold text-foreground max-w-[200px] truncate">
                           {review.scriptTitle}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {review.product || "\u2014"}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell max-w-[120px] truncate">
+                        <td className="px-4 py-4 text-muted-foreground hidden md:table-cell max-w-[120px] truncate">
                           {review.targetPersona || "\u2014"}
                         </td>
-                        <td className="px-4 py-3 hidden md:table-cell">
+                        <td className="px-4 py-4 hidden md:table-cell">
                           {review.agencyAwarenessLevel != null || (isComplete && review.aiAwarenessLevel != null) ? (
                             <div className="flex items-center gap-1">
                               <span className="text-muted-foreground">
@@ -291,7 +291,7 @@ export function ScriptReviewsTable() {
                             <span className="text-muted-foreground">{"\u2014"}</span>
                           )}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-4">
                           {isComplete && review.complianceStatus ? (
                             <span
                               className={cn(
@@ -305,7 +305,7 @@ export function ScriptReviewsTable() {
                             <span className="text-muted-foreground">{"\u2014"}</span>
                           )}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-4">
                           {isComplete && review.overallScore != null ? (
                             <span className={cn("font-semibold", getScoreColor(review.overallScore))}>
                               {review.overallScore}
@@ -324,7 +324,7 @@ export function ScriptReviewsTable() {
                             {source}
                           </span>
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-4">
                           <span
                             className={cn(
                               "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",

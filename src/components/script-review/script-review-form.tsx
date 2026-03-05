@@ -140,10 +140,10 @@ export function ScriptReviewForm() {
           </div>
         )}
 
-        <div className="space-y-5">
+        <div className="space-y-6">
           {/* Script Title */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Script Title <span className="text-red-500">*</span>
             </label>
             <Input
@@ -155,7 +155,7 @@ export function ScriptReviewForm() {
 
           {/* Script Text */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
               Script Text <span className="text-red-500">*</span>
             </label>
             <Textarea
@@ -169,7 +169,7 @@ export function ScriptReviewForm() {
           {/* Awareness Level + Product + Persona */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Agency Awareness Level
               </label>
               <Select
@@ -189,7 +189,7 @@ export function ScriptReviewForm() {
               </Select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Product
               </label>
               <Select
@@ -209,7 +209,7 @@ export function ScriptReviewForm() {
               </Select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
                 Target Persona
               </label>
               <Select

@@ -83,8 +83,8 @@ export function PersonasSection() {
         >
           <div className="flex items-center gap-3">
             <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${collapsed ? "" : "rotate-90"}`} />
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
-              <Users className="h-4 w-4 text-primary" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
+              <Users className="h-5 w-5 text-primary" />
             </div>
             <CardTitle className="text-lg">Target Personas</CardTitle>
             {collapsed && personas.length > 0 && (
@@ -126,26 +126,26 @@ export function PersonasSection() {
               <div className="overflow-hidden rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-border bg-muted/50">
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    <tr className="border-b border-border bg-muted/70">
+                      <th className="px-4 py-3.5 text-left text-muted-foreground">
                         #
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      <th className="px-4 py-3.5 text-left text-muted-foreground">
                         Name
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      <th className="px-4 py-3.5 text-left text-muted-foreground">
                         Label
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                      <th className="px-4 py-3.5 text-left text-muted-foreground hidden md:table-cell">
                         Demographics
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                      <th className="px-4 py-3.5 text-left text-muted-foreground hidden md:table-cell">
                         Est. Share
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
+                      <th className="px-4 py-3.5 text-left text-muted-foreground hidden lg:table-cell">
                         Situation
                       </th>
-                      <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
+                      <th className="px-4 py-3.5 text-right text-muted-foreground w-16">
                       </th>
                     </tr>
                   </thead>
@@ -153,36 +153,36 @@ export function PersonasSection() {
                     {personas.map((persona) => (
                       <tr
                         key={persona.id}
-                        className="cursor-pointer transition-colors hover:bg-muted/50"
+                        className="cursor-pointer transition-colors duration-150 hover:bg-accent/60 dark:hover:bg-white/[0.03]"
                         onClick={() => openEdit(persona)}
                       >
-                        <td className="px-4 py-3 text-muted-foreground tabular-nums">
+                        <td className="px-4 py-4 text-muted-foreground tabular-nums">
                           {persona.sortOrder}
                         </td>
-                        <td className="px-4 py-3 font-medium text-foreground">
+                        <td className="px-4 py-4 font-semibold text-foreground">
                           {persona.name}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground">
+                        <td className="px-4 py-4 text-muted-foreground">
                           {persona.label || "—"}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
+                        <td className="px-4 py-4 text-muted-foreground hidden md:table-cell">
                           {persona.demographics
                             ? persona.demographics.length > 50
                               ? persona.demographics.slice(0, 50) + "..."
                               : persona.demographics
                             : "—"}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
+                        <td className="px-4 py-4 text-muted-foreground hidden md:table-cell">
                           {persona.estimatedShare || "—"}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
+                        <td className="px-4 py-4 text-muted-foreground hidden lg:table-cell">
                           {persona.situation
                             ? persona.situation.length > 60
                               ? persona.situation.slice(0, 60) + "..."
                               : persona.situation
                             : "—"}
                         </td>
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-4 py-4 text-right">
                           <Pencil className="inline h-3.5 w-3.5 text-muted-foreground" />
                         </td>
                       </tr>

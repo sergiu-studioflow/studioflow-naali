@@ -73,16 +73,18 @@ export default async function DashboardPage() {
           <Link
             key={system.href}
             href={system.href}
-            className="animate-fade-up group relative rounded-xl border border-border bg-card p-6 shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5"
+            className="card-accent animate-fade-up group relative rounded-xl border border-border bg-card p-7 shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 hover:border-primary/20"
             style={{ animationDelay: `${(i + 1) * 80}ms` }}
           >
+            {/* Top accent bar — appears on hover */}
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-primary/30 via-primary/80 to-primary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                  <system.icon className="h-5 w-5 text-primary" />
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                  <system.icon className="h-6 w-6 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-base font-semibold tracking-tight text-foreground">
+                  <h2 className="text-[15px] font-bold tracking-tight text-foreground">
                     {system.name}
                   </h2>
                   <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
@@ -90,14 +92,14 @@ export default async function DashboardPage() {
                   </p>
                 </div>
               </div>
-              <ArrowRight className="mt-0.5 h-4 w-4 text-muted-foreground transition-all duration-200 group-hover:text-foreground group-hover:translate-x-0.5" />
+              <ArrowRight className="mt-0.5 h-4 w-4 text-muted-foreground transition-all duration-200 group-hover:text-foreground group-hover:translate-x-1" />
             </div>
             {system.stat != null && (
               <div className="mt-5 flex items-baseline gap-2 border-t border-border pt-4">
-                <span className="text-3xl font-bold tracking-tight text-primary">
+                <span className="text-4xl font-bold tracking-tight text-primary">
                   {system.stat}
                 </span>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm font-medium text-muted-foreground">
                   {system.statLabel}
                 </span>
               </div>
