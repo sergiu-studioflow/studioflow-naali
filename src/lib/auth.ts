@@ -1,7 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { magicLink } from "better-auth/plugins";
-import { Resend } from "resend";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -11,6 +10,11 @@ import { NextResponse } from "next/server";
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
+
+  trustedOrigins: [
+    "https://studioflow-naali.vercel.app",
+    "https://naali.studio-flow.co",
+  ],
 
   database: drizzleAdapter(db, {
     provider: "pg",
@@ -28,7 +32,7 @@ export const auth = betterAuth({
         const { Resend } = await import("resend");
         const resend = new Resend(process.env.RESEND_API_KEY);
         await resend.emails.send({
-          from: "StudioFlow <noreply@studio-flow.co>",
+          from: "StudioFlow <onboarding@resend.dev>",
           to: email,
           subject: "Your magic link to sign in",
           html: `
