@@ -82,11 +82,26 @@ export async function requireAuth(): Promise<AuthResult | NextResponse> {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const [portalUser] = await db
+  let [portalUser] = await db
     .select()
     .from(schema.users)
     .where(eq(schema.users.userId, session.user.id))
     .limit(1);
+
+  // Auto-provision any verified Magic Link user as admin on first login
+  if (!portalUser) {
+    const [created] = await db
+      .insert(schema.users)
+      .values({
+        userId: session.user.id,
+        displayName: session.user.name || session.user.email?.split("@")[0] || "User",
+        email: session.user.email || "",
+        role: "admin",
+        isActive: true,
+      })
+      .returning();
+    portalUser = created;
+  }
 
   if (!portalUser || !portalUser.isActive) {
     return NextResponse.json({ error: "Access denied" }, { status: 403 });
