@@ -21,6 +21,7 @@ export async function GET() {
 
   const hooksByScript = new Map<string, (typeof hooks)[number][]>();
   for (const hook of hooks) {
+    if (!hook.scriptId) continue;
     const arr = hooksByScript.get(hook.scriptId) || [];
     arr.push(hook);
     hooksByScript.set(hook.scriptId, arr);
