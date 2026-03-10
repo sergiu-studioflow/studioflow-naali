@@ -1,6 +1,6 @@
 import { db, schema } from "@/lib/db";
 import { count } from "drizzle-orm";
-import { Brain, ClipboardCheck, Film, Video, ArrowRight } from "lucide-react";
+import { Brain, ClipboardCheck, Film, Video, ImageIcon, Lightbulb, MessageSquareText, ArrowRight, Lock } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -32,7 +32,7 @@ export default async function DashboardPage() {
       description: "Brand knowledge base, personas, and awareness framework",
     },
     {
-      name: "Script Review",
+      name: "Script Review & Correction System",
       href: "/script-review",
       icon: ClipboardCheck,
       description: "AI-powered compliance review and script correction",
@@ -40,7 +40,7 @@ export default async function DashboardPage() {
       statLabel: "reviews",
     },
     {
-      name: "Script Generation",
+      name: "Script Generation System",
       href: "/script-generation",
       icon: Film,
       description: "Content briefs, AI scripts, and hook variations",
@@ -48,12 +48,30 @@ export default async function DashboardPage() {
       statLabel: "scripts",
     },
     {
-      name: "Video Briefs",
+      name: "Video Brief System",
       href: "/video-briefs",
       icon: Video,
       description: "Production-ready video briefs with shot lists and talent notes",
       stat: stats.videoBriefs,
       statLabel: "briefs",
+    },
+  ];
+
+  const comingSoonSystems = [
+    {
+      name: "Static Ad Generation System",
+      icon: ImageIcon,
+      description: "AI-generated static ad creatives and design variations",
+    },
+    {
+      name: "Inspiration-to-Ad Workflow",
+      icon: Lightbulb,
+      description: "Transform inspiration references into production-ready ad concepts",
+    },
+    {
+      name: "Customer Feedback Mining",
+      icon: MessageSquareText,
+      description: "Extract insights and angles from customer reviews and feedback",
     },
   ];
 
@@ -106,6 +124,40 @@ export default async function DashboardPage() {
             )}
           </Link>
         ))}
+      </div>
+
+      {/* Coming Soon */}
+      <div className="animate-fade-up" style={{ animationDelay: "400ms" }}>
+        <h2 className="text-lg font-semibold text-foreground mb-4">Coming Soon</h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {comingSoonSystems.map((system, i) => (
+            <div
+              key={system.name}
+              className="animate-fade-up relative rounded-xl border border-border bg-card p-7 select-none"
+              style={{ animationDelay: `${(i + 5) * 80}ms` }}
+            >
+              <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl gap-1.5 z-10">
+                <Lock className="h-4 w-4 text-muted-foreground/60" />
+                <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                  Phase 2
+                </span>
+              </div>
+              <div className="flex items-start gap-4 opacity-30 blur-[2px] pointer-events-none">
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-muted">
+                  <system.icon className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <div>
+                  <h2 className="text-[15px] font-bold tracking-tight text-foreground">
+                    {system.name}
+                  </h2>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                    {system.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

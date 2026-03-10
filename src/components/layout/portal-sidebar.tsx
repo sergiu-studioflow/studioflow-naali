@@ -9,6 +9,9 @@ import {
   ClipboardCheck,
   Film,
   Video,
+  ImageIcon,
+  Lightbulb,
+  MessageSquareText,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -20,9 +23,15 @@ import { ThemeToggle } from "@/components/theme-toggle";
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Brand Intelligence", href: "/brand-intelligence", icon: Brain },
-  { name: "Script Review", href: "/script-review", icon: ClipboardCheck },
-  { name: "Script Generation", href: "/script-generation", icon: Film },
-  { name: "Video Briefs", href: "/video-briefs", icon: Video },
+  { name: "Script Review & Correction System", href: "/script-review", icon: ClipboardCheck },
+  { name: "Script Generation System", href: "/script-generation", icon: Film },
+  { name: "Video Brief System", href: "/video-briefs", icon: Video },
+];
+
+const comingSoon = [
+  { name: "Static Ad Generation System", icon: ImageIcon },
+  { name: "Inspiration-to-Ad Workflow", icon: Lightbulb },
+  { name: "Customer Feedback Mining", icon: MessageSquareText },
 ];
 
 type PortalSidebarProps = {
@@ -74,26 +83,46 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
       <div className="mx-5 h-px bg-white/10" />
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-        {filteredNav.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-lg text-sm font-medium transition-all duration-150 border-l-[3px]",
-                "py-3",
-                isActive
-                  ? "bg-sidebar-active text-black shadow-xs border-l-black/20 pl-[calc(0.75rem-3px)] pr-3"
-                  : "text-white/55 hover:text-white hover:bg-white/10 border-l-transparent pl-[calc(0.75rem-3px)] pr-3"
-              )}
-            >
-              <item.icon className="h-5 w-5 flex-shrink-0" />
-              {item.name}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 overflow-y-auto px-3 py-4">
+        <div className="space-y-1">
+          {filteredNav.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-lg text-sm font-medium transition-all duration-150 border-l-[3px]",
+                  "py-3",
+                  isActive
+                    ? "bg-sidebar-active text-black shadow-xs border-l-black/20 pl-[calc(0.75rem-3px)] pr-3"
+                    : "text-white/55 hover:text-white hover:bg-white/10 border-l-transparent pl-[calc(0.75rem-3px)] pr-3"
+                )}
+              >
+                <item.icon className="h-5 w-5 flex-shrink-0" />
+                {item.name}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Coming Soon */}
+        <div className="mt-6">
+          <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-sidebar-muted/50">
+            Coming Soon
+          </p>
+          <div className="space-y-1">
+            {comingSoon.map((item) => (
+              <div
+                key={item.name}
+                className="flex items-center gap-3 rounded-lg text-sm font-medium border-l-[3px] border-l-transparent py-3 pl-[calc(0.75rem-3px)] pr-3 opacity-25 cursor-not-allowed"
+              >
+                <item.icon className="h-5 w-5 flex-shrink-0 text-white/55" />
+                <span className="text-white/55">{item.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </nav>
 
       {/* Footer */}
