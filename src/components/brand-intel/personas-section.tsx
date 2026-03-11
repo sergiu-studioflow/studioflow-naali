@@ -175,14 +175,14 @@ export function PersonasSection() {
                         <td className="px-5 py-5 text-muted-foreground hidden md:table-cell">
                           {persona.estimatedShare || "—"}
                         </td>
-                        <td className="px-4 py-4 text-muted-foreground hidden lg:table-cell">
+                        <td className="px-5 py-5 text-muted-foreground hidden lg:table-cell">
                           {persona.situation
                             ? persona.situation.length > 60
                               ? persona.situation.slice(0, 60) + "..."
                               : persona.situation
                             : "—"}
                         </td>
-                        <td className="px-4 py-4 text-right">
+                        <td className="px-6 py-5 text-right">
                           <Pencil className="inline h-3.5 w-3.5 text-muted-foreground" />
                         </td>
                       </tr>
