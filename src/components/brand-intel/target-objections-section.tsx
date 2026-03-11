@@ -123,20 +123,20 @@ export function TargetObjectionsSection() {
                 </Button>
               </div>
             ) : (
-              <div className="overflow-hidden rounded-lg border border-border">
+              <div className="rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border bg-muted/50">
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                         #
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                         Name
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden md:table-cell">
                         Description
                       </th>
-                      <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
+                      <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-16">
                       </th>
                     </tr>
                   </thead>
@@ -147,20 +147,20 @@ export function TargetObjectionsSection() {
                         className="cursor-pointer transition-colors hover:bg-muted/50"
                         onClick={() => openEdit(objection)}
                       >
-                        <td className="px-4 py-3 text-muted-foreground tabular-nums">
+                        <td className="px-5 py-5 text-muted-foreground tabular-nums">
                           {objection.sortOrder}
                         </td>
-                        <td className="px-4 py-3 font-medium text-foreground">
+                        <td className="px-5 py-5 font-medium text-foreground">
                           {objection.name}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
+                        <td className="px-5 py-5 text-muted-foreground hidden md:table-cell">
                           {objection.description
                             ? objection.description.length > 60
                               ? objection.description.slice(0, 60) + "..."
                               : objection.description
                             : "\u2014"}
                         </td>
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-6 py-5 text-right">
                           <Pencil className="inline h-3.5 w-3.5 text-muted-foreground" />
                         </td>
                       </tr>
