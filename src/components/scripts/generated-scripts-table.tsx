@@ -173,7 +173,7 @@ export function GeneratedScriptsTable() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/70">
-                    <th className="w-10 px-3 py-3">
+                    <th className="w-14 px-5 py-4">
                       <input
                         type="checkbox"
                         checked={selectedIds.size === scripts.length && scripts.length > 0}
@@ -181,28 +181,28 @@ export function GeneratedScriptsTable() {
                         className="h-4 w-4 rounded border-gray-300 accent-emerald-600"
                       />
                     </th>
-                    <th className="px-4 py-3.5 text-left text-muted-foreground">
+                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Title
                     </th>
-                    <th className="px-4 py-3.5 text-left text-muted-foreground">
+                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Content Type
                     </th>
-                    <th className="px-4 py-3.5 text-left text-muted-foreground">
+                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Platform
                     </th>
-                    <th className="px-4 py-3.5 text-left text-muted-foreground">
+                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Duration
                     </th>
-                    <th className="px-4 py-3.5 text-left text-muted-foreground">
+                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Review Status
                     </th>
-                    <th className="px-4 py-3.5 text-left text-muted-foreground hidden md:table-cell">
+                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden md:table-cell">
                       Hooks
                     </th>
-                    <th className="px-4 py-3.5 text-left text-muted-foreground">
+                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Created
                     </th>
-                    <th className="px-4 py-3.5 text-right text-muted-foreground w-16">
+                    <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-16">
                     </th>
                   </tr>
                 </thead>
@@ -218,7 +218,7 @@ export function GeneratedScriptsTable() {
                         )}
                         onClick={() => openDetail(script)}
                       >
-                        <td className="w-10 px-3 py-4" onClick={(e) => e.stopPropagation()}>
+                        <td className="px-5 py-5" onClick={(e) => e.stopPropagation()}>
                           <input
                             type="checkbox"
                             checked={selectedIds.has(script.id)}
@@ -226,19 +226,19 @@ export function GeneratedScriptsTable() {
                             className="h-4 w-4 rounded border-gray-300 accent-emerald-600"
                           />
                         </td>
-                        <td className="px-4 py-4 font-semibold text-foreground max-w-[250px] truncate">
+                        <td className="px-5 py-5 font-semibold text-foreground max-w-[250px] truncate">
                           {script.scriptTitle || "Untitled"}
                         </td>
-                        <td className="px-4 py-4 text-muted-foreground">
+                        <td className="px-5 py-5 text-muted-foreground">
                           {script.contentType || "—"}
                         </td>
-                        <td className="px-4 py-4 text-muted-foreground">
+                        <td className="px-5 py-5 text-muted-foreground">
                           {script.platform || "—"}
                         </td>
-                        <td className="px-4 py-4 text-muted-foreground">
+                        <td className="px-5 py-5 text-muted-foreground">
                           {script.duration || "—"}
                         </td>
-                        <td className="px-4 py-4">
+                        <td className="px-6 py-5">
                           <div className="relative" ref={statusDropdown === script.id ? dropdownRef : undefined}>
                             <button
                               type="button"
@@ -277,7 +277,7 @@ export function GeneratedScriptsTable() {
                             )}
                           </div>
                         </td>
-                        <td className="px-4 py-4 text-muted-foreground hidden md:table-cell">
+                        <td className="px-5 py-5 text-muted-foreground hidden md:table-cell">
                           {script.hookVariations.length > 0 ? (
                             <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary dark:bg-primary/10 dark:text-primary">
                               <Zap className="h-3 w-3" />
@@ -287,10 +287,10 @@ export function GeneratedScriptsTable() {
                             <span className="text-muted-foreground">—</span>
                           )}
                         </td>
-                        <td className="px-4 py-4 text-muted-foreground">
+                        <td className="px-5 py-5 text-muted-foreground">
                           {formatDate(script.createdAt)}
                         </td>
-                        <td className="px-4 py-4 text-right">
+                        <td className="px-6 py-5 text-right">
                           <Eye className="inline h-3.5 w-3.5 text-muted-foreground" />
                         </td>
                       </tr>

@@ -125,26 +125,26 @@ export function AwarenessLevelsSection() {
                 </Button>
               </div>
             ) : (
-              <div className="overflow-hidden rounded-lg border border-border">
+              <div className="rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border bg-muted/50">
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground w-16">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground w-16">
                         Level
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                         Name
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden md:table-cell">
                         Description
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden lg:table-cell">
                         Hook Style
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden lg:table-cell">
                         Tone
                       </th>
-                      <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
+                      <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-16">
                       </th>
                     </tr>
                   </thead>
@@ -155,32 +155,32 @@ export function AwarenessLevelsSection() {
                         className="cursor-pointer transition-colors hover:bg-muted/50"
                         onClick={() => openEdit(level)}
                       >
-                        <td className="px-4 py-3">
+                        <td className="px-5 py-5">
                           <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/15 text-xs font-bold text-primary dark:bg-primary/10 dark:text-primary">
                             {level.level}
                           </span>
                         </td>
-                        <td className="px-4 py-3 font-medium text-foreground">
+                        <td className="px-5 py-5 font-medium text-foreground">
                           {level.name}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
+                        <td className="px-5 py-5 text-muted-foreground hidden md:table-cell">
                           {level.description
                             ? level.description.length > 60
                               ? level.description.slice(0, 60) + "..."
                               : level.description
                             : "—"}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
+                        <td className="px-5 py-5 text-muted-foreground hidden lg:table-cell">
                           {level.hookStyle
                             ? level.hookStyle.length > 40
                               ? level.hookStyle.slice(0, 40) + "..."
                               : level.hookStyle
                             : "—"}
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
+                        <td className="px-5 py-5 text-muted-foreground hidden lg:table-cell">
                           {level.tone || "—"}
                         </td>
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-6 py-5 text-right">
                           <Pencil className="inline h-3.5 w-3.5 text-muted-foreground" />
                         </td>
                       </tr>

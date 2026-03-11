@@ -123,29 +123,29 @@ export function PersonasSection() {
                 </Button>
               </div>
             ) : (
-              <div className="overflow-hidden rounded-lg border border-border">
+              <div className="rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border bg-muted/70">
-                      <th className="px-4 py-3.5 text-left text-muted-foreground">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                         #
                       </th>
-                      <th className="px-4 py-3.5 text-left text-muted-foreground">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                         Name
                       </th>
-                      <th className="px-4 py-3.5 text-left text-muted-foreground">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                         Label
                       </th>
-                      <th className="px-4 py-3.5 text-left text-muted-foreground hidden md:table-cell">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden md:table-cell">
                         Demographics
                       </th>
-                      <th className="px-4 py-3.5 text-left text-muted-foreground hidden md:table-cell">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden md:table-cell">
                         Est. Share
                       </th>
-                      <th className="px-4 py-3.5 text-left text-muted-foreground hidden lg:table-cell">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden lg:table-cell">
                         Situation
                       </th>
-                      <th className="px-4 py-3.5 text-right text-muted-foreground w-16">
+                      <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-16">
                       </th>
                     </tr>
                   </thead>
@@ -156,23 +156,23 @@ export function PersonasSection() {
                         className="cursor-pointer transition-colors duration-150 hover:bg-accent/60 dark:hover:bg-white/[0.03]"
                         onClick={() => openEdit(persona)}
                       >
-                        <td className="px-4 py-4 text-muted-foreground tabular-nums">
+                        <td className="px-5 py-5 text-muted-foreground tabular-nums">
                           {persona.sortOrder}
                         </td>
-                        <td className="px-4 py-4 font-semibold text-foreground">
+                        <td className="px-5 py-5 font-semibold text-foreground">
                           {persona.name}
                         </td>
-                        <td className="px-4 py-4 text-muted-foreground">
+                        <td className="px-5 py-5 text-muted-foreground">
                           {persona.label || "—"}
                         </td>
-                        <td className="px-4 py-4 text-muted-foreground hidden md:table-cell">
+                        <td className="px-5 py-5 text-muted-foreground hidden md:table-cell">
                           {persona.demographics
                             ? persona.demographics.length > 50
                               ? persona.demographics.slice(0, 50) + "..."
                               : persona.demographics
                             : "—"}
                         </td>
-                        <td className="px-4 py-4 text-muted-foreground hidden md:table-cell">
+                        <td className="px-5 py-5 text-muted-foreground hidden md:table-cell">
                           {persona.estimatedShare || "—"}
                         </td>
                         <td className="px-4 py-4 text-muted-foreground hidden lg:table-cell">

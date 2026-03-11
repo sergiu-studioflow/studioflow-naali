@@ -133,23 +133,23 @@ export function MotivatorsSection() {
                 </Button>
               </div>
             ) : (
-              <div className="overflow-hidden rounded-lg border border-border">
+              <div className="rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border bg-muted/50">
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground w-20">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground w-20">
                         Code
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                         Sub-Angle
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden md:table-cell">
                         Emotional Tone
                       </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
+                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden lg:table-cell">
                         Core Motivation
                       </th>
-                      <th className="px-4 py-3 text-right font-medium text-muted-foreground w-16">
+                      <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-16">
                       </th>
                     </tr>
                   </thead>
@@ -159,7 +159,7 @@ export function MotivatorsSection() {
                       return (
                         <Fragment key={mainAngle}>
                           <tr className="bg-muted/30">
-                            <td colSpan={5} className="px-4 py-2.5">
+                            <td colSpan={5} className="px-6 py-4">
                               <div className="flex items-center gap-2">
                                 <span className="font-semibold text-foreground">
                                   {mainAngle}
@@ -183,25 +183,25 @@ export function MotivatorsSection() {
                               className="cursor-pointer transition-colors hover:bg-muted/50"
                               onClick={() => openEdit(motivator)}
                             >
-                              <td className="px-4 py-3">
+                              <td className="px-5 py-5">
                                 <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground">
                                   {motivator.code}
                                 </span>
                               </td>
-                              <td className="px-4 py-3 font-medium text-foreground">
+                              <td className="px-5 py-5 font-medium text-foreground">
                                 {motivator.subAngle}
                               </td>
-                              <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
+                              <td className="px-5 py-5 text-muted-foreground hidden md:table-cell">
                                 {motivator.emotionalTone || "\u2014"}
                               </td>
-                              <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
+                              <td className="px-5 py-5 text-muted-foreground hidden lg:table-cell">
                                 {motivator.coreMotivation
                                   ? motivator.coreMotivation.length > 60
                                     ? motivator.coreMotivation.slice(0, 60) + "..."
                                     : motivator.coreMotivation
                                   : "\u2014"}
                               </td>
-                              <td className="px-4 py-3 text-right">
+                              <td className="px-6 py-5 text-right">
                                 <Pencil className="inline h-3.5 w-3.5 text-muted-foreground" />
                               </td>
                             </tr>
