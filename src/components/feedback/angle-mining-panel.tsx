@@ -17,9 +17,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Loader2, Sparkles, CheckCircle2, XCircle, Clock } from "lucide-react";
-import type { MinedAngle } from "@/lib/types";
+import type { MinedAngle, Persona } from "@/lib/types";
 
-const PERSONA_OPTIONS = ["Marie", "Sophie", "Nathalie", "Céline"];
 const STATUS_OPTIONS = [
   { value: "new", label: "New", icon: Clock },
   { value: "approved", label: "Approved", icon: CheckCircle2 },
@@ -34,6 +33,7 @@ function truncate(text: string | null, max = 100) {
 export function AngleMiningPanel() {
   const [angles, setAngles] = useState<MinedAngle[]>([]);
   const [runs, setRuns] = useState<string[]>([]);
+  const [personas, setPersonas] = useState<Persona[]>([]);
   const [loading, setLoading] = useState(true);
   const [mining, setMining] = useState(false);
   const [miningSuccess, setMiningSuccess] = useState<string | null>(null);
@@ -46,6 +46,14 @@ export function AngleMiningPanel() {
 
   // Detail dialog
   const [selectedAngle, setSelectedAngle] = useState<MinedAngle | null>(null);
+
+  // Load personas from Brand Intelligence
+  useEffect(() => {
+    fetch("/api/personas")
+      .then((r) => r.json())
+      .then((data) => setPersonas(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  }, []);
 
   const fetchAngles = useCallback(async () => {
     setLoading(true);
@@ -190,8 +198,8 @@ export function AngleMiningPanel() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All personas</SelectItem>
-                  {PERSONA_OPTIONS.map((p) => (
-                    <SelectItem key={p} value={p}>{p}</SelectItem>
+                  {personas.map((p) => (
+                    <SelectItem key={p.id} value={p.name}>{p.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
