@@ -3,13 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Loader2, Upload, CheckCircle2, AlertCircle, FileText } from "lucide-react";
 import Papa from "papaparse";
 import { mapCsvRow, detectSourceType, SOURCE_TYPE_OPTIONS } from "@/lib/feedback/column-mappings";
@@ -48,10 +41,7 @@ export function CsvUploadForm() {
   }
 
   async function handleUpload() {
-    if (!file || !sourceType) {
-      setError("Please select a file and source type");
-      return;
-    }
+    if (!file || !sourceType) return;
 
     setUploading(true);
     setError(null);
@@ -153,7 +143,7 @@ export function CsvUploadForm() {
           <div className="mb-6">
             <p className="text-sm text-muted-foreground">
               Upload a CSV file with customer reviews or survey responses. The
-              source type is auto-detected from the column headers.
+              survey type is automatically detected from the column headers.
             </p>
           </div>
 
@@ -185,7 +175,6 @@ export function CsvUploadForm() {
                   setSourceType("");
                   setError(null);
                   if (selected) {
-                    // Read first line to auto-detect source type
                     const reader = new FileReader();
                     reader.onload = () => {
                       const firstLine = (reader.result as string).split("\n")[0];
@@ -194,7 +183,12 @@ export function CsvUploadForm() {
                       if (detected) {
                         setSourceType(detected);
                       } else {
-                        setError("Could not auto-detect survey type. Please select manually.");
+                        setFile(null);
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                        setError(
+                          "This file doesn\u2019t match any supported survey format. " +
+                          "Supported: Anti-Stress Gummies, Magnesium+, Menopause, and Reorder surveys."
+                        );
                       }
                     };
                     reader.readAsText(selected.slice(0, 4096));
@@ -205,35 +199,9 @@ export function CsvUploadForm() {
             </div>
 
             {file && sourceType && (
-              <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm dark:border-emerald-900 dark:bg-emerald-950">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-emerald-700 dark:text-emerald-400">
-                  Detected: <strong>{SOURCE_TYPE_OPTIONS.find((o) => o.value === sourceType)?.label}</strong>
-                </span>
-              </div>
-            )}
-
-            {file && !sourceType && !error && (
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
-                  Could not auto-detect — select manually
-                </label>
-                <Select
-                  value={sourceType}
-                  onValueChange={(v) => { setSourceType(v as SourceType); setError(null); }}
-                >
-                  <SelectTrigger className="w-[280px]">
-                    <SelectValue placeholder="Select survey type..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {SOURCE_TYPE_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <p className="text-sm text-muted-foreground">
+                {sourceLabel(sourceType)}
+              </p>
             )}
 
             {uploading && progress.total > 0 && (
