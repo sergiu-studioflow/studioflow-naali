@@ -9,7 +9,7 @@ import { mapCsvRow, detectSourceType, SOURCE_TYPE_OPTIONS } from "@/lib/feedback
 import type { SourceType } from "@/lib/feedback/column-mappings";
 import type { CsvImport } from "@/lib/types";
 
-const BATCH_SIZE = 500;
+const BATCH_SIZE = 100;
 
 export function CsvUploadForm() {
   const [sourceType, setSourceType] = useState<SourceType | "">("");

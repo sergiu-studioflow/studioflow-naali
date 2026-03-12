@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod/v4";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 const importSchema = z.object({
   fileName: z.string().min(1),
