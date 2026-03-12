@@ -147,3 +147,23 @@ export const SOURCE_TYPE_OPTIONS: Array<{ value: SourceType; label: string }> = 
   { value: "menopause_survey", label: "Menopause Survey" },
   { value: "reorder_survey", label: "Reorder Survey" },
 ];
+
+/** Auto-detect source type from CSV headers */
+export function detectSourceType(headers: string[]): SourceType | null {
+  const joined = headers.join(" ").toLowerCase();
+
+  if (joined.includes("gummies anti-stress") || joined.includes("anti-stress")) {
+    return "asg_survey";
+  }
+  if (joined.includes("magnésium") || joined.includes("magnesium")) {
+    return "mag_survey";
+  }
+  if (joined.includes("ménopause") || joined.includes("menopause")) {
+    return "menopause_survey";
+  }
+  if (joined.includes("repasser commande")) {
+    return "reorder_survey";
+  }
+
+  return null;
+}

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Loader2, Upload, CheckCircle2, AlertCircle, FileText } from "lucide-react";
 import Papa from "papaparse";
-import { mapCsvRow, SOURCE_TYPE_OPTIONS } from "@/lib/feedback/column-mappings";
+import { mapCsvRow, detectSourceType, SOURCE_TYPE_OPTIONS } from "@/lib/feedback/column-mappings";
 import type { SourceType } from "@/lib/feedback/column-mappings";
 import type { CsvImport } from "@/lib/types";
 
@@ -153,7 +153,7 @@ export function CsvUploadForm() {
           <div className="mb-6">
             <p className="text-sm text-muted-foreground">
               Upload a CSV file with customer reviews or survey responses. The
-              system will parse and store them for angle mining.
+              source type is auto-detected from the column headers.
             </p>
           </div>
 
@@ -173,37 +173,68 @@ export function CsvUploadForm() {
           <div className="space-y-5">
             <div>
               <label className="mb-2 block text-sm font-semibold text-foreground">
-                Source Type
-              </label>
-              <Select
-                value={sourceType}
-                onValueChange={(v) => setSourceType(v as SourceType)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select survey type..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {SOURCE_TYPE_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-foreground">
                 CSV File
               </label>
               <input
                 ref={fileInputRef}
                 type="file"
                 accept=".csv"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                onChange={(e) => {
+                  const selected = e.target.files?.[0] || null;
+                  setFile(selected);
+                  setSourceType("");
+                  setError(null);
+                  if (selected) {
+                    // Read first line to auto-detect source type
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      const firstLine = (reader.result as string).split("\n")[0];
+                      const headers = firstLine.split(",").map((h) => h.trim().replace(/^"|"$/g, ""));
+                      const detected = detectSourceType(headers);
+                      if (detected) {
+                        setSourceType(detected);
+                      } else {
+                        setError("Could not auto-detect survey type. Please select manually.");
+                      }
+                    };
+                    reader.readAsText(selected.slice(0, 4096));
+                  }
+                }}
                 className="block w-full text-sm text-muted-foreground file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-primary/90"
               />
             </div>
+
+            {file && sourceType && (
+              <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm dark:border-emerald-900 dark:bg-emerald-950">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <span className="text-emerald-700 dark:text-emerald-400">
+                  Detected: <strong>{SOURCE_TYPE_OPTIONS.find((o) => o.value === sourceType)?.label}</strong>
+                </span>
+              </div>
+            )}
+
+            {file && !sourceType && !error && (
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                  Could not auto-detect — select manually
+                </label>
+                <Select
+                  value={sourceType}
+                  onValueChange={(v) => { setSourceType(v as SourceType); setError(null); }}
+                >
+                  <SelectTrigger className="w-[280px]">
+                    <SelectValue placeholder="Select survey type..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SOURCE_TYPE_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             {uploading && progress.total > 0 && (
               <div className="space-y-2">
