@@ -272,3 +272,65 @@ export type Motivator = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type CsvImport = {
+  id: string;
+  uploadedBy: string | null;
+  fileName: string;
+  sourceType: string;
+  rowCount: number;
+  status: string;
+  errorMessage: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type CustomerReview = {
+  id: string;
+  importId: string | null;
+  sourceType: string;
+  productContext: string | null;
+  customerName: string | null;
+  customerEmail: string | null;
+  totalSpent: string | null;
+  ordersCount: number | null;
+  mainProblem: string | null;
+  problemDescription: string | null;
+  dailyImpact: string | null;
+  moodWords: string | null;
+  purchaseHesitations: string | null;
+  whatConvinced: string | null;
+  whyPurchased: string | null;
+  expectedOutcome: string | null;
+  reviewText: string | null;
+  symptoms: string[] | null;
+  discoverySource: string | null;
+  influencerSource: string | null;
+  utmSource: string | null;
+  rawData: Record<string, unknown> | null;
+  submittedAt: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type MinedAngle = {
+  id: string;
+  miningRunId: string;
+  angleName: string;
+  targetPersona: string | null;
+  awarenessLevel: string | null;
+  keyInsight: string;
+  supportingQuotes: Array<{ quote: string; sourceType?: string }> | null;
+  painPointCluster: string | null;
+  emotionalTrigger: string | null;
+  complianceNotes: string | null;
+  suggestedHookDirection: string | null;
+  suggestedAngleType: string | null;
+  reviewsAnalyzed: number | null;
+  confidence: string | null;
+  status: string;
+  approvedBy: string | null;
+  approvedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+};

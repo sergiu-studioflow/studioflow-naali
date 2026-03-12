@@ -450,3 +450,87 @@ export const activityLog = pgTable("activity_log", {
   details: jsonb("details"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// =============================================
+// CSV IMPORTS (upload tracking)
+// =============================================
+
+export const csvImports = pgTable("csv_imports", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  uploadedBy: uuid("uploaded_by").references(() => users.id),
+  fileName: text("file_name").notNull(),
+  sourceType: text("source_type").notNull(), // asg_survey, mag_survey, menopause_survey, reorder_survey
+  rowCount: integer("row_count").notNull().default(0),
+  status: text("status").notNull().default("processing"), // processing, complete, error
+  errorMessage: text("error_message"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// =============================================
+// CUSTOMER REVIEWS (normalized across all sources)
+// =============================================
+
+export const customerReviews = pgTable("customer_reviews", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  importId: uuid("import_id").references(() => csvImports.id, { onDelete: "cascade" }),
+  sourceType: text("source_type").notNull(), // asg_survey, mag_survey, menopause_survey, reorder_survey
+  productContext: text("product_context"), // Anti-Stress Gummies, Magnesium+, Menopause, Multiple/Unknown
+
+  // Customer info
+  customerName: text("customer_name"),
+  customerEmail: text("customer_email"),
+  totalSpent: text("total_spent"),
+  ordersCount: integer("orders_count"),
+
+  // Core review content (normalized)
+  mainProblem: text("main_problem"),
+  problemDescription: text("problem_description"),
+  dailyImpact: text("daily_impact"),
+  moodWords: text("mood_words"),
+  purchaseHesitations: text("purchase_hesitations"),
+  whatConvinced: text("what_convinced"),
+  whyPurchased: text("why_purchased"),
+  expectedOutcome: text("expected_outcome"),
+  reviewText: text("review_text"), // Main testimonial / reorder reason
+  symptoms: jsonb("symptoms"), // Array of symptom strings (menopause)
+
+  // Discovery & attribution
+  discoverySource: text("discovery_source"),
+  influencerSource: text("influencer_source"),
+  utmSource: text("utm_source"),
+
+  // Full original row
+  rawData: jsonb("raw_data"),
+
+  // Dates
+  submittedAt: text("submitted_at"), // Original date from CSV
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// =============================================
+// MINED ANGLES (AI-generated angle briefs)
+// =============================================
+
+export const minedAngles = pgTable("mined_angles", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  miningRunId: text("mining_run_id").notNull(),
+  angleName: text("angle_name").notNull(),
+  targetPersona: text("target_persona"), // Marie, Sophie, Nathalie, Céline
+  awarenessLevel: text("awareness_level"), // 1-5 mapped
+  keyInsight: text("key_insight").notNull(),
+  supportingQuotes: jsonb("supporting_quotes"), // [{quote, sourceType, reviewId?}]
+  painPointCluster: text("pain_point_cluster"),
+  emotionalTrigger: text("emotional_trigger"),
+  complianceNotes: text("compliance_notes"),
+  suggestedHookDirection: text("suggested_hook_direction"),
+  suggestedAngleType: text("suggested_angle_type"), // Testimonial proof, Problem agitation, etc.
+  reviewsAnalyzed: integer("reviews_analyzed"),
+  confidence: text("confidence"), // high, medium, low
+  status: text("status").notNull().default("new"), // new, approved, rejected
+  approvedBy: uuid("approved_by").references(() => users.id),
+  approvedAt: timestamp("approved_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
