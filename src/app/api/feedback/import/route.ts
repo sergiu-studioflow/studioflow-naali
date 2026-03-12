@@ -10,7 +10,7 @@ const importSchema = z.object({
   fileName: z.string().min(1),
   sourceType: z.enum(["asg_survey", "mag_survey", "menopause_survey", "reorder_survey"]),
   rows: z.array(z.record(z.string(), z.unknown())).min(1),
-  importId: z.string().uuid().optional(), // For batch continuation
+  importId: z.string().uuid().nullable().optional(), // For batch continuation
 });
 
 export async function POST(request: NextRequest) {
