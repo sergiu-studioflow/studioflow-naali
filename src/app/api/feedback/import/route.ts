@@ -17,11 +17,21 @@ export async function POST(request: NextRequest) {
   const auth = await requireAuth();
   if (isAuthError(auth)) return auth;
 
-  const body = await request.json();
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Request body too large or malformed JSON" },
+      { status: 400 }
+    );
+  }
+
   const parsed = importSchema.safeParse(body);
   if (!parsed.success) {
+    const issues = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`);
     return NextResponse.json(
-      { error: "Invalid input", details: parsed.error.format() },
+      { error: `Validation failed: ${issues.join("; ")}` },
       { status: 400 }
     );
   }
@@ -82,8 +92,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     console.error("Import error:", err);
+    const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json(
-      { error: "Failed to import rows" },
+      { error: `Failed to import rows: ${message}` },
       { status: 500 }
     );
   }
