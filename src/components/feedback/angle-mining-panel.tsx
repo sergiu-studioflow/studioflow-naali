@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -16,7 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Loader2, Sparkles, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { Loader2, Sparkles, CheckCircle2, XCircle, Clock, Trash2 } from "lucide-react";
 import type { MinedAngle, Persona } from "@/lib/types";
 
 const STATUS_OPTIONS = [
@@ -43,6 +44,10 @@ export function AngleMiningPanel() {
   const [personaFilter, setPersonaFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [runFilter, setRunFilter] = useState("");
+
+  // Bulk selection
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
 
   // Detail dialog
   const [selectedAngle, setSelectedAngle] = useState<MinedAngle | null>(null);
@@ -119,6 +124,43 @@ export function AngleMiningPanel() {
       }
     } catch {
       // silent
+    }
+  }
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === angles.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(angles.map((a) => a.id)));
+    }
+  };
+
+  async function bulkDelete() {
+    if (selectedIds.size === 0) return;
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/feedback/angles", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: Array.from(selectedIds) }),
+      });
+      if (res.ok) {
+        setAngles((prev) => prev.filter((a) => !selectedIds.has(a.id)));
+        setSelectedIds(new Set());
+      }
+    } catch {
+      // silent
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -233,6 +275,35 @@ export function AngleMiningPanel() {
               )}
             </div>
 
+            {/* Bulk action bar */}
+            {selectedIds.size > 0 && (
+              <div className="mb-4 flex items-center gap-3 rounded-lg border border-border bg-muted/50 px-4 py-2.5">
+                <span className="text-sm font-medium">
+                  {selectedIds.size} selected
+                </span>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={bulkDelete}
+                  disabled={deleting}
+                >
+                  {deleting ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-3.5 w-3.5" />
+                  )}
+                  Delete selected
+                </Button>
+                <button
+                  onClick={() => setSelectedIds(new Set())}
+                  className="ml-auto text-xs text-muted-foreground hover:text-foreground"
+                >
+                  Clear selection
+                </button>
+              </div>
+            )}
+
             {loading ? (
               <div className="flex items-center justify-center py-16">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -246,6 +317,12 @@ export function AngleMiningPanel() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b text-left text-muted-foreground">
+                      <th className="w-10 pb-3 pr-2">
+                        <Checkbox
+                          checked={angles.length > 0 && selectedIds.size === angles.length}
+                          onCheckedChange={toggleSelectAll}
+                        />
+                      </th>
                       <th className="pb-3 pr-3 font-medium">Angle</th>
                       <th className="pb-3 pr-3 font-medium">Persona</th>
                       <th className="pb-3 pr-3 font-medium">Awareness</th>
@@ -261,6 +338,12 @@ export function AngleMiningPanel() {
                         className="cursor-pointer border-b transition-colors hover:bg-muted/50 last:border-0"
                         onClick={() => setSelectedAngle(angle)}
                       >
+                        <td className="py-3 pr-2" onClick={(e) => e.stopPropagation()}>
+                          <Checkbox
+                            checked={selectedIds.has(angle.id)}
+                            onCheckedChange={() => toggleSelect(angle.id)}
+                          />
+                        </td>
                         <td className="py-3 pr-3 font-medium">
                           {angle.angleName}
                         </td>
@@ -368,19 +451,23 @@ export function AngleMiningPanel() {
                     Supporting Quotes
                   </p>
                   <div className="mt-2 space-y-2">
-                    {selectedAngle.supportingQuotes.map((q, i) => (
-                      <blockquote
-                        key={i}
-                        className="border-l-2 border-primary/30 pl-3 text-sm italic text-muted-foreground"
-                      >
-                        &ldquo;{q.quote}&rdquo;
-                        {q.sourceType && (
-                          <span className="ml-2 text-xs not-italic">
-                            ({q.sourceType})
-                          </span>
-                        )}
-                      </blockquote>
-                    ))}
+                    {selectedAngle.supportingQuotes.map((q, i) => {
+                      const text = typeof q === "string" ? q : q.quote;
+                      const source = typeof q === "string" ? null : q.sourceType;
+                      return (
+                        <blockquote
+                          key={i}
+                          className="border-l-2 border-primary/30 pl-3 text-sm italic text-muted-foreground"
+                        >
+                          &ldquo;{text}&rdquo;
+                          {source && (
+                            <span className="ml-2 text-xs not-italic">
+                              ({source})
+                            </span>
+                          )}
+                        </blockquote>
+                      );
+                    })}
                   </div>
                 </div>
               )}
