@@ -30,7 +30,6 @@ export function ScriptForm() {
   const [error, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
-    briefName: "",
     contentType: "",
     targetObjection: "",
     personaId: "",
@@ -80,11 +79,18 @@ export function ScriptForm() {
     );
   };
 
+  const generateBriefName = () => {
+    const parts = [
+      form.contentType || "Brief",
+      form.platform || "",
+      form.duration || "",
+    ].filter(Boolean);
+    const now = new Date();
+    const ts = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    return `${parts.join(" - ")} - ${ts}`;
+  };
+
   const handleSubmit = async () => {
-    if (!form.briefName.trim()) {
-      setError("Brief Name is required");
-      return;
-    }
     setSubmitting(true);
     setError(null);
     setSuccess(false);
@@ -92,10 +98,11 @@ export function ScriptForm() {
     try {
       // 1. Create the brief
       const briefPayload: Record<string, unknown> = {
-        briefName: form.briefName,
+        briefName: generateBriefName(),
       };
       if (form.contentType) briefPayload.contentType = form.contentType;
       if (form.targetObjection) briefPayload.targetObjection = form.targetObjection;
+
       if (form.personaId) briefPayload.personaId = form.personaId;
       if (form.awarenessLevelId) briefPayload.awarenessLevelId = form.awarenessLevelId;
       if (form.productId) briefPayload.productId = form.productId;
@@ -134,7 +141,6 @@ export function ScriptForm() {
       setSuccess(true);
       // Reset form
       setForm({
-        briefName: "",
         contentType: "",
         targetObjection: "",
         personaId: "",
@@ -159,7 +165,6 @@ export function ScriptForm() {
 
   const handleClear = () => {
     setForm({
-      briefName: "",
       contentType: "",
       targetObjection: "",
       personaId: "",
@@ -210,18 +215,6 @@ export function ScriptForm() {
         )}
 
         <div className="space-y-6">
-          {/* Brief Name */}
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-foreground">
-              Brief Name
-            </label>
-            <Input
-              value={form.briefName}
-              onChange={(e) => update("briefName", e.target.value)}
-              placeholder=""
-            />
-          </div>
-
           {/* Content Type + Target Objection */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>

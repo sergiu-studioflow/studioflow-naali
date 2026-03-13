@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -30,7 +29,6 @@ export function VideoBriefForm() {
   const [error, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
-    briefName: "",
     contentType: "",
     targetObjection: "",
     persona: "",
@@ -80,11 +78,18 @@ export function VideoBriefForm() {
     );
   };
 
+  const generateBriefName = () => {
+    const parts = [
+      form.contentType || "Video Brief",
+      form.platform || "",
+      form.duration || "",
+    ].filter(Boolean);
+    const now = new Date();
+    const ts = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    return `${parts.join(" - ")} - ${ts}`;
+  };
+
   const handleSubmit = async () => {
-    if (!form.briefName.trim()) {
-      setError("Brief Name is required");
-      return;
-    }
     setSubmitting(true);
     setError(null);
     setSuccess(false);
@@ -92,7 +97,7 @@ export function VideoBriefForm() {
     try {
       // 1. Create the video brief request
       const briefPayload: Record<string, unknown> = {
-        briefName: form.briefName,
+        briefName: generateBriefName(),
       };
       if (form.contentType) briefPayload.contentType = form.contentType;
       if (form.targetObjection) briefPayload.targetObjection = form.targetObjection;
@@ -134,7 +139,6 @@ export function VideoBriefForm() {
       setSuccess(true);
       // Reset form
       setForm({
-        briefName: "",
         contentType: "",
         targetObjection: "",
         persona: "",
@@ -159,7 +163,6 @@ export function VideoBriefForm() {
 
   const handleClear = () => {
     setForm({
-      briefName: "",
       contentType: "",
       targetObjection: "",
       persona: "",
@@ -210,18 +213,6 @@ export function VideoBriefForm() {
         )}
 
         <div className="space-y-6">
-          {/* Brief Name */}
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-foreground">
-              Brief Name <span className="text-red-500">*</span>
-            </label>
-            <Input
-              value={form.briefName}
-              onChange={(e) => update("briefName", e.target.value)}
-              placeholder="e.g., Hero Product Demo - TikTok"
-            />
-          </div>
-
           {/* Content Type + Target Objection */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
