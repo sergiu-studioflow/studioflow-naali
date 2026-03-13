@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Loader2, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Persona, AwarenessLevel, AppConfig, TargetObjection, ProofAsset, Motivator } from "@/lib/types";
+import type { Persona, AwarenessLevel, AppConfig, TargetObjection, ProofAsset, Motivator, Product } from "@/lib/types";
 
 export function VideoBriefForm() {
   const [config, setConfig] = useState<AppConfig | null>(null);
@@ -23,6 +23,7 @@ export function VideoBriefForm() {
   const [targetObjections, setTargetObjections] = useState<TargetObjection[]>([]);
   const [proofAssetOptions, setProofAssetOptions] = useState<ProofAsset[]>([]);
   const [motivators, setMotivators] = useState<Motivator[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -34,6 +35,7 @@ export function VideoBriefForm() {
     targetObjection: "",
     persona: "",
     awarenessLevel: "",
+    productFocus: "",
     scenarioDescription: "",
     angleDirection: "",
     platform: "",
@@ -54,14 +56,16 @@ export function VideoBriefForm() {
       fetch("/api/target-objections").then((r) => r.json()),
       fetch("/api/proof-assets").then((r) => r.json()),
       fetch("/api/motivators").then((r) => r.json()),
+      fetch("/api/products").then((r) => r.json()),
     ])
-      .then(([cfg, p, l, to, pa, m]) => {
+      .then(([cfg, p, l, to, pa, m, prod]) => {
         setConfig(cfg);
         setPersonas(p);
         setLevels(l);
         setTargetObjections(to);
         setProofAssetOptions(pa);
         setMotivators(m);
+        setProducts(prod);
       })
       .catch(() => setError("Failed to load form options"))
       .finally(() => setLoading(false));
@@ -94,6 +98,7 @@ export function VideoBriefForm() {
       if (form.targetObjection) briefPayload.targetObjection = form.targetObjection;
       if (form.persona) briefPayload.persona = form.persona;
       if (form.awarenessLevel) briefPayload.awarenessLevel = form.awarenessLevel;
+      if (form.productFocus) briefPayload.productFocus = form.productFocus;
       if (form.scenarioDescription) briefPayload.scenarioDescription = form.scenarioDescription;
       if (form.angleDirection) briefPayload.angleDirection = form.angleDirection;
       if (form.platform) briefPayload.platform = form.platform;
@@ -134,6 +139,7 @@ export function VideoBriefForm() {
         targetObjection: "",
         persona: "",
         awarenessLevel: "",
+        productFocus: "",
         scenarioDescription: "",
         angleDirection: "",
         platform: "",
@@ -158,6 +164,7 @@ export function VideoBriefForm() {
       targetObjection: "",
       persona: "",
       awarenessLevel: "",
+      productFocus: "",
       scenarioDescription: "",
       angleDirection: "",
       platform: "",
@@ -289,6 +296,25 @@ export function VideoBriefForm() {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          {/* Product Focus */}
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-foreground">
+              Product Focus
+            </label>
+            <Select value={form.productFocus} onValueChange={(v) => update("productFocus", v)}>
+              <SelectTrigger>
+                <SelectValue placeholder="" />
+              </SelectTrigger>
+              <SelectContent>
+                {products.map((p) => (
+                  <SelectItem key={p.id} value={p.name}>
+                    {p.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Proof Assets */}

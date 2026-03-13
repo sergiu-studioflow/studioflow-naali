@@ -38,6 +38,7 @@ const createVideoBriefSchema = z.object({
   angleDirection: z.string().optional(),
   persona: z.string().optional(),
   awarenessLevel: z.string().optional(),
+  productFocus: z.string().optional(),
   platform: z.string().optional(),
   duration: z.string().optional(),
   language: z.string().optional(),

@@ -248,6 +248,7 @@ export const contentBriefs = pgTable("content_briefs", {
   proofAssets: jsonb("proof_assets"), // JSON array
   personaId: uuid("persona_id").references(() => personas.id),
   awarenessLevelId: uuid("awareness_level_id").references(() => awarenessLevels.id),
+  productId: uuid("product_id").references(() => products.id),
   platform: text("platform"),
   duration: text("duration"),
   language: text("language").default("FR"),
@@ -389,6 +390,7 @@ export const videoBriefRequests = pgTable("video_brief_requests", {
   angleDirection: text("angle_direction"),
   persona: text("persona"),
   awarenessLevel: text("awareness_level"),
+  productFocus: text("product_focus"),
   platform: text("platform"),
   duration: text("duration"),
   language: text("language").default("FR"),

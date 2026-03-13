@@ -38,6 +38,7 @@ const createBriefSchema = z.object({
   proofAssets: z.array(z.string()).optional(),
   personaId: z.string().uuid().optional(),
   awarenessLevelId: z.string().uuid().optional(),
+  productId: z.string().uuid().optional(),
   platform: z.string().optional(),
   duration: z.string().optional(),
   language: z.string().optional(),
