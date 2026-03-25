@@ -323,7 +323,7 @@ function formatValue(val: unknown, depth = 0): string {
       })
       .join("\n");
   }
-  if (typeof val === "object") return formatObject(val, depth);
+  if (typeof val === "object") return formatObject(val as Record<string, unknown>, depth);
   return String(val);
 }
 
