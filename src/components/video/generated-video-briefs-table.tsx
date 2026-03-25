@@ -310,14 +310,74 @@ export function GeneratedVideoBriefsTable() {
   );
 }
 
+function formatValue(val: unknown, depth = 0): string {
+  if (val === null || val === undefined) return "";
+  if (typeof val === "string") return val;
+  if (typeof val === "number" || typeof val === "boolean") return String(val);
+  if (Array.isArray(val)) {
+    return val
+      .map((item) => {
+        if (typeof item === "string") return `\u2022 ${item}`;
+        if (typeof item === "object" && item !== null) return formatObject(item, depth + 1);
+        return `\u2022 ${String(item)}`;
+      })
+      .join("\n");
+  }
+  if (typeof val === "object") return formatObject(val, depth);
+  return String(val);
+}
+
+function formatObject(obj: Record<string, unknown>, depth = 0): string {
+  return Object.entries(obj)
+    .filter(([, v]) => v !== null && v !== undefined && v !== "")
+    .map(([key, val]) => {
+      const label = key
+        .replace(/_/g, " ")
+        .replace(/([a-z])([A-Z])/g, "$1 $2")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+      if (typeof val === "string" || typeof val === "number" || typeof val === "boolean") {
+        return `${label}: ${val}`;
+      }
+      if (Array.isArray(val)) {
+        const items = formatValue(val, depth + 1);
+        return `${label}:\n${items}`;
+      }
+      if (typeof val === "object" && val !== null) {
+        return `${label}:\n${formatObject(val as Record<string, unknown>, depth + 1)
+          .split("\n")
+          .map((l) => `  ${l}`)
+          .join("\n")}`;
+      }
+      return `${label}: ${String(val)}`;
+    })
+    .join("\n");
+}
+
+function tryParseAndFormat(content: string): string {
+  const trimmed = content.trim();
+  if (
+    (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+    (trimmed.startsWith("[") && trimmed.endsWith("]"))
+  ) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      return formatValue(parsed);
+    } catch {
+      // not valid JSON, return as-is
+    }
+  }
+  return content;
+}
+
 function Section({ title, content }: { title: string; content: string }) {
+  const formatted = tryParseAndFormat(content);
   return (
     <div>
       <h4 className="mb-1.5 text-sm font-medium text-foreground">
         {title}
       </h4>
-      <div className="whitespace-pre-wrap rounded-lg bg-muted p-4 text-sm text-secondary-foreground">
-        {content}
+      <div className="whitespace-pre-wrap rounded-lg bg-muted p-4 text-sm leading-relaxed text-secondary-foreground">
+        {formatted}
       </div>
     </div>
   );
