@@ -170,10 +170,21 @@ export function GeneratedScriptsTable() {
             </div>
           ) : (
             <div className="overflow-x-auto rounded-lg border border-border">
-              <table className="w-full text-sm">
+              <table className="w-full table-fixed text-sm">
+                <colgroup>
+                  <col className="w-10" />         {/* checkbox */}
+                  <col className="w-[28%]" />      {/* title */}
+                  <col className="w-[10%] hidden lg:table-column" /> {/* type */}
+                  <col className="w-[15%]" />      {/* platform */}
+                  <col className="w-[8%]" />       {/* duration */}
+                  <col className="w-[12%]" />      {/* status */}
+                  <col className="w-[7%] hidden md:table-column" /> {/* hooks */}
+                  <col className="w-[11%]" />      {/* created */}
+                  <col className="w-12" />         {/* view */}
+                </colgroup>
                 <thead>
                   <tr className="border-b border-border bg-muted/70">
-                    <th className="w-14 px-5 py-4">
+                    <th className="w-10 px-4 py-3">
                       <input
                         type="checkbox"
                         checked={selectedIds.size === scripts.length && scripts.length > 0}
@@ -181,28 +192,28 @@ export function GeneratedScriptsTable() {
                         className="h-4 w-4 rounded border-gray-300 accent-emerald-600"
                       />
                     </th>
-                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Title
                     </th>
-                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                      Content Type
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden lg:table-cell">
+                      Type
                     </th>
-                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Platform
                     </th>
-                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Duration
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                      Review Status
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Status
                     </th>
-                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden md:table-cell">
+                    <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden md:table-cell">
                       Hooks
                     </th>
-                    <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Created
                     </th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-16">
+                    <th className="w-12 px-3 py-3">
                     </th>
                   </tr>
                 </thead>
@@ -213,12 +224,12 @@ export function GeneratedScriptsTable() {
                       <tr
                         key={script.id}
                         className={cn(
-                          "cursor-pointer transition-colors duration-150 hover:bg-accent/60 dark:hover:bg-white/[0.03]",
+                          "h-14 cursor-pointer transition-colors duration-150 hover:bg-accent/60 dark:hover:bg-white/[0.03]",
                           selectedIds.has(script.id) && "bg-primary/5 dark:bg-primary/5"
                         )}
                         onClick={() => openDetail(script)}
                       >
-                        <td className="px-5 py-5" onClick={(e) => e.stopPropagation()}>
+                        <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                           <input
                             type="checkbox"
                             checked={selectedIds.has(script.id)}
@@ -226,19 +237,25 @@ export function GeneratedScriptsTable() {
                             className="h-4 w-4 rounded border-gray-300 accent-emerald-600"
                           />
                         </td>
-                        <td className="px-5 py-5 font-semibold text-foreground max-w-[250px] truncate">
-                          {script.scriptTitle || "Untitled"}
+                        <td className="px-4 py-3 max-w-[220px]">
+                          <span className="block truncate font-medium text-foreground" title={script.scriptTitle || "Untitled"}>
+                            {script.scriptTitle || "Untitled"}
+                          </span>
                         </td>
-                        <td className="px-5 py-5 text-muted-foreground">
-                          {script.contentType || "—"}
+                        <td className="px-4 py-3 hidden lg:table-cell">
+                          <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                            {script.contentType || "—"}
+                          </span>
                         </td>
-                        <td className="px-5 py-5 text-muted-foreground">
-                          {script.platform || "—"}
+                        <td className="px-4 py-3 max-w-[140px]">
+                          <span className="block truncate text-muted-foreground" title={script.platform || "—"}>
+                            {script.platform || "—"}
+                          </span>
                         </td>
-                        <td className="px-5 py-5 text-muted-foreground">
+                        <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
                           {script.duration || "—"}
                         </td>
-                        <td className="px-6 py-5">
+                        <td className="px-4 py-3">
                           <div className="relative" ref={statusDropdown === script.id ? dropdownRef : undefined}>
                             <button
                               type="button"
@@ -246,7 +263,7 @@ export function GeneratedScriptsTable() {
                                 e.stopPropagation();
                                 setStatusDropdown(statusDropdown === script.id ? null : script.id);
                               }}
-                              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-opacity hover:opacity-80 ${status.bg} ${status.text}`}
+                              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap transition-opacity hover:opacity-80 ${status.bg} ${status.text}`}
                             >
                               <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
                               {reviewStatuses.find((r) => r.value === (script.reviewStatus || "draft"))?.label || (script.reviewStatus || "draft").replace(/_/g, " ")}
@@ -277,7 +294,7 @@ export function GeneratedScriptsTable() {
                             )}
                           </div>
                         </td>
-                        <td className="px-5 py-5 text-muted-foreground hidden md:table-cell">
+                        <td className="px-4 py-3 text-center hidden md:table-cell">
                           {script.hookVariations.length > 0 ? (
                             <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary dark:bg-primary/10 dark:text-primary">
                               <Zap className="h-3 w-3" />
@@ -287,10 +304,10 @@ export function GeneratedScriptsTable() {
                             <span className="text-muted-foreground">—</span>
                           )}
                         </td>
-                        <td className="px-5 py-5 text-muted-foreground">
+                        <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
                           {formatDate(script.createdAt)}
                         </td>
-                        <td className="px-6 py-5 text-right">
+                        <td className="px-3 py-3 text-center">
                           <Eye className="inline h-3.5 w-3.5 text-muted-foreground" />
                         </td>
                       </tr>
