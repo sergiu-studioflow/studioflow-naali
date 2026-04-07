@@ -88,6 +88,7 @@ export async function deleteFromR2(key: string): Promise<void> {
 const R2_PUBLIC_URLS = [
   R2_PUBLIC_URL,
   "https://pub-c85814e28869441d8a619b3b90562166.r2.dev",
+  "https://pub-studioflow.r2.dev",
 ].filter(Boolean);
 
 export function r2KeyFromUrl(url: string): string | null {
