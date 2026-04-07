@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ImageIcon, Loader2, AlertCircle, Download, Trash2, Star, CheckCircle2 } from "lucide-react";
+import { ImageIcon, Loader2, AlertCircle, Download, Trash2, Trophy, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StatusBadge } from "@/components/shared/status-badge";
 
@@ -109,8 +109,8 @@ export function AdCard({ generation, onClick, onDownload, onDelete }: AdCardProp
                   : "bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
               )}
             >
-              {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : saved ? <CheckCircle2 className="h-3 w-3" /> : <Star className="h-3 w-3" />}
-              {saved ? "Saved" : "Save"}
+              {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : saved ? <CheckCircle2 className="h-3 w-3" /> : <Trophy className="h-3 w-3" />}
+              {saved ? "Winner!" : "Winner"}
             </button>
           )}
           {generation.status === "completed" && generation.imageUrl && onDownload && (

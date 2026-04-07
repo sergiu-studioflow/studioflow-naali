@@ -17,7 +17,6 @@ import {
   Pencil,
   RectangleHorizontal,
   Trophy,
-  Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ReferenceUpload } from "./reference-upload";
@@ -649,9 +648,9 @@ export function UnifiedGenerator({ products, onGalleryRefresh, onEditAd }: Unifi
                       ) : savedToWinners ? (
                         <CheckCircle2 className="h-3 w-3" />
                       ) : (
-                        <Star className="h-3 w-3" />
+                        <Trophy className="h-3 w-3" />
                       )}
-                      {savedToWinners ? "Saved" : "Save to Winners"}
+                      {savedToWinners ? "Winner!" : "Winner"}
                     </button>
                     {onEditAd && (
                       <button
