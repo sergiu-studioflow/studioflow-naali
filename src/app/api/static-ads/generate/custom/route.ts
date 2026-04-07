@@ -3,7 +3,7 @@ import { requireAuth, isAuthError } from "@/lib/auth";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { analyzeReferenceAd, generateCustomPrompt } from "@/lib/static-ads/custom-pipeline";
+import { analyzeReferenceAd, generateCustomPrompt, NAALI_LOGO_URL } from "@/lib/static-ads/custom-pipeline";
 import { submitKieJob } from "@/lib/static-ads/kie-ai";
 import { toAccessibleUrl } from "@/lib/r2";
 
@@ -120,14 +120,16 @@ export async function POST(req: NextRequest) {
 
   try {
     // Generate presigned URLs so Kie AI can download from private R2 bucket
-    const [accessibleRefUrl, accessibleProductUrl] = await Promise.all([
+    // Naali: also send brand logo as reference image for NanoBanana 2
+    const [accessibleRefUrl, accessibleProductUrl, accessibleLogoUrl] = await Promise.all([
       toAccessibleUrl(referenceImageUrl),
       toAccessibleUrl(product.imageUrl!),
+      toAccessibleUrl(NAALI_LOGO_URL),
     ]);
 
     const kieResult = await submitKieJob({
       prompt: generatedPrompt,
-      imageUrls: [accessibleRefUrl, accessibleProductUrl],
+      imageUrls: [accessibleRefUrl, accessibleProductUrl, accessibleLogoUrl],
       aspectRatio: resolvedAspectRatio,
     });
 
