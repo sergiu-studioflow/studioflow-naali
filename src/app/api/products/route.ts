@@ -21,6 +21,7 @@ export async function GET() {
 const createSchema = z.object({
   name: z.string().min(1),
   description: z.string().optional(),
+  imageUrl: z.string().optional(),
   sortOrder: z.number().int().optional(),
 });
 

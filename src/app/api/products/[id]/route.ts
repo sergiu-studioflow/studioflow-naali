@@ -31,6 +31,7 @@ export async function GET(
 const updateProductSchema = z.object({
   name: z.string().min(1).optional(),
   description: z.string().nullable().optional(),
+  imageUrl: z.string().nullable().optional(),
   sortOrder: z.number().int().optional(),
 });
 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Package, Plus, Loader2, Pencil, ChevronRight } from "lucide-react";
+import { Package, Plus, Loader2, Pencil, ChevronRight, ImageIcon } from "lucide-react";
 import { ProductDialog } from "./product-dialog";
 import type { Product } from "@/lib/types";
 
@@ -35,7 +35,6 @@ export function ProductsSection() {
 
   const handleSave = async (data: Partial<Product>) => {
     if (selectedProduct) {
-      // Update
       const res = await fetch(`/api/products/${selectedProduct.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -50,7 +49,6 @@ export function ProductsSection() {
         prev.map((p) => (p.id === updated.id ? updated : p))
       );
     } else {
-      // Create
       const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -123,50 +121,44 @@ export function ProductsSection() {
                 </Button>
               </div>
             ) : (
-              <div className="rounded-lg border border-border">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-muted/50">
-                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        #
-                      </th>
-                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Name
-                      </th>
-                      <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hidden md:table-cell">
-                        Description
-                      </th>
-                      <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground w-16">
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {products.map((product) => (
-                      <tr
-                        key={product.id}
-                        className="cursor-pointer transition-colors hover:bg-muted/50"
-                        onClick={() => openEdit(product)}
-                      >
-                        <td className="px-5 py-5 text-muted-foreground tabular-nums">
-                          {product.sortOrder}
-                        </td>
-                        <td className="px-5 py-5 font-medium text-foreground">
-                          {product.name}
-                        </td>
-                        <td className="px-5 py-5 text-muted-foreground hidden md:table-cell">
-                          {product.description
-                            ? product.description.length > 60
-                              ? product.description.slice(0, 60) + "..."
-                              : product.description
-                            : "\u2014"}
-                        </td>
-                        <td className="px-6 py-5 text-right">
-                          <Pencil className="inline h-3.5 w-3.5 text-muted-foreground" />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="space-y-3">
+                {products.map((product) => (
+                  <div
+                    key={product.id}
+                    className="flex items-center gap-4 rounded-lg border border-border p-4 cursor-pointer transition-colors hover:bg-muted/50"
+                    onClick={() => openEdit(product)}
+                  >
+                    {/* Product Image */}
+                    <div className="flex-shrink-0">
+                      {product.imageUrl ? (
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          className="h-16 w-16 rounded-lg object-contain bg-muted/30"
+                        />
+                      ) : (
+                        <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-muted/30">
+                          <ImageIcon className="h-6 w-6 text-muted-foreground/50" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Product Info */}
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-foreground">{product.name}</p>
+                      {product.description && (
+                        <p className="mt-0.5 text-sm text-muted-foreground line-clamp-2">
+                          {product.description}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Edit Icon */}
+                    <div className="flex-shrink-0">
+                      <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </CardContent>

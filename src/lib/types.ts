@@ -169,6 +169,7 @@ export type Product = {
   id: string;
   name: string;
   description: string | null;
+  imageUrl: string | null;
   sortOrder: number;
   createdAt: Date;
   updatedAt: Date;

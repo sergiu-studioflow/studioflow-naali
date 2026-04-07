@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Trash2 } from "lucide-react";
+import { Loader2, Trash2, Upload, X, ImageIcon } from "lucide-react";
 import type { Product } from "@/lib/types";
 
 interface ProductDialogProps {
@@ -33,18 +33,22 @@ export function ProductDialog({
   const [form, setForm] = useState({
     name: "",
     description: "",
+    imageUrl: "",
     sortOrder: 0,
   });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (open) {
       setForm({
         name: product?.name || "",
         description: product?.description || "",
+        imageUrl: product?.imageUrl || "",
         sortOrder: product?.sortOrder || 0,
       });
       setError(null);
@@ -60,7 +64,12 @@ export function ProductDialog({
     setSaving(true);
     setError(null);
     try {
-      await onSave(form);
+      await onSave({
+        name: form.name,
+        description: form.description || null,
+        imageUrl: form.imageUrl || null,
+        sortOrder: form.sortOrder,
+      } as Partial<Product>);
       onOpenChange(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save");
@@ -80,6 +89,40 @@ export function ProductDialog({
       setError(err instanceof Error ? err.message : "Failed to delete");
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleImageUpload = async (file: File) => {
+    setUploading(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/products/upload", { method: "POST", body: formData });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Upload failed");
+      }
+      const { url } = await res.json();
+      setForm((prev) => ({ ...prev, imageUrl: url }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleImageUpload(file);
+    if (e.target) e.target.value = "";
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      handleImageUpload(file);
     }
   };
 
@@ -105,6 +148,55 @@ export function ProductDialog({
         )}
 
         <div className="space-y-4">
+          {/* Product Image */}
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-foreground">
+              Product Image
+            </label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+              className="hidden"
+              onChange={handleFileSelect}
+            />
+            {form.imageUrl ? (
+              <div className="relative inline-block">
+                <img
+                  src={form.imageUrl}
+                  alt="Product"
+                  className="h-32 w-32 rounded-lg object-contain bg-muted/30 border border-border"
+                />
+                <button
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, imageUrl: "" }))}
+                  className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            ) : (
+              <div
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+                className="flex h-32 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-muted/20 transition-colors hover:border-primary/50 hover:bg-muted/40"
+              >
+                {uploading ? (
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                ) : (
+                  <>
+                    <ImageIcon className="h-8 w-8 text-muted-foreground/50" />
+                    <span className="text-xs text-muted-foreground">
+                      Click or drag to upload
+                    </span>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Name */}
           <div>
             <label className="mb-2 block text-sm font-semibold text-foreground">
               Name *
@@ -112,10 +204,11 @@ export function ProductDialog({
             <Input
               value={form.name}
               onChange={(e) => update("name", e.target.value)}
-              placeholder="e.g. Premium Subscription"
+              placeholder="e.g. Anti-Stress Gummies"
             />
           </div>
 
+          {/* Description */}
           <div>
             <label className="mb-2 block text-sm font-semibold text-foreground">
               Description
@@ -124,10 +217,11 @@ export function ProductDialog({
               value={form.description}
               onChange={(e) => update("description", e.target.value)}
               placeholder="Describe this product..."
-              rows={2}
+              rows={3}
             />
           </div>
 
+          {/* Sort Order */}
           <div>
             <label className="mb-2 block text-sm font-semibold text-foreground">
               Sort Order
@@ -176,10 +270,10 @@ export function ProductDialog({
             )}
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving || uploading}>
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={saving}>
+            <Button onClick={handleSave} disabled={saving || uploading}>
               {saving ? (
                 <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
               ) : null}
