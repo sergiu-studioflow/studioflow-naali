@@ -27,10 +27,10 @@ const navigation = [
   { name: "Script Generation System", href: "/script-generation", icon: Film },
   { name: "Video Brief System", href: "/video-briefs", icon: Video },
   { name: "Customer Feedback Mining", href: "/feedback-mining", icon: MessageSquareText },
+  { name: "Static Ad System", href: "/static-ads", icon: ImageIcon },
 ];
 
 const comingSoon = [
-  { name: "Static Ad Generation System", icon: ImageIcon },
   { name: "Inspiration-to-Ad Workflow", icon: Lightbulb },
 ];
 

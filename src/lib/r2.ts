@@ -43,6 +43,39 @@ export async function getPresignedDownloadUrl(
   return getSignedUrl(r2, command, { expiresIn });
 }
 
+export async function toAccessibleUrl(url: string): Promise<string> {
+  const key = r2KeyFromUrl(url);
+  if (!key) return url;
+  return getPresignedDownloadUrl(key);
+}
+
+export async function getPresignedUploadUrl(
+  key: string,
+  contentType: string,
+  expiresIn = 600
+): Promise<string> {
+  const command = new PutObjectCommand({
+    Bucket: R2_BUCKET_NAME,
+    Key: key,
+    ContentType: contentType,
+  });
+  return getSignedUrl(r2, command, { expiresIn });
+}
+
+export async function downloadFromR2(key: string): Promise<{ buffer: Buffer; contentType: string }> {
+  const res = await r2.send(
+    new GetObjectCommand({
+      Bucket: R2_BUCKET_NAME,
+      Key: key,
+    })
+  );
+  const bytes = await res.Body!.transformToByteArray();
+  return {
+    buffer: Buffer.from(bytes),
+    contentType: res.ContentType || "application/octet-stream",
+  };
+}
+
 export async function deleteFromR2(key: string): Promise<void> {
   await r2.send(
     new DeleteObjectCommand({
