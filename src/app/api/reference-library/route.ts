@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth, isAuthError } from "@/lib/auth";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql, inArray } from "drizzle-orm";
 import { uploadToR2, toAccessibleUrl } from "@/lib/r2";
 import { v4 as uuid } from "uuid";
 
@@ -25,6 +25,21 @@ export async function GET(req: NextRequest) {
   const conditions = [eq(schema.referenceAdLibrary.isActive, true)];
   if (industry) {
     conditions.push(eq(schema.referenceAdLibrary.industry, industry));
+  } else {
+    // Auto-filter by brand's allowed industries
+    const [brandIntel] = await db
+      .select({ allowedIndustries: sql<string>`allowed_industries` })
+      .from(schema.brandIntelligence)
+      .limit(1);
+
+    if (brandIntel?.allowedIndustries) {
+      try {
+        const allowed: string[] = JSON.parse(brandIntel.allowedIndustries);
+        if (allowed.length > 0) {
+          conditions.push(inArray(schema.referenceAdLibrary.industry, allowed));
+        }
+      } catch { /* ignore parse errors, show all */ }
+    }
   }
 
   const refs = await db
