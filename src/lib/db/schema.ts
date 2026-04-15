@@ -221,9 +221,14 @@ export const motivators = pgTable("motivators", {
 export const products = pgTable("products", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
-  description: text("description"),
+  targetAudience: text("target_audience"),
+  solution: text("solution"),
+  painPoint: text("pain_point"),
+  brandDna: text("brand_dna"),
   imageUrl: text("image_url"),
-  sortOrder: integer("sort_order").notNull().default(0),
+  videoImageUrl: text("video_image_url"),
+  visualDescription: text("visual_description"),
+  airtableRecordId: text("airtable_record_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

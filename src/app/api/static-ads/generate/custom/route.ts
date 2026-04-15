@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
       product: {
         name: product.name,
         imageUrl: product.imageUrl!,
-        visualDescription: product.description || undefined,
+        visualDescription: product.visualDescription || undefined,
         solution: undefined,
         targetAudience: undefined,
       },

@@ -168,9 +168,14 @@ export type ScriptReview = {
 export type Product = {
   id: string;
   name: string;
-  description: string | null;
+  targetAudience: string | null;
+  solution: string | null;
+  painPoint: string | null;
+  brandDna: string | null;
   imageUrl: string | null;
-  sortOrder: number;
+  videoImageUrl: string | null;
+  visualDescription: string | null;
+  airtableRecordId: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
