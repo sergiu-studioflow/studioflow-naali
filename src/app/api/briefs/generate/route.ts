@@ -5,11 +5,12 @@ import { getAppConfig } from "@/lib/config";
 import { eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 300;
 
 /**
  * POST /api/briefs/generate
  * Generate an on-brand creative brief from a competitor ad or organic post.
+ * Fire-and-forget: creates the brief row, triggers n8n, and returns immediately.
+ * n8n calls back to /api/briefs/callback when done.
  * Body: { sourceType: 'competitor_ad' | 'organic_post', sourceId: number }
  */
 export async function POST(req: NextRequest) {
@@ -85,7 +86,7 @@ export async function POST(req: NextRequest) {
 
   // Build webhook URL from app config
   const config = await getAppConfig();
-  const wfConfig = config?.workflows?.brief_generator;
+  const wfConfig = config?.workflows?.brief_generator as string | { webhook_path?: string; n8n_base_url?: string } | undefined;
   const webhookUrl = typeof wfConfig === "string"
     ? wfConfig
     : wfConfig?.webhook_path
@@ -100,81 +101,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Brief generator webhook not configured. Add 'brief_generator' to app_config workflows." }, { status: 500 });
   }
 
-  // Call n8n webhook synchronously (wait for brief generation)
-  try {
-    const res = await fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sourceType,
-        sourceData,
-        brandIntelligence,
-        mediaType,
-      }),
-    });
-
-    if (!res.ok) {
-      const errText = await res.text().catch(() => "Unknown error");
-      await db
-        .update(schema.generatedBriefs)
-        .set({ status: "error", errorMessage: `n8n returned ${res.status}: ${errText.substring(0, 500)}`, updatedAt: new Date() })
-        .where(eq(schema.generatedBriefs.id, briefRow.id));
-      return NextResponse.json({ error: "Brief generation failed", briefId: briefRow.id }, { status: 502 });
-    }
-
-    const result = await res.json();
-
-    if (!result.success || !result.brief) {
-      const errorMsg = result.error || "AI did not return a valid brief";
-      await db
-        .update(schema.generatedBriefs)
-        .set({ status: "error", errorMessage: errorMsg, updatedAt: new Date() })
-        .where(eq(schema.generatedBriefs.id, briefRow.id));
-      return NextResponse.json({ error: errorMsg, briefId: briefRow.id }, { status: 422 });
-    }
-
-    const brief = result.brief;
-
-    // Update the brief row with all parsed fields
-    const [updated] = await db
-      .update(schema.generatedBriefs)
-      .set({
-        title: brief.title || "Untitled Brief",
-        mediaType: brief.media_type || mediaType,
-        creativeFormat: brief.creative_format || null,
-        funnelStage: brief.funnel_stage || null,
-        strategicHypothesis: brief.strategic_hypothesis || null,
-        psychologyAngle: brief.psychology_angle || null,
-        primaryHook: brief.primary_hook || null,
-        hookVariations: brief.hook_variations || null,
-        visualDirection: brief.visual_direction || null,
-        shotList: brief.shot_list || null,
-        visualComposition: brief.visual_composition || null,
-        cardDirections: brief.card_directions || null,
-        onScreenText: brief.on_screen_text || null,
-        audioDirection: brief.audio_direction || null,
-        brandVoiceLock: brief.brand_voice_lock || null,
-        complianceRequirements: brief.compliance_requirements || null,
-        targetPersona: brief.target_persona || null,
-        lockedElements: brief.locked_elements || null,
-        variableElements: brief.variable_elements || null,
-        fullBrief: brief,
-        status: "complete",
-        aiModel: result.model || null,
-        generationDurationMs: result.durationMs || null,
-        errorMessage: null,
-        updatedAt: new Date(),
-      })
-      .where(eq(schema.generatedBriefs.id, briefRow.id))
-      .returning();
-
-    return NextResponse.json(updated, { status: 201 });
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Failed to reach n8n webhook";
+  // Fire-and-forget: trigger n8n and return immediately
+  // n8n will call back to /api/briefs/callback when done
+  fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      briefId: briefRow.id,
+      sourceType,
+      sourceData,
+      brandIntelligence,
+      mediaType,
+    }),
+  }).catch(async (err) => {
+    // If the webhook call itself fails (network error), mark as error
     await db
       .update(schema.generatedBriefs)
-      .set({ status: "error", errorMessage, updatedAt: new Date() })
+      .set({ status: "error", errorMessage: `Failed to reach n8n: ${err.message}`, updatedAt: new Date() })
       .where(eq(schema.generatedBriefs.id, briefRow.id));
-    return NextResponse.json({ error: "Failed to reach brief generator", briefId: briefRow.id }, { status: 502 });
-  }
+  });
+
+  return NextResponse.json({ briefId: briefRow.id, status: "generating" }, { status: 202 });
 }
