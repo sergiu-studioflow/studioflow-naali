@@ -32,7 +32,7 @@ const navigation = [
   { name: "Static Ad System", href: "/static-ads", icon: ImageIcon },
   { name: "Video Generation", href: "/video-generation", icon: Video },
   { name: "Competitor Research", href: "/competitor-ads", icon: Target },
-  { name: "Creative Briefs", href: "/briefs", icon: FileText },
+  { name: "Research Briefs", href: "/briefs", icon: FileText },
 ];
 
 const comingSoon = [

@@ -62,7 +62,7 @@ export default async function DashboardPage() {
       description: "Track and analyze competitor ads across Meta, TikTok, and Instagram",
     },
     {
-      name: "Creative Briefs",
+      name: "Research Briefs",
       href: "/briefs",
       icon: FileText,
       description: "AI-generated creative briefs from competitor research insights",
