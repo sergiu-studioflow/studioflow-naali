@@ -10,7 +10,6 @@ import {
   Film,
   Video,
   ImageIcon,
-  Lightbulb,
   MessageSquareText,
   Target,
   FileText,
@@ -33,10 +32,6 @@ const navigation = [
   { name: "Video Generation", href: "/video-generation", icon: Video },
   { name: "Competitor Research", href: "/competitor-ads", icon: Target },
   { name: "Research Briefs", href: "/briefs", icon: FileText },
-];
-
-const comingSoon = [
-  { name: "Inspiration-to-Ad Workflow", icon: Lightbulb },
 ];
 
 type PortalSidebarProps = {
@@ -111,23 +106,6 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
           })}
         </div>
 
-        {/* Coming Soon */}
-        <div className="mt-6">
-          <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-sidebar-muted/50">
-            Coming Soon
-          </p>
-          <div className="space-y-1">
-            {comingSoon.map((item) => (
-              <div
-                key={item.name}
-                className="flex items-center gap-3 rounded-lg text-sm font-medium border-l-[3px] border-l-transparent py-3 pl-[calc(0.75rem-3px)] pr-3 opacity-25 cursor-not-allowed"
-              >
-                <item.icon className="h-5 w-5 flex-shrink-0 text-white/55" />
-                <span className="text-white/55">{item.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </nav>
 
       {/* Footer */}
