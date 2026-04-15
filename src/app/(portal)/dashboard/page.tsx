@@ -1,6 +1,6 @@
 import { db, schema } from "@/lib/db";
 import { count } from "drizzle-orm";
-import { Brain, ClipboardCheck, Film, Video, ImageIcon, Lightbulb, MessageSquareText, ArrowRight, Lock } from "lucide-react";
+import { Brain, ClipboardCheck, Film, Video, ImageIcon, Lightbulb, MessageSquareText, Target, FileText, ArrowRight, Lock } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -54,6 +54,18 @@ export default async function DashboardPage() {
       description: "Production-ready video briefs with shot lists and talent notes",
       stat: stats.videoBriefs,
       statLabel: "briefs",
+    },
+    {
+      name: "Competitor Research",
+      href: "/competitor-ads",
+      icon: Target,
+      description: "Track and analyze competitor ads across Meta, TikTok, and Instagram",
+    },
+    {
+      name: "Creative Briefs",
+      href: "/briefs",
+      icon: FileText,
+      description: "AI-generated creative briefs from competitor research insights",
     },
   ];
 

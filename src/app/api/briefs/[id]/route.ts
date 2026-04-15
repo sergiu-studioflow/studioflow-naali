@@ -1,13 +1,16 @@
-import { db, schema } from "@/lib/db";
-import { requireAuth, isAuthError } from "@/lib/auth";
-import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+import { requireAuth, isAuthError } from "@/lib/auth";
+import { db, schema } from "@/lib/db";
+import { eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
-// GET /api/briefs/[id] — get brief detail with script + hooks
+/**
+ * GET /api/briefs/:id
+ * Fetch a single brief with full data.
+ */
 export async function GET(
-  _request: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireAuth();
@@ -17,67 +20,42 @@ export async function GET(
 
   const [brief] = await db
     .select()
-    .from(schema.contentBriefs)
-    .where(eq(schema.contentBriefs.id, id))
+    .from(schema.generatedBriefs)
+    .where(eq(schema.generatedBriefs.id, id))
     .limit(1);
 
   if (!brief) {
     return NextResponse.json({ error: "Brief not found" }, { status: 404 });
   }
 
-  // If complete, fetch generated script + hooks
-  let script = null;
-  let hooks: typeof schema.hookVariations.$inferSelect[] = [];
-
-  if (brief.status === "complete") {
-    const [s] = await db
-      .select()
-      .from(schema.generatedScripts)
-      .where(eq(schema.generatedScripts.briefId, id))
-      .limit(1);
-
-    if (s) {
-      script = s;
-      hooks = await db
-        .select()
-        .from(schema.hookVariations)
-        .where(eq(schema.hookVariations.scriptId, s.id));
-    }
-  }
-
-  return NextResponse.json({ brief, script, hooks });
+  return NextResponse.json(brief);
 }
 
-// PATCH /api/briefs/[id] — update brief (only if status is "new")
-export async function PATCH(
-  request: NextRequest,
+/**
+ * DELETE /api/briefs/:id
+ * Delete a brief.
+ */
+export async function DELETE(
+  _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireAuth();
   if (isAuthError(auth)) return auth;
 
+  if (auth.portalUser.role === "viewer") {
+    return NextResponse.json({ error: "Viewers cannot delete briefs" }, { status: 403 });
+  }
+
   const { id } = await params;
 
-  const [existing] = await db
-    .select()
-    .from(schema.contentBriefs)
-    .where(eq(schema.contentBriefs.id, id))
-    .limit(1);
+  const [deleted] = await db
+    .delete(schema.generatedBriefs)
+    .where(eq(schema.generatedBriefs.id, id))
+    .returning({ id: schema.generatedBriefs.id });
 
-  if (!existing) {
+  if (!deleted) {
     return NextResponse.json({ error: "Brief not found" }, { status: 404 });
   }
 
-  if (existing.status !== "new") {
-    return NextResponse.json({ error: "Cannot edit a brief that has been triggered" }, { status: 400 });
-  }
-
-  const body = await request.json();
-  const [updated] = await db
-    .update(schema.contentBriefs)
-    .set({ ...body, updatedAt: new Date() })
-    .where(eq(schema.contentBriefs.id, id))
-    .returning();
-
-  return NextResponse.json(updated);
+  return NextResponse.json({ deleted: true, id: deleted.id });
 }

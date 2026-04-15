@@ -12,6 +12,8 @@ import {
   ImageIcon,
   Lightbulb,
   MessageSquareText,
+  Target,
+  FileText,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -29,6 +31,8 @@ const navigation = [
   { name: "Customer Feedback Mining", href: "/feedback-mining", icon: MessageSquareText },
   { name: "Static Ad System", href: "/static-ads", icon: ImageIcon },
   { name: "Video Generation", href: "/video-generation", icon: Video },
+  { name: "Competitor Research", href: "/competitor-ads", icon: Target },
+  { name: "Creative Briefs", href: "/briefs", icon: FileText },
 ];
 
 const comingSoon = [

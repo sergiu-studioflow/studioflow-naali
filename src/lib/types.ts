@@ -340,3 +340,49 @@ export type MinedAngle = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type CompetitorSource = {
+  id: string;
+  name: string;
+  metaLibraryUrl: string;
+  competitorPageId: string;
+  country: string;
+  isActive: boolean;
+  lastScrapedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type GeneratedBrief = {
+  id: string;
+  userId: string | null;
+  sourceType: string;
+  sourceId: number;
+  sourceSnapshot: Record<string, unknown> | null;
+  title: string;
+  mediaType: string;
+  creativeFormat: string | null;
+  funnelStage: string | null;
+  strategicHypothesis: string | null;
+  psychologyAngle: string | null;
+  primaryHook: string | null;
+  hookVariations: string[] | null;
+  visualDirection: string | null;
+  shotList: Array<{ timecode: string; shot: string; description: string; onScreenText?: string }> | null;
+  visualComposition: { layout: string; colorPalette: string; typography: string; hierarchy: string } | null;
+  cardDirections: Array<{ cardNumber: number; angle: string; visual: string; copy: string; cta: string }> | null;
+  onScreenText: Array<{ text: string; timing: string; placement: string; style?: string }> | null;
+  audioDirection: string | null;
+  brandVoiceLock: string | null;
+  complianceRequirements: string[] | null;
+  targetPersona: string | null;
+  lockedElements: string[] | null;
+  variableElements: string[] | null;
+  fullBrief: Record<string, unknown>;
+  status: string;
+  errorMessage: string | null;
+  aiModel: string | null;
+  generationDurationMs: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
