@@ -5,11 +5,13 @@
  * Poll task:   GET  /api/v1/jobs/recordInfo?taskId=...
  */
 
+import { getApiKey as getConfiguredKey } from "@/lib/api-keys";
+
 const KIE_API_BASE = "https://api.kie.ai/api/v1/jobs";
 
-function getApiKey(): string {
-  const key = process.env.KIE_AI_API_KEY;
-  if (!key) throw new Error("KIE_AI_API_KEY environment variable is not set");
+async function getApiKey(): Promise<string> {
+  const key = await getConfiguredKey("KIE_AI_API_KEY");
+  if (!key) throw new Error("KIE_AI_API_KEY is not configured");
   return key;
 }
 
@@ -38,6 +40,7 @@ export type KiePollResult = {
 
 export async function submitKieJob(params: KieJobParams): Promise<KieSubmitResult> {
   const ratio = params.aspectRatio || "auto";
+  const apiKey = await getApiKey();
 
   const requestBody = {
     model: "nano-banana-2",
@@ -54,7 +57,7 @@ export async function submitKieJob(params: KieJobParams): Promise<KieSubmitResul
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${getApiKey()}`,
+      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify(requestBody),
   });
@@ -82,10 +85,11 @@ export async function submitKieJob(params: KieJobParams): Promise<KieSubmitResul
 // -- Poll --
 
 export async function pollKieJob(taskId: string): Promise<KiePollResult> {
+  const apiKey = await getApiKey();
   const res = await fetch(`${KIE_API_BASE}/recordInfo?taskId=${encodeURIComponent(taskId)}`, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${getApiKey()}`,
+      Authorization: `Bearer ${apiKey}`,
     },
   });
 

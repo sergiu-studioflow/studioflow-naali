@@ -28,6 +28,7 @@ const navigation = [
   { name: "Video Brief System", href: "/video-briefs", icon: Video },
   { name: "Customer Feedback Mining", href: "/feedback-mining", icon: MessageSquareText },
   { name: "Static Ad System", href: "/static-ads", icon: ImageIcon },
+  { name: "Video Generation", href: "/video-generation", icon: Video },
 ];
 
 const comingSoon = [

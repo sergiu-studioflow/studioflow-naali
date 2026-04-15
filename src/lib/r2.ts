@@ -16,6 +16,9 @@ const r2 = new S3Client({
   },
 });
 
+/**
+ * Upload a file buffer to R2 and return the public URL.
+ */
 export async function uploadToR2(
   key: string,
   body: Buffer | ReadableStream | Uint8Array,
@@ -32,27 +35,14 @@ export async function uploadToR2(
   return `${R2_PUBLIC_URL}/${key}`;
 }
 
-export async function getPresignedDownloadUrl(
-  key: string,
-  expiresIn = 600
-): Promise<string> {
-  const command = new GetObjectCommand({
-    Bucket: R2_BUCKET_NAME,
-    Key: key,
-  });
-  return getSignedUrl(r2, command, { expiresIn });
-}
-
-export async function toAccessibleUrl(url: string): Promise<string> {
-  const key = r2KeyFromUrl(url);
-  if (!key) return url;
-  return getPresignedDownloadUrl(key);
-}
-
+/**
+ * Generate a presigned URL for direct browser upload to R2.
+ * The client PUTs the file directly to this URL (no server relay needed).
+ */
 export async function getPresignedUploadUrl(
   key: string,
   contentType: string,
-  expiresIn = 600
+  expiresIn = 600 // 10 minutes
 ): Promise<string> {
   const command = new PutObjectCommand({
     Bucket: R2_BUCKET_NAME,
@@ -62,6 +52,35 @@ export async function getPresignedUploadUrl(
   return getSignedUrl(r2, command, { expiresIn });
 }
 
+/**
+ * Generate a presigned GET URL for downloading from R2.
+ * Use when external services (Kie AI, etc.) need temporary read access.
+ */
+export async function getPresignedDownloadUrl(
+  key: string,
+  expiresIn = 600 // 10 minutes
+): Promise<string> {
+  const command = new GetObjectCommand({
+    Bucket: R2_BUCKET_NAME,
+    Key: key,
+  });
+  return getSignedUrl(r2, command, { expiresIn });
+}
+
+/**
+ * Convert an R2 public URL to a presigned download URL.
+ * Returns the original URL unchanged if it's not an R2 URL.
+ */
+export async function toAccessibleUrl(url: string): Promise<string> {
+  const key = r2KeyFromUrl(url);
+  if (!key) return url; // Not an R2 URL, return as-is
+  return getPresignedDownloadUrl(key);
+}
+
+/**
+ * Download a file from R2 as a Buffer. Use this instead of fetching the public URL
+ * when the bucket is not publicly accessible.
+ */
 export async function downloadFromR2(key: string): Promise<{ buffer: Buffer; contentType: string }> {
   const res = await r2.send(
     new GetObjectCommand({
@@ -76,21 +95,36 @@ export async function downloadFromR2(key: string): Promise<{ buffer: Buffer; con
   };
 }
 
-export async function deleteFromR2(key: string): Promise<void> {
-  await r2.send(
-    new DeleteObjectCommand({
-      Bucket: R2_BUCKET_NAME,
-      Key: key,
-    })
-  );
-}
-
+/**
+ * Known R2 public URL prefixes for this bucket.
+ * The shared reference library may use a different public URL alias than this portal.
+ */
 const R2_PUBLIC_URLS = [
   R2_PUBLIC_URL,
-  "https://pub-c85814e28869441d8a619b3b90562166.r2.dev",
   "https://pub-studioflow.r2.dev",
+  "https://pub-c85814e28869441d8a619b3b90562166.r2.dev",
 ].filter(Boolean);
 
+/**
+ * The publicly accessible R2 URL that actually serves files (no auth required).
+ * Use this for URLs that need to be downloaded by external services.
+ */
+const R2_EXTERNAL_PUBLIC_URL = "https://pub-c85814e28869441d8a619b3b90562166.r2.dev";
+
+/**
+ * Convert any R2 URL to one that's publicly accessible by external services.
+ * Returns the original URL unchanged if it's not an R2 URL.
+ */
+export function toExternalUrl(url: string): string {
+  const key = r2KeyFromUrl(url);
+  if (!key) return url;
+  return `${R2_EXTERNAL_PUBLIC_URL}/${key}`;
+}
+
+/**
+ * Extract the R2 object key from a public URL.
+ * Recognizes all known R2 URL aliases for the shared bucket.
+ */
 export function r2KeyFromUrl(url: string): string | null {
   for (const prefix of R2_PUBLIC_URLS) {
     if (url.startsWith(prefix)) {
@@ -100,10 +134,32 @@ export function r2KeyFromUrl(url: string): string | null {
   return null;
 }
 
+/**
+ * Delete an object from R2.
+ */
+export async function deleteFromR2(key: string): Promise<void> {
+  await r2.send(
+    new DeleteObjectCommand({
+      Bucket: R2_BUCKET_NAME,
+      Key: key,
+    })
+  );
+}
+
+/**
+ * Build an R2 object key with the appropriate prefix.
+ * Demo assets go under demo/ top-level; brand assets under brands/{slug}/.
+ * e.g. brands/my-sweet-smile/videos/abc123.mp4
+ * e.g. demo/static-ad-system/generated-ads/abc123.png
+ */
 export function r2Key(brandSlug: string, assetType: string, filename: string): string {
+  if (brandSlug === "demo") return `demo/${assetType}/${filename}`;
   return `brands/${brandSlug}/${assetType}/${filename}`;
 }
 
+/**
+ * Get the public URL for an R2 key.
+ */
 export function r2Url(key: string): string {
   return `${R2_PUBLIC_URL}/${key}`;
 }

@@ -5,6 +5,7 @@
 
 import sharp from "sharp";
 import { downloadFromR2, r2KeyFromUrl } from "@/lib/r2";
+import { getApiKey as getConfiguredKey } from "@/lib/api-keys";
 
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-sonnet-4-6";
@@ -15,9 +16,9 @@ const MAX_RAW_BYTES = 3_500_000;
 const MAX_DIMENSION = 1568; // Claude's recommended max for vision
 const JPEG_QUALITY = 85;
 
-function getApiKey(): string {
-  const key = (process.env.ANTHROPIC_API_KEY || "").trim();
-  if (!key) throw new Error("ANTHROPIC_API_KEY environment variable is not set");
+async function getApiKey(): Promise<string> {
+  const key = await getConfiguredKey("ANTHROPIC_API_KEY");
+  if (!key) throw new Error("ANTHROPIC_API_KEY is not configured");
   return key;
 }
 
@@ -35,6 +36,7 @@ type CallClaudeOptions = {
   messages: Message[];
   maxTokens?: number;
   budgetTokens?: number;
+  model?: string;
 };
 
 type CallClaudeResult = {
@@ -138,17 +140,18 @@ export async function imageUrlToBase64Block(
 }
 
 export async function callClaude(options: CallClaudeOptions): Promise<CallClaudeResult> {
-  const { system, messages, maxTokens = 16000, budgetTokens = 10000 } = options;
+  const { system, messages, maxTokens = 16000, budgetTokens = 10000, model } = options;
+  const apiKey = await getApiKey();
 
   const response = await fetch(ANTHROPIC_API_URL, {
     method: "POST",
     headers: {
-      "x-api-key": getApiKey(),
+      "x-api-key": apiKey,
       "anthropic-version": "2023-06-01",
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      model: MODEL,
+      model: model || MODEL,
       max_tokens: maxTokens,
       thinking: { type: "enabled", budget_tokens: budgetTokens },
       system,
