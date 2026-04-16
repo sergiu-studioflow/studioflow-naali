@@ -58,7 +58,7 @@ export async function GET(
             const buffer = Buffer.from(await imgRes.arrayBuffer());
             const contentType = imgRes.headers.get("content-type") || "image/png";
             const ext = contentType.includes("jpeg") || contentType.includes("jpg") ? "jpg" : "png";
-            const key = r2Key("demo", "video-generation/characters", `${character.id}.${ext}`);
+            const key = r2Key(process.env.BRAND_SLUG || "demo", "video-generation/characters", `${character.id}.${ext}`);
             finalImageUrl = await uploadToR2(key, buffer, contentType);
           }
         } catch {

@@ -111,7 +111,7 @@ export function ScenesLibrary() {
       const resizedFile = await resizeImageForUpload(file, 2000, 0.85);
       const formData = new FormData();
       formData.append("file", resizedFile);
-      formData.append("brandSlug", "demo");
+      // brandSlug resolved server-side via BRAND_SLUG env var
       formData.append("assetType", "video-generation/scenes");
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       if (!res.ok) {

@@ -46,7 +46,7 @@ export async function GET(
         const buffer = Buffer.from(await videoRes.arrayBuffer());
         const contentType = videoRes.headers.get("content-type") || "video/mp4";
         const ext = contentType.includes("webm") ? "webm" : "mp4";
-        const key = r2Key("demo", "video-generation/outputs", `${generation.id}.${ext}`);
+        const key = r2Key(process.env.BRAND_SLUG || "demo", "video-generation/outputs", `${generation.id}.${ext}`);
         const r2Url = await uploadToR2(key, buffer, contentType);
 
         await db
@@ -83,7 +83,7 @@ export async function GET(
             const buffer = Buffer.from(await videoRes.arrayBuffer());
             const contentType = videoRes.headers.get("content-type") || "video/mp4";
             const ext = contentType.includes("webm") ? "webm" : "mp4";
-            const key = r2Key("demo", "video-generation/outputs", `${generation.id}.${ext}`);
+            const key = r2Key(process.env.BRAND_SLUG || "demo", "video-generation/outputs", `${generation.id}.${ext}`);
             finalVideoUrl = await uploadToR2(key, buffer, contentType);
           }
         } catch {

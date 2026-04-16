@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
 
       // Upload to R2
       const filename = `${randomUUID()}.png`;
-      const key = r2Key("naali", "video-generation/products", filename);
+      const key = r2Key(process.env.BRAND_SLUG || "demo", "video-generation/products", filename);
       const videoImageUrl = await uploadToR2(key, resized, "image/png");
 
       // Update product
