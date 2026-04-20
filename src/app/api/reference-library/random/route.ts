@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth, isAuthError } from "@/lib/auth";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
-import { eq, and, sql, inArray } from "drizzle-orm";
-import { toAccessibleUrl } from "@/lib/r2";
+import { sql } from "drizzle-orm";
+import { downloadFromR2 } from "@/lib/r2";
 
 export const dynamic = "force-dynamic";
 
@@ -18,12 +18,18 @@ export async function GET(req: NextRequest) {
 
   const industry = req.nextUrl.searchParams.get("industry");
 
-  const conditions = [eq(schema.referenceAdLibrary.isActive, true)];
+  let items: Record<string, unknown>[] = [];
+  try {
+    const { buffer } = await downloadFromR2("shared/reference-ad-library/manifest.json");
+    const manifest = JSON.parse(buffer.toString("utf-8"));
+    items = (manifest.items || []).filter((item: Record<string, unknown>) => item.isActive !== false);
+  } catch {
+    return NextResponse.json({ error: "No references found" }, { status: 404 });
+  }
 
   if (industry) {
-    conditions.push(eq(schema.referenceAdLibrary.industry, industry));
+    items = items.filter((item) => item.industry === industry);
   } else {
-    // Auto-filter by brand's allowed industries
     const [brandIntel] = await db
       .select({ allowedIndustries: sql<string>`allowed_industries` })
       .from(schema.brandIntelligence)
@@ -33,24 +39,16 @@ export async function GET(req: NextRequest) {
       try {
         const allowed: string[] = JSON.parse(brandIntel.allowedIndustries);
         if (allowed.length > 0) {
-          conditions.push(inArray(schema.referenceAdLibrary.industry, allowed));
+          items = items.filter((item) => allowed.includes(item.industry as string));
         }
-      } catch { /* ignore parse errors, show all */ }
+      } catch { /* show all */ }
     }
   }
 
-  const [ref] = await db
-    .select()
-    .from(schema.referenceAdLibrary)
-    .where(and(...conditions))
-    .orderBy(sql`random()`)
-    .limit(1);
-
-  if (!ref) {
+  if (items.length === 0) {
     return NextResponse.json({ error: "No references found" }, { status: 404 });
   }
 
-  const previewUrl = await toAccessibleUrl(ref.imageUrl);
-
-  return NextResponse.json({ ...ref, previewUrl });
+  const ref = items[Math.floor(Math.random() * items.length)];
+  return NextResponse.json({ ...ref, previewUrl: ref.imageUrl });
 }
