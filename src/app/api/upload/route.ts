@@ -19,6 +19,8 @@ const ALLOWED_TYPES = [
 
 const MAX_SIZE = 500 * 1024 * 1024; // 500 MB
 
+const SLUG_RE = /^[a-z0-9-]+$/;
+
 /**
  * POST /api/upload
  *
@@ -59,12 +61,20 @@ export async function POST(req: NextRequest) {
     // Mode 2: Direct file upload (FormData)
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
+    if (!file) return NextResponse.json({ error: "file required" }, { status: 400 });
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return NextResponse.json({ error: `File type ${file.type} not allowed` }, { status: 400 });
+    }
+    if (file.size > MAX_SIZE) {
+      return NextResponse.json({ error: `File exceeds ${MAX_SIZE} bytes` }, { status: 400 });
+    }
     const rawSlug = (formData.get("brandSlug") as string) || process.env.BRAND_SLUG || "default";
     const slug = rawSlug.trim();
     if (!SLUG_RE.test(slug)) return NextResponse.json({ error: `Invalid brand slug ${JSON.stringify(rawSlug)}` }, { status: 400 });
     const assetType = (formData.get("assetType") as string) || "uploads";
-    const safeAssetType = (assetType || "uploads").trim();
-    if (!/^[a-z0-9-]+$/.test(safeAssetType)) return NextResponse.json({ error: `Invalid assetType ${JSON.stringify(assetType)}` }, { status: 400 });
+    const safeAssetType = assetType.trim();
+    if (!SLUG_RE.test(safeAssetType)) return NextResponse.json({ error: `Invalid assetType ${JSON.stringify(assetType)}` }, { status: 400 });
+    const ext = file.name.split(".").pop() || "bin";
     const key = `brands/${slug}/${safeAssetType}/${uuid()}.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
     const url = await uploadToR2(key, buffer, file.type);
