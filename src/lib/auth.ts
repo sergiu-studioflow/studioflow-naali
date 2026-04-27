@@ -37,6 +37,15 @@ export const auth = betterAuth({
         const resend = new Resend(process.env.RESEND_API_KEY);
         const fromName = process.env.RESEND_FROM_NAME || "StudioFlow";
         const fromEmail = process.env.RESEND_FROM_EMAIL || "noreply@portal.studio-flow.co";
+
+        // Route through interstitial page to prevent email link prefetching
+        // from consuming the one-time token (Outlook Safe Links, etc.)
+        const parsed = new URL(url);
+        const token = parsed.searchParams.get("token") || "";
+        const callbackURL = parsed.searchParams.get("callbackURL") || "/dashboard";
+        const baseURL = process.env.BETTER_AUTH_URL || parsed.origin;
+        const safeURL = `${baseURL}/auth/verify?token=${encodeURIComponent(token)}&callbackURL=${encodeURIComponent(callbackURL)}`;
+
         const { error } = await resend.emails.send({
           from: `${fromName} <${fromEmail}>`,
           to: email,
@@ -47,7 +56,7 @@ export const auth = betterAuth({
                 Click the button below to sign in to your Naali Creative Studio portal.
                 This link expires in 24 hours.
               </p>
-              <a href="${url}" style="display: inline-block; background: #2D5A3D; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 500;">
+              <a href="${safeURL}" style="display: inline-block; background: #2D5A3D; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 500;">
                 Sign in to Naali Portal
               </a>
               <p style="margin-top: 24px; font-size: 13px; color: #666;">

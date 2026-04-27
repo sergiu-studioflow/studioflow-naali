@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const isPublicRoute =
     request.nextUrl.pathname.startsWith("/login") ||
+    request.nextUrl.pathname.startsWith("/auth/verify") ||
     request.nextUrl.pathname.startsWith("/api/auth") ||
     request.nextUrl.pathname.startsWith("/api/webhook") ||
     request.nextUrl.pathname.startsWith("/api/briefs/callback");
