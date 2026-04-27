@@ -45,7 +45,11 @@ export async function POST(req: NextRequest) {
       }
 
       const ext = filename.split(".").pop() || "bin";
-      const key = `brands/${brandSlug || process.env.BRAND_SLUG || "default"}/${assetType || "uploads"}/${uuid()}.${ext}`;
+      const slug = ((brandSlug as string) || process.env.BRAND_SLUG || "default").trim();
+      if (!SLUG_RE.test(slug)) return NextResponse.json({ error: `Invalid brand slug ${JSON.stringify(slug)}` }, { status: 400 });
+      const safeAssetType = (assetType || "uploads").trim();
+      if (!/^[a-z0-9-]+$/.test(safeAssetType)) return NextResponse.json({ error: `Invalid assetType ${JSON.stringify(assetType)}` }, { status: 400 });
+      const key = `brands/${slug}/${safeAssetType}/${uuid()}.${ext}`;
       const presignedUrl = await getPresignedUploadUrl(key, fileType);
       const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
 
@@ -55,21 +59,13 @@ export async function POST(req: NextRequest) {
     // Mode 2: Direct file upload (FormData)
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
-    const brandSlug = (formData.get("brandSlug") as string) || process.env.BRAND_SLUG || "default";
+    const rawSlug = (formData.get("brandSlug") as string) || process.env.BRAND_SLUG || "default";
+    const slug = rawSlug.trim();
+    if (!SLUG_RE.test(slug)) return NextResponse.json({ error: `Invalid brand slug ${JSON.stringify(rawSlug)}` }, { status: 400 });
     const assetType = (formData.get("assetType") as string) || "uploads";
-
-    if (!file) {
-      return NextResponse.json({ error: "No file provided" }, { status: 400 });
-    }
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json({ error: `File type ${file.type} not allowed` }, { status: 400 });
-    }
-    if (file.size > MAX_SIZE) {
-      return NextResponse.json({ error: "File too large (max 500MB)" }, { status: 400 });
-    }
-
-    const ext = file.name.split(".").pop() || "bin";
-    const key = `brands/${brandSlug}/${assetType}/${uuid()}.${ext}`;
+    const safeAssetType = (assetType || "uploads").trim();
+    if (!/^[a-z0-9-]+$/.test(safeAssetType)) return NextResponse.json({ error: `Invalid assetType ${JSON.stringify(assetType)}` }, { status: 400 });
+    const key = `brands/${slug}/${safeAssetType}/${uuid()}.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
     const url = await uploadToR2(key, buffer, file.type);
 
