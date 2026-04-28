@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       const slug = ((brandSlug as string) || process.env.BRAND_SLUG || "default").trim();
       if (!SLUG_RE.test(slug)) return NextResponse.json({ error: `Invalid brand slug ${JSON.stringify(slug)}` }, { status: 400 });
       const safeAssetType = (assetType || "uploads").trim();
-      if (!/^[a-z0-9-]+$/.test(safeAssetType)) return NextResponse.json({ error: `Invalid assetType ${JSON.stringify(assetType)}` }, { status: 400 });
+      if (!/^[a-z0-9][a-z0-9/-]*$/.test(safeAssetType)) return NextResponse.json({ error: `Invalid assetType ${JSON.stringify(assetType)}` }, { status: 400 });
       const key = `brands/${slug}/${safeAssetType}/${uuid()}.${ext}`;
       const presignedUrl = await getPresignedUploadUrl(key, fileType);
       const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     if (!SLUG_RE.test(slug)) return NextResponse.json({ error: `Invalid brand slug ${JSON.stringify(rawSlug)}` }, { status: 400 });
     const assetType = (formData.get("assetType") as string) || "uploads";
     const safeAssetType = assetType.trim();
-    if (!SLUG_RE.test(safeAssetType)) return NextResponse.json({ error: `Invalid assetType ${JSON.stringify(assetType)}` }, { status: 400 });
+    if (!/^[a-z0-9][a-z0-9/-]*$/.test(safeAssetType)) return NextResponse.json({ error: `Invalid assetType ${JSON.stringify(assetType)}` }, { status: 400 });
     const ext = file.name.split(".").pop() || "bin";
     const key = `brands/${slug}/${safeAssetType}/${uuid()}.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
