@@ -1,6 +1,5 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
-import { magicLink } from "better-auth/plugins";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -26,52 +25,12 @@ export const auth = betterAuth({
     },
   }),
 
-  plugins: [
-    magicLink({
-      sendMagicLink: async ({ email, url }) => {
-        if (!process.env.RESEND_API_KEY) {
-          console.error("[auth] RESEND_API_KEY is not set — cannot send magic link email");
-          throw new Error("Email service is not configured");
-        }
-        const { Resend } = await import("resend");
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        const fromName = process.env.RESEND_FROM_NAME || "StudioFlow";
-        const fromEmail = process.env.RESEND_FROM_EMAIL || "noreply@portal.studio-flow.co";
-
-        // Route through interstitial page to prevent email link prefetching
-        // from consuming the one-time token (Outlook Safe Links, etc.)
-        const parsed = new URL(url);
-        const token = parsed.searchParams.get("token") || "";
-        const callbackURL = parsed.searchParams.get("callbackURL") || "/dashboard";
-        const baseURL = process.env.BETTER_AUTH_URL || parsed.origin;
-        const safeURL = `${baseURL}/auth/verify?token=${encodeURIComponent(token)}&callbackURL=${encodeURIComponent(callbackURL)}`;
-
-        const { error } = await resend.emails.send({
-          from: `${fromName} <${fromEmail}>`,
-          to: email,
-          subject: "Your magic link to sign in",
-          html: `
-            <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
-              <p style="font-size: 15px; color: #111; margin-bottom: 24px;">
-                Click the button below to sign in to your Naali Creative Studio portal.
-                This link expires in 24 hours.
-              </p>
-              <a href="${safeURL}" style="display: inline-block; background: #2D5A3D; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 500;">
-                Sign in to Naali Portal
-              </a>
-              <p style="margin-top: 24px; font-size: 13px; color: #666;">
-                If you didn't request this link, you can safely ignore this email.
-              </p>
-            </div>
-          `,
-        });
-        if (error) {
-          console.error("[auth] Failed to send magic link email:", error);
-          throw new Error("Failed to send sign-in email");
-        }
-      },
-    }),
-  ],
+  emailAndPassword: {
+    enabled: true,
+    disableSignUp: true,
+    autoSignIn: false,
+    minPasswordLength: 8,
+  },
 });
 
 // =============================================

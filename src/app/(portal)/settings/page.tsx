@@ -5,6 +5,7 @@ import { Settings, User, Shield , Key } from "lucide-react";
 import { formatDateTime } from "@/lib/utils";
 import { headers } from "next/headers";
 import { ApiKeysManager } from "@/components/settings/api-keys-manager";
+import { ChangePassword } from "@/components/settings/change-password";
 
 export const dynamic = "force-dynamic";
 
@@ -112,15 +113,10 @@ export default async function SettingsPage() {
       <div className="rounded-xl border border-border bg-card shadow-card">
         <div className="flex items-center gap-3 border-b border-border px-5 py-4">
           <Shield className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-sm font-semibold text-foreground">Security</h2>
+          <h2 className="text-sm font-semibold text-foreground">Change password</h2>
         </div>
         <div className="p-5">
-          <p className="text-sm text-muted-foreground">
-            Authentication is managed via magic link. No password is required.
-          </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Auth provider: <span className="font-medium text-foreground">Better Auth</span>
-          </p>
+          <ChangePassword />
         </div>
       </div>
 
