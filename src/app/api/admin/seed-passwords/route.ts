@@ -39,10 +39,9 @@ export async function POST(req: NextRequest) {
 
   const results: Array<{ email: string; password: string }> = [];
   for (const email of SEEDS) {
-    const lookup = await db.execute(
+    const rows = (await db.execute(
       sql`SELECT id FROM "user" WHERE email = ${email} LIMIT 1`
-    );
-    const rows = lookup.rows as Array<{ id: string }>;
+    )) as unknown as Array<{ id: string }>;
     if (rows.length === 0) {
       results.push({ email, password: "(skipped — no user row)" });
       continue;
