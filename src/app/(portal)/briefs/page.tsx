@@ -12,6 +12,7 @@ import {
   Loader2,
   Target,
   Sparkles,
+  Trash2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -47,6 +48,7 @@ export default function BriefsPage() {
   const [briefs, setBriefs] = useState<BriefSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchBriefs() {
@@ -61,6 +63,24 @@ export default function BriefsPage() {
     }
     fetchBriefs();
   }, [filter]);
+
+  async function handleDelete(e: React.MouseEvent, id: string) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!confirm("Delete this brief? This cannot be undone.")) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/briefs/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setBriefs((prev) => prev.filter((b) => b.id !== id));
+      } else {
+        const { error } = await res.json().catch(() => ({ error: "Delete failed" }));
+        alert(error || "Delete failed");
+      }
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -114,7 +134,7 @@ export default function BriefsPage() {
               <Link
                 key={brief.id}
                 href={`/briefs/${brief.id}`}
-                className="group rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md"
+                className="group relative rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md"
               >
                 {/* Top row: media type + funnel + status */}
                 <div className="flex items-center justify-between mb-3">
@@ -136,8 +156,24 @@ export default function BriefsPage() {
                       </Badge>
                     )}
                   </div>
-                  {isError && <AlertCircle className="h-4 w-4 text-red-500" />}
-                  {isGenerating && <Loader2 className="h-4 w-4 animate-spin text-blue-500" />}
+                  <div className="flex items-center gap-2">
+                    {isError && <AlertCircle className="h-4 w-4 text-red-500" />}
+                    {isGenerating && <Loader2 className="h-4 w-4 animate-spin text-blue-500" />}
+                    <button
+                      type="button"
+                      onClick={(e) => handleDelete(e, brief.id)}
+                      disabled={deletingId === brief.id}
+                      aria-label="Delete brief"
+                      title="Delete brief"
+                      className="rounded-md p-1 text-muted-foreground/60 opacity-0 transition-opacity hover:bg-red-500/10 hover:text-red-500 group-hover:opacity-100 disabled:opacity-40"
+                    >
+                      {deletingId === brief.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Title */}
