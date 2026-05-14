@@ -27,7 +27,12 @@ type AdCardProps = {
 export function AdCard({ generation, onClick, onDownload, onDelete }: AdCardProps) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [imageBroken, setImageBroken] = useState(false);
   const imgUrl = generation.thumbnailUrl || generation.imageUrl;
+
+  // Hide cards whose preview URL is unreachable (legacy cross-client R2 paths,
+  // expired tempfiles, etc). Server filter catches most; this is belt-and-suspenders.
+  if (imageBroken) return null;
 
   const handleSaveToWinners = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -54,6 +59,7 @@ export function AdCard({ generation, onClick, onDownload, onDelete }: AdCardProp
             src={imgUrl}
             alt={`${generation.styleName} - ${generation.productName}`}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            onError={() => setImageBroken(true)}
           />
         ) : generation.status === "generating" ? (
           <div className="flex h-full w-full flex-col items-center justify-center gap-2">

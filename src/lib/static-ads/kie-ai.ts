@@ -21,7 +21,7 @@ export type KieJobParams = {
   prompt: string;
   imageUrls: string[]; // Public URLs (R2) — up to 14
   aspectRatio?: string; // "1:1" | "2:3" | "3:2" | "9:16" | "16:9" etc. Default: "1:1"
-  resolution?: string;  // "1K" | "2K" | "4K". Default: "1K"
+  resolution?: string;  // "1K" | "2K" | "4K". Default: "2K"
   outputFormat?: string; // "png" | "jpg". Default: "png"
 };
 
@@ -48,7 +48,7 @@ export async function submitKieJob(params: KieJobParams): Promise<KieSubmitResul
       prompt: params.prompt,
       image_input: params.imageUrls,
       aspect_ratio: ratio,
-      resolution: params.resolution || "1K",
+      resolution: params.resolution || "2K",
       output_format: params.outputFormat || "png",
     },
   };

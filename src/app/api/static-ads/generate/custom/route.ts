@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
       styleName: "Custom",
       finalPrompt: generatedPrompt,
       aspectRatio: resolvedAspectRatio,
-      resolution: "1K",
+      resolution: "2K",
       outputFormat: "PNG",
       status: "pending",
       mode: "custom",

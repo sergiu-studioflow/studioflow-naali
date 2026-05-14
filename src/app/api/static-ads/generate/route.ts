@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
         prompt: finalPrompt,
         imageUrls,
         aspectRatio: resolvedAspectRatio,
-        resolution: "1K",
+        resolution: "2K",
         outputFormat: "png",
       });
 

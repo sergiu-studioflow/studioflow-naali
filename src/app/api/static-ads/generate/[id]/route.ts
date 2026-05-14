@@ -82,12 +82,24 @@ export async function GET(
         if (result.state === "success" && result.resultUrls.length > 0) {
           const sourceUrl = result.resultUrls[0];
 
-          // Save with temp URL first — R2 persistence happens on the next poll
+          // Eager R2 persistence: download from Kie tempfile and upload to R2
+          // before flipping status to "completed". Guarantees imageUrl is an
+          // R2 URL — Download / Save-to-Winners / Edit all depend on this,
+          // and lazy persistence dropped ads when the user left before the
+          // follow-up poll fired.
+          let persistedUrl = sourceUrl;
+          try {
+            persistedUrl = await downloadAndUploadToR2(sourceUrl, generation.id);
+          } catch (uploadErr) {
+            console.error(`[static-ads/r2] Eager persist failed for ${generation.id}:`, uploadErr);
+            // Fall back to tempfile URL — the lazy branch above retries on the next poll.
+          }
+
           const [updated] = await db
             .update(schema.staticAdGenerations)
             .set({
               status: "completed",
-              imageUrl: sourceUrl,
+              imageUrl: persistedUrl,
               updatedAt: new Date(),
             })
             .where(eq(schema.staticAdGenerations.id, generation.id))

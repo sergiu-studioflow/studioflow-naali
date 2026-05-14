@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth, isAuthError } from "@/lib/auth";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq, and, isNotNull, sql } from "drizzle-orm";
 import { toAccessibleUrl } from "@/lib/r2";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +18,18 @@ export async function GET(req: NextRequest) {
 
     const conditions = [];
     if (status && status !== "all") {
+      // Explicit filter (Completed / Generating / Error) — show whatever was asked for.
       conditions.push(eq(schema.staticAdGenerations.status, status));
+      if (status === "completed") {
+        conditions.push(isNotNull(schema.staticAdGenerations.imageUrl));
+      }
+    } else {
+      // Default "All" view: hide stuck-generating + previewless + non-R2 rows.
+      conditions.push(eq(schema.staticAdGenerations.status, "completed"));
+      conditions.push(isNotNull(schema.staticAdGenerations.imageUrl));
+      conditions.push(
+        sql`(${schema.staticAdGenerations.imageUrl} LIKE '%r2.dev%' OR ${schema.staticAdGenerations.imageUrl} LIKE '%r2.cloudflarestorage.com%' OR ${schema.staticAdGenerations.imageUrl} LIKE '%studio-flow.co%')`
+      );
     }
 
     const generations = await db
