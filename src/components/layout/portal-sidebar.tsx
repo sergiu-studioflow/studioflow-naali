@@ -54,29 +54,21 @@ export function PortalSidebar({ brandName, brandColor, features, userEmail }: Po
 
   return (
     <aside className="flex h-screen w-[260px] flex-col bg-sidebar">
-      {/* Logo Section — StudioFlow × Naali */}
-      <div className="flex h-[80px] items-center justify-center relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,hsla(79,100%,50%,0.08)_0%,transparent_70%)] pointer-events-none" />
-        <div className="flex items-center gap-3 relative z-10">
-          <div className="group/sf rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-[0_0_16px_rgba(178,255,0,0.25)]">
-            <Image
-              src="/studioflow-logo.png"
-              alt="StudioFlow"
-              width={40}
-              height={40}
-              className="rounded-xl transition-all duration-200 group-hover/sf:brightness-110"
-            />
-          </div>
-          <span className="text-sm font-light text-sidebar-muted">×</span>
-          <div className="group/na rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-[0_0_16px_rgba(255,200,50,0.25)]">
-            <Image
-              src="/naali-logo.png"
-              alt="Naali"
-              width={40}
-              height={40}
-              className="rounded-xl transition-all duration-200 group-hover/na:brightness-110"
-            />
-          </div>
+      {/* Logo Section — Naali wordmark */}
+      <div className="flex h-[96px] flex-col items-center justify-center gap-1 relative px-5">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,hsla(27,98%,53%,0.12)_0%,transparent_70%)] pointer-events-none" />
+        <div className="relative z-10 flex flex-col items-center gap-1.5">
+          <Image
+            src="/naali-logo.png"
+            alt={brandName || "Naali"}
+            width={140}
+            height={36}
+            priority
+            className="h-auto w-[120px] brightness-0 invert"
+          />
+          <span className="font-display italic text-[11px] tracking-[0.18em] text-sidebar-muted">
+            Creative Studio
+          </span>
         </div>
       </div>
 

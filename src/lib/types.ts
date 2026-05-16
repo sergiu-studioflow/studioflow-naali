@@ -27,6 +27,17 @@ export type AppConfig = {
   proofAssetOptions: string[];
 };
 
+export type BrandIntelligence = {
+  id: string;
+  title: string;
+  rawContent: string | null;
+  complianceRules: string | null;
+  sections: unknown | null;
+  airtableRecordId: string | null;
+  updatedAt: Date;
+  createdAt: Date;
+};
+
 export type Persona = {
   id: string;
   name: string;

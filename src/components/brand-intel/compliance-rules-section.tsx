@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, Pencil, Save, X, Loader2, ChevronRight, Eye, Code2, BookOpen, Clock, FileText } from "lucide-react";
+import { ShieldCheck, Pencil, Save, X, Loader2, ChevronRight, Eye, Code2, BookOpen, Clock, FileText } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
@@ -12,22 +12,11 @@ interface BrandIntel {
   id: string;
   title: string;
   rawContent: string | null;
+  complianceRules: string | null;
   updatedAt: string | null;
 }
 
-/**
- * Promote bare section-title lines to ## headings so the doc reads as structured prose.
- *
- * A line is treated as a section title if it:
- *  - Sits on its own line (preceded by a blank line OR is line 1; followed by a blank line)
- *  - Is between 2 and ~10 words
- *  - Doesn't end with `.`, `!`, `?`, `:`, `,`, `;`
- *  - Doesn't already start with `#`, `-`, `*`, `>`, ``` ``` ```, or a digit followed by `.`
- *  - Has at least one capital letter
- *
- * The very first line gets `# ` if it qualifies as a title; subsequent qualifying lines get `## `.
- */
-function preprocessBrandIntel(text: string): string {
+function preprocessRules(text: string): string {
   if (!text) return "";
   const lines = text.replace(/\r\n/g, "\n").split("\n");
   const out: string[] = [];
@@ -42,7 +31,6 @@ function preprocessBrandIntel(text: string): string {
     if (!/[A-Z]/.test(line)) return false;
     return true;
   };
-
   let firstHeadingApplied = false;
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -91,14 +79,14 @@ function readingStats(text: string): { words: number; minutes: number } {
   return { words, minutes };
 }
 
-export function BrandDocSection() {
+export function ComplianceRulesSection() {
   const [intel, setIntel] = useState<BrandIntel | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false); // Default OPEN — compliance is high-priority
   const [editPreview, setEditPreview] = useState<"split" | "edit" | "preview">("split");
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -109,26 +97,24 @@ export function BrandDocSection() {
       .then((res) => res.json())
       .then((data) => {
         setIntel(data);
-        setDraft(data?.rawContent || "");
+        setDraft(data?.complianceRules || "");
       })
-      .catch(() => setError("Failed to load brand intelligence"))
+      .catch(() => setError("Failed to load compliance rules"))
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    if (editing && textareaRef.current) {
-      textareaRef.current.focus();
-    }
+    if (editing && textareaRef.current) textareaRef.current.focus();
   }, [editing]);
 
   const handleEdit = () => {
-    setDraft(intel?.rawContent || "");
+    setDraft(intel?.complianceRules || "");
     setEditing(true);
     setError(null);
   };
 
   const handleCancel = () => {
-    setDraft(intel?.rawContent || "");
+    setDraft(intel?.complianceRules || "");
     setEditing(false);
     setError(null);
   };
@@ -140,7 +126,7 @@ export function BrandDocSection() {
       const res = await fetch("/api/brand-intel", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rawContent: draft }),
+        body: JSON.stringify({ complianceRules: draft }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -156,12 +142,11 @@ export function BrandDocSection() {
     }
   };
 
-  const sourceContent = editing ? draft : intel?.rawContent || "";
-  const processed = useMemo(() => preprocessBrandIntel(sourceContent), [sourceContent]);
+  const sourceContent = editing ? draft : intel?.complianceRules || "";
+  const processed = useMemo(() => preprocessRules(sourceContent), [sourceContent]);
   const toc = useMemo(() => extractToc(processed), [processed]);
   const stats = useMemo(() => readingStats(sourceContent), [sourceContent]);
 
-  // Track which heading is currently in view (for TOC highlight)
   const handleHeadingIntersection = useCallback(() => {
     if (!proseRef.current) return;
     const headings = proseRef.current.querySelectorAll("h1[id], h2[id], h3[id]");
@@ -186,21 +171,30 @@ export function BrandDocSection() {
   }, [collapsed, editing, processed, handleHeadingIntersection]);
 
   return (
-    <Card>
+    <Card className="border-amber-500/40 dark:border-amber-500/30">
       <CardHeader
         className="flex flex-row items-center justify-between space-y-0 cursor-pointer select-none"
         onClick={() => !editing && setCollapsed(!collapsed)}
       >
         <div className="flex items-center gap-3">
           <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${collapsed ? "" : "rotate-90"}`} />
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 dark:bg-primary/10">
-            <Brain className="h-4 w-4 text-primary" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/15 dark:bg-amber-500/15 ring-1 ring-amber-500/30">
+            <ShieldCheck className="h-4 w-4 text-amber-600 dark:text-amber-400" />
           </div>
           <div>
-            <CardTitle className="text-lg">Brand Intelligence Document</CardTitle>
-            {intel?.updatedAt && !editing && (
-              <p className="text-xs text-muted-foreground mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5">
-                <span>Last updated {new Date(intel.updatedAt).toLocaleDateString()}</span>
+            <CardTitle className="text-lg flex items-center gap-2">
+              Compliance Rules Document
+              <span className="inline-flex items-center rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400 ring-1 ring-amber-500/30">
+                Strict
+              </span>
+            </CardTitle>
+            <p className="text-xs text-muted-foreground mt-1 max-w-2xl">
+              Strict rules every AI generator follows. Edit here once — every workflow picks up the change on the
+              next generation.
+            </p>
+            {intel && !editing && (
+              <p className="text-xs text-muted-foreground mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0.5">
+                {intel.updatedAt && <span>Last updated {new Date(intel.updatedAt).toLocaleDateString()}</span>}
                 {sourceContent && (
                   <>
                     <span className="inline-flex items-center gap-1">
@@ -262,9 +256,9 @@ export function BrandDocSection() {
                   <X className="mr-1 h-3.5 w-3.5" />
                   Cancel
                 </Button>
-                <Button size="sm" onClick={handleSave} disabled={saving}>
+                <Button size="sm" onClick={handleSave} disabled={saving} className="bg-amber-600 hover:bg-amber-700 text-white">
                   {saving ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : <Save className="mr-1 h-3.5 w-3.5" />}
-                  {saving ? "Saving…" : "Save"}
+                  {saving ? "Saving…" : "Save rules"}
                 </Button>
               </>
             ) : (
@@ -298,15 +292,17 @@ export function BrandDocSection() {
                 mode={editPreview}
                 textareaRef={textareaRef}
               />
-            ) : intel?.rawContent ? (
+            ) : intel?.complianceRules ? (
               <ReadView processed={processed} toc={toc} activeHeadingId={activeHeadingId} proseRef={proseRef} />
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <Brain className="h-10 w-10 text-muted-foreground" />
-                <p className="mt-3 text-sm text-muted-foreground">No brand intelligence document yet.</p>
-                <Button variant="outline" size="sm" className="mt-4" onClick={handleEdit}>
+                <ShieldCheck className="h-10 w-10 text-amber-500" />
+                <p className="mt-3 text-sm text-muted-foreground">
+                  No compliance rules set. Every generator will refuse to produce output until you add them.
+                </p>
+                <Button size="sm" className="mt-4 bg-amber-600 hover:bg-amber-700 text-white" onClick={handleEdit}>
                   <Pencil className="mr-1 h-3.5 w-3.5" />
-                  Add Brand Intel
+                  Add compliance rules
                 </Button>
               </div>
             )}
@@ -317,7 +313,7 @@ export function BrandDocSection() {
   );
 }
 
-/* ─── Reading view ─── */
+/* ─── Reading view (amber-accented) ─── */
 
 function ReadView({
   processed,
@@ -338,34 +334,30 @@ function ReadView({
         ref={proseRef}
         className={cn(
           "max-w-3xl",
-          // Base prose
           "prose prose-base dark:prose-invert max-w-none",
-          // Headings — display-font italic, primary-coloured
-          "prose-headings:font-display prose-headings:italic prose-headings:font-normal prose-headings:text-primary prose-headings:tracking-tight",
-          // h1
-          "prose-h1:text-4xl prose-h1:mt-0 prose-h1:mb-2 prose-h1:pb-3 prose-h1:border-b prose-h1:border-primary/15",
-          // h2
-          "prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-3 prose-h2:scroll-mt-24",
-          // h3
-          "prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-2 prose-h3:scroll-mt-24",
+          // Headings — amber-tinted (compliance = warning) + display italic
+          "prose-headings:font-display prose-headings:italic prose-headings:font-normal prose-headings:text-amber-700 dark:prose-headings:text-amber-400 prose-headings:tracking-tight",
+          "prose-h1:text-3xl prose-h1:mt-0 prose-h1:mb-2 prose-h1:pb-3 prose-h1:border-b prose-h1:border-amber-500/30",
+          "prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-3 prose-h2:scroll-mt-24",
+          "prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-2 prose-h3:scroll-mt-24",
           // Paragraphs
-          "prose-p:text-foreground/85 prose-p:leading-[1.8] prose-p:my-4",
-          // First paragraph drop cap
-          "[&>p:first-of-type]:first-letter:font-display [&>p:first-of-type]:first-letter:italic [&>p:first-of-type]:first-letter:text-primary [&>p:first-of-type]:first-letter:text-6xl [&>p:first-of-type]:first-letter:leading-[0.85] [&>p:first-of-type]:first-letter:float-left [&>p:first-of-type]:first-letter:mr-2 [&>p:first-of-type]:first-letter:mt-1.5",
+          "prose-p:text-foreground/90 prose-p:leading-[1.75] prose-p:my-3.5",
           // Strong / em
           "prose-strong:text-foreground prose-strong:font-semibold",
           "prose-em:text-foreground/90",
-          // Lists
-          "prose-ul:my-4 prose-ol:my-4 prose-li:my-1.5 prose-li:text-foreground/85 prose-li:leading-relaxed",
-          "prose-li:marker:text-primary",
-          // Blockquote
-          "prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-secondary/40 prose-blockquote:rounded-r-lg prose-blockquote:px-4 prose-blockquote:py-1 prose-blockquote:not-italic prose-blockquote:text-foreground/85",
-          // Code
+          // Lists — amber bullets emphasise rules
+          "prose-ul:my-3 prose-ol:my-3 prose-li:my-1 prose-li:text-foreground/90 prose-li:leading-relaxed",
+          "prose-li:marker:text-amber-600 dark:prose-li:marker:text-amber-400",
+          // Blockquote — typically the disclaimer text
+          "prose-blockquote:border-l-4 prose-blockquote:border-amber-500 prose-blockquote:bg-amber-500/5 prose-blockquote:rounded-r-lg prose-blockquote:px-4 prose-blockquote:py-1 prose-blockquote:not-italic prose-blockquote:font-medium prose-blockquote:text-foreground",
+          // Code (inline) for replacement words
           "prose-code:bg-muted prose-code:text-foreground prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-[0.9em] prose-code:font-medium prose-code:before:hidden prose-code:after:hidden",
-          // Links
-          "prose-a:text-primary prose-a:underline-offset-4 hover:prose-a:text-accent",
+          // Tables — language cheat sheets
+          "prose-table:my-4 prose-table:text-sm",
+          "prose-th:bg-amber-500/10 prose-th:text-amber-800 dark:prose-th:text-amber-300 prose-th:font-semibold prose-th:text-left",
+          "prose-td:align-top prose-td:py-2",
           // hr
-          "prose-hr:my-10 prose-hr:border-border",
+          "prose-hr:my-8 prose-hr:border-border",
         )}
       >
         <ReactMarkdown
@@ -396,7 +388,7 @@ function ReadView({
         <aside className="hidden lg:block">
           <div className="sticky top-24">
             <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              On this page
+              In this rulebook
             </p>
             <nav className="flex flex-col gap-1">
               {toc
@@ -414,7 +406,7 @@ function ReadView({
                       "block rounded-md px-2.5 py-1.5 text-xs leading-snug transition-all",
                       h.level === 3 && "pl-6",
                       activeHeadingId === h.id
-                        ? "bg-primary/10 text-primary font-medium"
+                        ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium"
                         : "text-muted-foreground hover:bg-accent/40 hover:text-foreground",
                     )}
                   >
@@ -449,35 +441,29 @@ function EditView({
 
   return (
     <div className="space-y-3">
-      <div className="rounded-lg border border-border bg-muted/30 px-3 py-2 text-[11px] text-muted-foreground">
-        <span className="font-semibold text-foreground/80">Markdown tips:</span>{" "}
+      <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-[11px] text-amber-800 dark:text-amber-300">
+        <span className="font-semibold">Heads up:</span> changes here propagate to every Naali generator on the
+        next generation. Use{" "}
         <code className="font-mono">## Section title</code> ·{" "}
         <code className="font-mono">**bold**</code> ·{" "}
-        <code className="font-mono">*italic*</code> ·{" "}
         <code className="font-mono">- list item</code> ·{" "}
-        <code className="font-mono">{`> quote`}</code>{" "}
-        — bare title-lines are auto-promoted to ## in the preview.
+        <code className="font-mono">{`> disclaimer block`}</code> for structure.
       </div>
-      <div
-        className={cn(
-          "grid gap-3",
-          mode === "split" ? "lg:grid-cols-2" : "grid-cols-1",
-        )}
-      >
+      <div className={cn("grid gap-3", mode === "split" ? "lg:grid-cols-2" : "grid-cols-1")}>
         {showEdit && (
           <textarea
             ref={textareaRef}
             value={draft}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="Write your brand intelligence document here. Markdown supported."
-            className="min-h-[600px] w-full rounded-lg border border-input bg-background p-4 text-[13px] font-mono leading-[1.7] outline-none resize-y focus:border-primary/40 focus:ring-2 focus:ring-primary/15 placeholder:text-muted-foreground transition-all"
+            placeholder="Write your compliance rules here. Markdown supported."
+            className="min-h-[600px] w-full rounded-lg border border-input bg-background p-4 text-[13px] font-mono leading-[1.7] outline-none resize-y focus:border-amber-500/40 focus:ring-2 focus:ring-amber-500/15 placeholder:text-muted-foreground transition-all"
             spellCheck
           />
         )}
         {showPreview && (
           <div className="min-h-[600px] overflow-auto rounded-lg border border-border bg-card p-5 text-sm">
             {processed.trim() ? (
-              <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-display prose-headings:italic prose-headings:font-normal prose-headings:text-primary prose-h1:text-2xl prose-h2:text-lg prose-h2:mt-6 prose-h3:text-base prose-p:text-foreground/85 prose-p:leading-relaxed prose-strong:text-foreground prose-li:marker:text-primary prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-secondary/40 prose-blockquote:rounded-r prose-blockquote:not-italic">
+              <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-display prose-headings:italic prose-headings:font-normal prose-headings:text-amber-700 dark:prose-headings:text-amber-400 prose-h1:text-2xl prose-h2:text-lg prose-h2:mt-6 prose-h3:text-base prose-p:text-foreground/90 prose-p:leading-relaxed prose-strong:text-foreground prose-li:marker:text-amber-600 prose-blockquote:border-l-4 prose-blockquote:border-amber-500 prose-blockquote:bg-amber-500/5 prose-blockquote:rounded-r prose-blockquote:not-italic">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{processed}</ReactMarkdown>
               </div>
             ) : (

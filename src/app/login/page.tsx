@@ -38,16 +38,21 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="animate-fade-up w-full max-w-[380px] space-y-8 px-4">
         <div className="text-center">
-          <div className="mx-auto flex items-center justify-center gap-3">
-            <Image src="/studioflow-logo.png" alt="StudioFlow" width={40} height={40} className="rounded-xl" />
-            <span className="text-sm font-light text-muted-foreground">×</span>
-            <Image src="/naali-logo.png" alt="Naali" width={40} height={40} className="rounded-xl" />
+          <div className="mx-auto flex items-center justify-center">
+            <Image
+              src="/naali-logo.png"
+              alt="Naali"
+              width={180}
+              height={46}
+              priority
+              className="h-auto w-[180px] dark:brightness-0 dark:invert"
+            />
           </div>
-          <h1 className="mt-5 text-xl font-semibold tracking-tight text-foreground">
-            Welcome back
+          <h1 className="mt-6 text-xl font-semibold tracking-tight text-foreground">
+            Welcome to your <span className="font-display italic font-normal">Naali Creative Studio</span>
           </h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
-            Sign in to your creative studio
+            Sign in with your work email.
           </p>
         </div>
 

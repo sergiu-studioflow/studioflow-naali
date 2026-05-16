@@ -116,6 +116,7 @@ export const brandIntelligence = pgTable("brand_intelligence", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: text("title").notNull().default("Brand Intelligence"),
   rawContent: text("raw_content"), // Full markdown document
+  complianceRules: text("compliance_rules"), // Strict rules every AI generator follows
   sections: jsonb("sections"), // Parsed sections as JSON
   airtableRecordId: text("airtable_record_id"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),

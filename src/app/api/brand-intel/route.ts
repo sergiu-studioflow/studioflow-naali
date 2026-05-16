@@ -24,7 +24,11 @@ export async function PUT(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { rawContent, sections } = body;
+  const { rawContent, complianceRules, sections } = body as {
+    rawContent?: string | null;
+    complianceRules?: string | null;
+    sections?: unknown;
+  };
 
   const [existing] = await db.select().from(schema.brandIntelligence).limit(1);
 
@@ -33,8 +37,9 @@ export async function PUT(request: NextRequest) {
     [result] = await db
       .update(schema.brandIntelligence)
       .set({
-        rawContent: rawContent ?? existing.rawContent,
-        sections: sections ?? existing.sections,
+        rawContent: rawContent !== undefined ? rawContent : existing.rawContent,
+        complianceRules: complianceRules !== undefined ? complianceRules : existing.complianceRules,
+        sections: sections !== undefined ? sections : existing.sections,
         updatedAt: new Date(),
       })
       .where(eq(schema.brandIntelligence.id, existing.id))
@@ -42,7 +47,11 @@ export async function PUT(request: NextRequest) {
   } else {
     [result] = await db
       .insert(schema.brandIntelligence)
-      .values({ rawContent, sections })
+      .values({
+        rawContent: rawContent ?? null,
+        complianceRules: complianceRules ?? null,
+        sections: sections ?? null,
+      })
       .returning();
   }
 
